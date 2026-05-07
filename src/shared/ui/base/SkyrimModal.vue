@@ -1,9 +1,14 @@
 <template>
   <Teleport to="body">
-    <Transition name="modal-backdrop">
+    <Transition
+      name="modal-backdrop"
+      appear
+    >
       <div
         v-if="isOpen"
-        class="modal-backdrop"
+        class="skyrim-backdrop skyrim-backdrop--fixed skyrim-backdrop--overlay skyrim-backdrop--blocking"
+        role="dialog"
+        aria-modal="true"
         @click.self="closeModal"
       >
         <Transition name="modal-panel">
@@ -36,7 +41,8 @@ const { isOpen, modalComponent, modalProps, modalHandlers, closeModal } =
 <style scoped lang="scss">
 /*
  * Layout & frame styles come from the design system:
- *   .modal-backdrop, .modal-panel, .modal-body (components/modal.scss)
+ *   .modal-panel, .modal-body (components/modal.scss)
+ * The full-viewport overlay is provided by shared .skyrim-backdrop classes.
  * Only the transitions are component-specific and live here.
  */
 

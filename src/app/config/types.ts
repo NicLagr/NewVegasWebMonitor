@@ -1,13 +1,26 @@
 import type { Component } from 'vue';
 
-export interface PageConfig {
+export interface SubscriptionSettings {
+  /** Push interval in milliseconds. */
+  frequency?: number;
+  /** Only push when values change. */
+  sendOnChange?: boolean;
+}
+
+export interface PageSubscriptionConfig {
   id: string;
-  component: Component;
   fields: Record<string, string>;
-  settings?: {
-    frequency?: number;
-    sendOnChange?: boolean;
-  }
+  settings?: SubscriptionSettings;
+}
+
+export interface PageConfig {
+  component: Component;
+  /**
+   * One or more subscriptions the page wants active while it is shown.
+   * Most pages have a single entry; pages like the map use several
+   * concurrent streams at different frequencies.
+   */
+  subscriptions?: PageSubscriptionConfig[];
 }
 
 export type PagesRegistry = Record<string, Record<string, PageConfig>>;

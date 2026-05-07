@@ -9,20 +9,22 @@
       :name="transitionName"
       mode="out-in"
     >
-      <component
-        :is="currentComponent"
-        v-if="currentComponent"
-        :key="`${tab}-${subTab}`"
-      />
-      <div
-        v-else
-        :key="`${tab}-${subTab}-empty`"
-        class="empty-state"
-      >
-        <p class="text-secondary">
-          {{ $t('app.content.emptyState') }}
-        </p>
-      </div>
+      <KeepAlive>
+        <component
+          :is="currentComponent"
+          v-if="currentComponent"
+          :key="`${tab}-${subTab}`"
+        />
+        <div
+          v-else
+          :key="`${tab}-${subTab}-empty`"
+          class="empty-state"
+        >
+          <p class="text-secondary">
+            {{ $t('app.content.emptyState') }}
+          </p>
+        </div>
+      </KeepAlive>
     </Transition>
   </div>
 </template>
@@ -75,7 +77,7 @@ const currentComponent = computed(() => {
 .skyrim-panel {
   position: relative;
   background-color: var(--skyrim-bg-medium);
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm);
   height: 100%;
   max-height: 100%;
   overflow: hidden auto;

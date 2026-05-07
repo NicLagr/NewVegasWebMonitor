@@ -36,6 +36,9 @@
           "restoration": "Restoration",
           "enchanting": "Enchanting"
         }
+      },
+      "map": {
+        "label": "Map"
       }
     },
     "content": {
@@ -130,6 +133,7 @@
       }
     },
     "map": {
+      "alt": "World map",
       "world": {
         "tab": "World",
         "placeholder": "World map to be implemented"
@@ -140,6 +144,16 @@
       },
       "quests": {
         "tab": "Quests"
+      },
+      "fastTravel": {
+        "title": "Fast Travel",
+        "message": "Travel to this location?",
+        "confirm": "Yes",
+        "cancel": "No"
+      },
+      "prefetch": {
+        "label": "Loading map",
+        "progress": "{progress}%"
       }
     }
   },
@@ -154,7 +168,8 @@
         "failedHint": "Reconnect attempts exhausted. Try again manually.",
         "attempt": "Attempt {current} of {total}",
         "reconnect": "Reconnect",
-        "iconsBy": "Icons by"
+        "iconsBy": "Icons by",
+        "mapFrom": "Map from"
       },
       "magicItem": {
         "ready": "Ready",

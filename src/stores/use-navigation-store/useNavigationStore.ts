@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useSystemStore } from '../system/useSystemStore';
 import type { Tab, SubTab } from './types/types';
 
 export const useNavigationStore = defineStore('navigation', () => {
   const { t } = useI18n();
+  const systemStore = useSystemStore();
 
   const subTabsMap = ref<Record<string, SubTab[]>>({
     character: [
@@ -13,6 +15,9 @@ export const useNavigationStore = defineStore('navigation', () => {
     ],
     inventory: [],
     magic: [],
+    map: [
+      { id: 'view', label: '' },
+    ],
   });
 
   const tabs = computed<Tab[]>(() => [
@@ -33,14 +38,28 @@ export const useNavigationStore = defineStore('navigation', () => {
       id: 'magic',
       label: t('app.tabs.magic.label'),
       subTabs: subTabsMap.value.magic,
-    }
+    },
+    ...(systemStore.features.includes('map')
+      ? [
+          {
+            id: 'map',
+            label: t('app.tabs.map.label'),
+            subTabs: subTabsMap.value.map,
+          },
+        ]
+      : []),
   ]);
 
-  const subTabsToHide = ['favorites', 'soulgems', 'ammo'];
+  const subTabsToHide = ['favorites', 'soulgems', 'ammo', 'view'];
 
   const activeTab = ref<string>('character');
   const activeSubTab = ref<string>('stats');
   const transitionDirection = ref<'left' | 'right' | ''>('');
+
+  // Remembers the last active sub-tab per main tab so that returning
+  // to a tab restores its previously selected sub-tab (only on tab click,
+  // not when swiping between sub-tabs).
+  const lastSubTabMap = ref<Record<string, string>>({});
 
   // Optional ordering map: specify sub-tab ids order per tab.
   // If an entry is empty or missing, fallback to server order.
@@ -95,8 +114,14 @@ export const useNavigationStore = defineStore('navigation', () => {
 
     if (!selectSubTab) return;
 
-    // Prefer first visible sub-tab, fall back to first available
+    // Prefer last-visited visible sub-tab for this tab, then ordered first,
+    // then first visible, then first available.
     const visible = getVisibleSubTabs();
+    const remembered = lastSubTabMap.value[tabId];
+    if (remembered && visible.some((s) => s.id === remembered)) {
+      setActiveSubTab(remembered, true, direction);
+      return;
+    }
     if (visible.length) {
       setActiveSubTab(visible[0].id, true, direction);
     } else if (tab.subTabs?.length) {
@@ -139,6 +164,9 @@ export const useNavigationStore = defineStore('navigation', () => {
     }
 
     activeSubTab.value = subTabId;
+    if (subTabId && activeTab.value) {
+      lastSubTabMap.value[activeTab.value] = subTabId;
+    }
   };
 
   /**
@@ -171,6 +199,12 @@ export const useNavigationStore = defineStore('navigation', () => {
         // select next tab and its first visible subtab, force left transition
         setActiveTab(nextTab.id, false);
         setActiveSubTab(visible[0].id, true, 'left');
+        return;
+      }
+      if (nextTab.subTabs?.length) {
+        // tab has only hidden subtabs (e.g. single-page tabs) — still select it
+        setActiveTab(nextTab.id, false);
+        setActiveSubTab(nextTab.subTabs[0].id, true, 'left');
         return;
       }
       nextTabIdx += 1;
@@ -207,6 +241,12 @@ export const useNavigationStore = defineStore('navigation', () => {
         // select previous tab and its last visible subtab, force right transition
         setActiveTab(prevTab.id, false);
         setActiveSubTab(visible[visible.length - 1].id, true, 'right');
+        return;
+      }
+      if (prevTab.subTabs?.length) {
+        // tab has only hidden subtabs (e.g. single-page tabs) — still select it
+        setActiveTab(prevTab.id, false);
+        setActiveSubTab(prevTab.subTabs[0].id, true, 'right');
         return;
       }
       prevTabIdx -= 1;
