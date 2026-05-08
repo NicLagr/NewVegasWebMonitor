@@ -3,7 +3,6 @@ import { createPinia } from 'pinia';
 import '@/shared/lib/styles/skyrim-theme.scss';
 import './style.css';
 import App from './app/App.vue';
-import { registerSW } from 'virtual:pwa-register';
 import i18n from './i18n';
 
 // Push a guard entry immediately so the Android back gesture is intercepted
@@ -13,38 +12,58 @@ if (!history.state?.pwaBackGuard) {
 }
 
 // Register service worker for PWA only in production (avoid dev caching).
-// With autoUpdate, vite-plugin-pwa reloads the page automatically once the
-// new SW takes control. The block below only forces an update check on every
-// app launch / tab focus — without it a mobile PWA may keep using the stale
-// SW for days because the browser rarely re-checks on its own.
+// The registration uses `updateViaCache: 'none'` so the browser always fetches
+// a fresh `sw.js` instead of reusing a stale HTTP-cached copy. This matters on
+// installed PWAs, where the browser can otherwise keep an old service worker
+// around even after a new GitHub Pages deploy.
 if (import.meta.env.PROD) {
   const intervalMs = 60 * 60 * 1000; // periodic re-check while app is open
-  registerSW({
-    immediate: true,
-    onRegisteredSW(_swUrl, registration) {
-      if (!registration) return;
+  const swUrl = `${import.meta.env.BASE_URL}sw.js`;
+  const swScope = import.meta.env.BASE_URL;
 
-      const update = () => {
-        registration.update().catch(() => {
-          /* offline / network error — ignore */
-        });
-      };
+  void import('workbox-window').then(({ Workbox }) => {
+    const workbox = new Workbox(swUrl, {
+      scope: swScope,
+      type: 'classic',
+      updateViaCache: 'none',
+    });
 
-      // Check right after registration.
-      update();
+    workbox.addEventListener('activated', (event) => {
+      if (event.isUpdate || event.isExternal) {
+        window.location.reload();
+      }
+    });
 
-      // Periodic check while the tab/PWA stays open.
-      setInterval(update, intervalMs);
+    const update = () => {
+      workbox.update().catch(() => {
+        /* offline / network error — ignore */
+      });
+    };
 
-      // And — most importantly — whenever the user comes back to the
-      // app (PWA resumed from background, tab regains focus, bfcache).
-      const onVisible = () => {
-        if (document.visibilityState === 'visible') update();
-      };
-      document.addEventListener('visibilitychange', onVisible);
-      window.addEventListener('focus', update);
-      window.addEventListener('pageshow', update);
-    },
+    workbox
+      .register({ immediate: true })
+      .then((registration) => {
+        if (!registration) return;
+
+        // Check right after registration.
+        update();
+
+        // Periodic check while the tab/PWA stays open.
+        setInterval(update, intervalMs);
+
+        // And — most importantly — whenever the user comes back to the
+        // app (PWA resumed from background, tab regains focus, bfcache).
+        const onVisible = () => {
+          if (document.visibilityState === 'visible') update();
+        };
+
+        document.addEventListener('visibilitychange', onVisible);
+        window.addEventListener('focus', update);
+        window.addEventListener('pageshow', update);
+      })
+      .catch(() => {
+        /* registration error — ignore */
+      });
   });
 }
 
