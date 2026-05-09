@@ -33,7 +33,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useModal } from '@/shared/lib/composables/useModal';
 
 const {
@@ -46,15 +45,13 @@ const {
   closeModal,
 } = useModal();
 
-const isGhostClickWindowActive = computed(() => {
-  if (!isOpen.value) return false;
-  const guardMs = ghostClickGuardMs.value;
-  if (guardMs <= 0) return false;
-  return performance.now() - openedAtMs.value < guardMs;
-});
-
 function onModalRootClickCapture(event: MouseEvent): void {
-  if (!isGhostClickWindowActive.value) return;
+  if (!isOpen.value) return;
+  const guardMs = ghostClickGuardMs.value;
+  if (guardMs <= 0) return;
+  const elapsed = performance.now() - openedAtMs.value;
+  if (elapsed >= guardMs) return;
+
   event.preventDefault();
   event.stopPropagation();
   event.stopImmediatePropagation?.();
