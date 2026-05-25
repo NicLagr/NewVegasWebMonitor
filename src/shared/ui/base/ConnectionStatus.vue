@@ -52,7 +52,6 @@
           <button
             class="btn btn-lg btn-primary endpoint-form__button"
             type="submit"
-            :disabled="isConnectionActionDisabled"
           >
             {{ $t('shared.ui.connectionStatus.saveEndpoint') }}
           </button>
@@ -66,13 +65,9 @@
         </p>
       </form>
 
-      <div
-        v-if="canReconnect"
-        class="actions"
-      >
+      <div class="actions">
         <button
           class="btn btn-lg btn-primary"
-          :disabled="isConnectionActionDisabled"
           @click="handleReconnect"
         >
           {{ $t('shared.ui.connectionStatus.reconnect') }}
@@ -111,7 +106,6 @@ const { t } = useI18n();
 const wsStore = useWebSocketStore();
 const endpointDraft = ref(wsStore.endpointUrl);
 const endpointError = ref('');
-const isSavingEndpoint = ref(false);
 
 watch(
   () => wsStore.endpointUrl,
@@ -159,34 +153,20 @@ const subText = computed(() => {
   return '';
 });
 
-const canReconnect = computed(() => state.value !== 'connected');
-const isConnectionActionDisabled = computed(
-  () => wsStore.isConnecting || wsStore.isReconnecting || isSavingEndpoint.value
-);
-
-async function handleEndpointSubmit(): Promise<void> {
+function handleEndpointSubmit(): void {
   endpointError.value = '';
 
   try {
     endpointDraft.value = normalizeWsUrl(endpointDraft.value);
+    wsStore.updateEndpoint(endpointDraft.value);
   } catch {
     endpointError.value = t('shared.ui.connectionStatus.invalidEndpoint');
-    return;
-  }
-
-  isSavingEndpoint.value = true;
-  try {
-    await wsStore.updateEndpoint(endpointDraft.value);
-  } catch (err) {
-    endpointError.value = (err as Error).message || t('shared.ui.connectionStatus.invalidEndpoint');
-  } finally {
-    isSavingEndpoint.value = false;
   }
 }
 
-async function handleReconnect(): Promise<void> {
+function handleReconnect(): void {
   endpointError.value = '';
-  await wsStore.reconnect();
+  void wsStore.reconnect();
 }
 </script>
 

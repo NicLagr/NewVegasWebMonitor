@@ -21,6 +21,8 @@ class WebSocketClient {
   private lastHeartbeatAckTime: number = Date.now();
   private messageHandlers: MessageHandler[] = [];
   private eventCallbacks: Map<string, EventCallback[]> = new Map();
+  private connectionGeneration: number = 0;
+  private pendingConnectReject: ((error: Error) => void) | null = null;
 
   constructor() {
     this.initEventCallbacks();
@@ -53,6 +55,15 @@ class WebSocketClient {
     return this.url;
   }
 
+  private cancelPendingConnect(message: string): void {
+    const reject = this.pendingConnectReject;
+    this.pendingConnectReject = null;
+
+    if (reject) {
+      reject(new Error(message));
+    }
+  }
+
   /**
    * Manually trigger reconnection. Cancels any pending reconnect timer,
    * resets attempt counter and immediately tries to reconnect.
@@ -64,6 +75,8 @@ class WebSocketClient {
     }
 
     this.stopHeartbeat();
+    this.connectionGeneration++;
+    this.cancelPendingConnect('Connection attempt cancelled by manual reconnect');
 
     if (this.ws) {
       try {
@@ -84,6 +97,10 @@ class WebSocketClient {
   connect(): Promise<void> {
     if (this.isConnected()) return Promise.resolve();
 
+    this.connectionGeneration++;
+    const generation = this.connectionGeneration;
+    this.cancelPendingConnect('Connection attempt superseded');
+
     if (this.ws) {
       this.ws.close();
       this.ws = null;
@@ -95,14 +112,22 @@ class WebSocketClient {
       const resolveOnce = (): void => {
         if (settled) return;
         settled = true;
+        if (this.pendingConnectReject === rejectOnce) {
+          this.pendingConnectReject = null;
+        }
         resolve();
       };
 
       const rejectOnce = (error: Error): void => {
         if (settled) return;
         settled = true;
+        if (this.pendingConnectReject === rejectOnce) {
+          this.pendingConnectReject = null;
+        }
         reject(error);
       };
+
+      this.pendingConnectReject = rejectOnce;
 
       try {
         this.url = getConfiguredWsUrl();
@@ -110,6 +135,8 @@ class WebSocketClient {
         this.ws = socket;
 
         socket.onopen = () => {
+          if (this.ws !== socket || generation !== this.connectionGeneration) return;
+
           console.log('WebSocket connected');
           this.reconnectAttempts = 0;
           this.lastHeartbeatAckTime = Date.now();
@@ -119,12 +146,16 @@ class WebSocketClient {
         };
 
         socket.onmessage = (event) => {
+          if (this.ws !== socket || generation !== this.connectionGeneration) return;
+
           // Update heartbeat ack time on any message from server
           this.lastHeartbeatAckTime = Date.now();
           this.handleMessage(event.data);
         };
 
         socket.onerror = (error) => {
+          if (this.ws !== socket || generation !== this.connectionGeneration) return;
+
           const connectionError = new Error(`Failed to connect to ${this.url}`);
           console.error('WebSocket error:', error);
           this.stopHeartbeat();
@@ -133,7 +164,7 @@ class WebSocketClient {
         };
 
         socket.onclose = (event) => {
-          if (this.ws !== socket) return;
+          if (this.ws !== socket || generation !== this.connectionGeneration) return;
 
           console.log('WebSocket closed');
           this.stopHeartbeat();
@@ -154,6 +185,8 @@ class WebSocketClient {
    */
   disconnect(): void {
     this.stopHeartbeat();
+    this.connectionGeneration++;
+    this.cancelPendingConnect('Connection attempt cancelled by disconnect');
 
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
