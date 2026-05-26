@@ -306,6 +306,7 @@ function handleReconnect(): void {
   margin: 0;
   font-size: var(--font-size-base, 0.75rem);
   color: var(--skyrim-text-dim);
+  margin: calc(-1 * var(--spacing-md));
 }
 
 @media (max-width: 520px) {
