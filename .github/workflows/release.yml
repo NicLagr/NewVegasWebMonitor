@@ -134,6 +134,8 @@ jobs:
         run: npm ci
 
       - name: Build Electron Linux x64
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx electron-builder --linux AppImage --x64 --publish never
 
       - name: Upload Linux artifact
@@ -168,6 +170,8 @@ jobs:
         run: npx vite build
 
       - name: Build Electron Windows x64
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx electron-builder --win nsis --x64 --publish never
 
       - name: Upload Windows artifact
