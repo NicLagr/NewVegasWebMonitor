@@ -11,6 +11,7 @@ A Vue 3 + Vite PWA + capacitor + electron companion app for **The Elder Scrolls 
 > Designed primarily for the **[AYN Thor](https://www.ayntec.com/)** handheld as a second-screen Skyrim companion, but it runs on any modern browser (desktop, phone, tablet).
 >
 > Demo of gameplay is here - https://www.youtube.com/watch?v=6KL9jrvZpFg
+
 > *if you have troubles launching the app, feel free to ask for a help in youtube video comments*
 
 This is the **client** half of the project. The **server** half — the SKSE plugin that exposes Skyrim's game state over a WebSocket — lives in the companion repository:
