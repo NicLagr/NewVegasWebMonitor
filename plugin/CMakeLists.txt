@@ -68,6 +68,6 @@ if (MSVC)
     target_link_options(FNVWebSocket PRIVATE "/DEF:${CMAKE_CURRENT_SOURCE_DIR}/src/exports.def")
 endif()
 
-target_link_libraries(FNVWebSocket PRIVATE ws2_32)
+target_link_libraries(FNVWebSocket PRIVATE ws2_32 winmm)
 
 # IMPORTANT: configure for 32-bit (FNV is x86):  cmake -S plugin -B build -A Win32
