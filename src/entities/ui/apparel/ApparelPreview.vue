@@ -19,7 +19,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { BasePreview } from '@/shared/ui/items';
 import { ApparelIcon } from '@/entities/ui';
-import { getRoundValue } from '@/shared/lib/utils/getDescriptionValues';
+import { getRoundValue, getWeightValue } from '@/shared/lib/utils/getDescriptionValues';
 import type { ApparelItem } from '@/stores/inventory/types';
 
 const { t } = useI18n();
@@ -44,7 +44,7 @@ const stats = computed(() => [
   },
   {
     label: t('pages.inventory.apparel.weight'),
-    value: getRoundValue(props.data?.weight),
+    value: getWeightValue(props.data?.weight),
   },
   {
     label: t('pages.inventory.apparel.value'),

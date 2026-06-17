@@ -5,7 +5,10 @@
       "Bash(git commit -q -m 'map: on-screen tapped-pixel readout for easy calibration on-device *)",
       "Bash(git commit -q -m 'map calib: show live world pos paired with tapped pixel *)",
       "Bash(git commit -q -m 'map: calibrate projection to real FNV coords \\(Goodsprings/Novac/The Fort\\) *)",
-      "Bash(git commit -q -m 'frontend: fix map nav focus-trap \\(100dvh\\), green player marker, weapon tap = direct equip \\(no hand picker\\) *)"
+      "Bash(git commit -q -m 'frontend: fix map nav focus-trap \\(100dvh\\), green player marker, weapon tap = direct equip \\(no hand picker\\) *)",
+      "Bash(git commit -q -m 'plugin: real weapon/armor condition % + equipped state \\(per-stack ExtraHealth/ExtraWorn\\) *)",
+      "Bash(git commit -q -m 'plugin: condition-adjusted value + FNV damage formula \\(condition x skill\\) to match Pip-Boy *)",
+      "Bash(git commit -q -m 'inventory: show weapon/apparel weight with decimals \\(light items no longer round to 0\\) *)"
     ]
   }
 }
