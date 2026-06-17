@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit -q -m 'plugin: enable map feature + stream map.player position *)",
+      "Bash(git commit -q -m 'map: on-screen tapped-pixel readout for easy calibration on-device *)",
+      "Bash(git commit -q -m 'map calib: show live world pos paired with tapped pixel *)",
+      "Bash(git commit -q -m 'map: calibrate projection to real FNV coords \\(Goodsprings/Novac/The Fort\\) *)",
+      "Bash(git commit -q -m 'frontend: fix map nav focus-trap \\(100dvh\\), green player marker, weapon tap = direct equip \\(no hand picker\\) *)"
+    ]
+  }
+}

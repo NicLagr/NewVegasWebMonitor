@@ -58,6 +58,7 @@ const { showToast } = useBackGuard();
   position: relative;
   width: 100%;
   height: 100vh;
+  height: 100dvh;
   margin: 0 auto;
   background-color: var(--skyrim-bg-dark);
   overflow: hidden;

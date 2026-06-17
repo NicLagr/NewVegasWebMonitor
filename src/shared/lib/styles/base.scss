@@ -45,7 +45,10 @@ body {
   /* Prevent scrolling on iOS */
   position: fixed;
   width: 100%;
+  /* Dynamic viewport height: tracks the mobile toolbar show/hide so the layout
+     can't be scroll-shifted (which was hiding the top tab nav on the map). */
   height: 100vh;
+  height: 100dvh;
 
   #app {
     height: 100%;
