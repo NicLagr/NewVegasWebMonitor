@@ -1,0 +1,423 @@
+{
+    "system": {
+        "language": "en",
+        "features": ["player", "inventory", "map"]
+    },
+    "character.stats": {
+        "health": 185,
+        "healthBase": 220,
+        "ap": 88,
+        "apBase": 105,
+        "rads": 120,
+        "radsMax": 1000,
+        "level": 14,
+        "xp": 24850,
+        "xpNext": 28000,
+        "inventoryWeight": 142.5,
+        "carryWeight": 215,
+        "caps": 1342,
+        "karma": 250
+    },
+    "inventory.weapons": {
+        "ammo": [
+            {
+                "baseDamage": 0,
+                "categoryType": "Ammo",
+                "count": 240,
+                "damage": 0,
+                "formId": "0x0008ED02",
+                "isEquipped": true,
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "9mm Round",
+                "value": 1,
+                "weight": 0
+            },
+            {
+                "baseDamage": 0,
+                "categoryType": "Ammo",
+                "count": 64,
+                "damage": 0,
+                "formId": "0x0007558E",
+                "isEquipped": false,
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "5.56mm Round",
+                "value": 2,
+                "weight": 0
+            }
+        ],
+        "items": [
+            {
+                "baseDamage": 26,
+                "categoryType": "Weapon",
+                "condition": 88,
+                "count": 1,
+                "damage": 24,
+                "enchantment": null,
+                "enchantmentCharge": null,
+                "equipSlots": ["right"],
+                "equippedHand": "right",
+                "formId": "0x0008CDEA",
+                "isEquipped": true,
+                "isFavorite": true,
+                "isStolen": false,
+                "isTwoHanded": false,
+                "name": "9mm Pistol",
+                "value": 100,
+                "weaponType": "OneHandSword",
+                "weight": 3
+            },
+            {
+                "baseDamage": 38,
+                "categoryType": "Weapon",
+                "condition": 61,
+                "count": 1,
+                "damage": 30,
+                "enchantment": null,
+                "enchantmentCharge": null,
+                "equipSlots": ["right"],
+                "equippedHand": null,
+                "formId": "0x00074A18",
+                "isEquipped": false,
+                "isFavorite": true,
+                "isStolen": false,
+                "isTwoHanded": true,
+                "name": "Varmint Rifle",
+                "value": 50,
+                "weaponType": "TwoHandSword",
+                "weight": 6
+            },
+            {
+                "baseDamage": 17,
+                "categoryType": "Weapon",
+                "condition": 95,
+                "count": 1,
+                "damage": 17,
+                "enchantment": null,
+                "enchantmentCharge": null,
+                "equipSlots": ["right"],
+                "equippedHand": null,
+                "formId": "0x0008F218",
+                "isEquipped": false,
+                "isFavorite": false,
+                "isStolen": false,
+                "isTwoHanded": false,
+                "name": "Combat Knife",
+                "value": 25,
+                "weaponType": "OneHandDagger",
+                "weight": 2
+            },
+            {
+                "baseDamage": 22,
+                "categoryType": "Weapon",
+                "condition": 47,
+                "count": 1,
+                "damage": 18,
+                "enchantment": null,
+                "enchantmentCharge": null,
+                "equipSlots": ["right"],
+                "equippedHand": null,
+                "formId": "0x00004353",
+                "isEquipped": false,
+                "isFavorite": false,
+                "isStolen": false,
+                "isTwoHanded": false,
+                "name": "Laser Pistol",
+                "value": 250,
+                "weaponType": "Staff",
+                "weight": 4
+            }
+        ]
+    },
+    "inventory.apparel": {
+        "items": [
+            {
+                "damageThreshold": 14,
+                "damageResistance": 0,
+                "condition": 76,
+                "armorType": "Heavy",
+                "armorTypeId": "Heavy",
+                "bodySlots": ["Body"],
+                "categoryType": "Apparel",
+                "count": 1,
+                "enchantment": null,
+                "formId": "0x00126500",
+                "isEquipped": true,
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "Combat Armor",
+                "value": 1100,
+                "weight": 25
+            },
+            {
+                "damageThreshold": 6,
+                "condition": 90,
+                "armorType": "Light",
+                "armorTypeId": "Light",
+                "bodySlots": ["Head"],
+                "categoryType": "Apparel",
+                "count": 1,
+                "enchantment": null,
+                "formId": "0x00126501",
+                "isEquipped": true,
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "Combat Helmet",
+                "value": 175,
+                "weight": 3
+            },
+            {
+                "damageThreshold": 2,
+                "condition": 100,
+                "armorType": "Clothing",
+                "armorTypeId": "Clothing",
+                "bodySlots": ["Body"],
+                "categoryType": "Apparel",
+                "count": 1,
+                "enchantment": null,
+                "formId": "0x0014C03B",
+                "isEquipped": false,
+                "isFavorite": true,
+                "isStolen": false,
+                "name": "Vault 21 Jumpsuit",
+                "value": 25,
+                "weight": 2
+            }
+        ]
+    },
+    "inventory.potions": {
+        "items": [
+            {
+                "categoryType": "Potion",
+                "count": 12,
+                "effects": [
+                    {
+                        "description": "Restores 30 Hit Points over a short time.",
+                        "descriptionTemplate": "Restores <mag> Hit Points.",
+                        "duration": 0,
+                        "magnitude": 30,
+                        "name": "Restore Health"
+                    }
+                ],
+                "formId": "0x00015169",
+                "isFavorite": true,
+                "isStolen": false,
+                "name": "Stimpak",
+                "value": 75,
+                "weight": 0
+            },
+            {
+                "categoryType": "Potion",
+                "count": 5,
+                "effects": [
+                    {
+                        "description": "Reduces radiation by 150 Rads over time.",
+                        "descriptionTemplate": "Reduces radiation by <mag> Rads.",
+                        "duration": 0,
+                        "magnitude": 150,
+                        "name": "Remove Radiation"
+                    }
+                ],
+                "formId": "0x00015168",
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "RadAway",
+                "value": 70,
+                "weight": 0
+            },
+            {
+                "categoryType": "Potion",
+                "count": 3,
+                "effects": [
+                    {
+                        "description": "+25 Radiation Resistance for 240 seconds.",
+                        "descriptionTemplate": "+<mag> Radiation Resistance for <dur>s.",
+                        "duration": 240,
+                        "magnitude": 25,
+                        "name": "Radiation Resistance"
+                    }
+                ],
+                "formId": "0x000330C8",
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "Rad-X",
+                "value": 30,
+                "weight": 0
+            },
+            {
+                "categoryType": "Potion",
+                "count": 8,
+                "effects": [
+                    {
+                        "description": "Restores 20 Hit Points; +1 Rad.",
+                        "descriptionTemplate": "Restores <mag> Hit Points.",
+                        "duration": 0,
+                        "magnitude": 20,
+                        "name": "Restore Health"
+                    }
+                ],
+                "formId": "0x00015166",
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "Nuka-Cola",
+                "value": 20,
+                "weight": 1
+            }
+        ]
+    },
+    "inventory.books": {
+        "items": [
+            {
+                "categoryType": "Book",
+                "count": 1,
+                "description": "A hand-scrawled note warning of Powder Gangers along the I-15 toward Primm.",
+                "formId": "0x0010F76C",
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "Note: Powder Gangers",
+                "value": 0,
+                "weight": 0
+            },
+            {
+                "categoryType": "Book",
+                "count": 1,
+                "description": "A holotape recovered from a Vault 21 terminal. Plays a recorded log from the overseer.",
+                "formId": "0x00103970",
+                "isFavorite": true,
+                "isStolen": false,
+                "name": "Holotape: Vault 21 Log",
+                "value": 0,
+                "weight": 0
+            }
+        ]
+    },
+    "inventory.misc": {
+        "gems": [],
+        "items": [
+            {
+                "categoryType": "Misc",
+                "count": 23,
+                "formId": "0x00006B0A",
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "Scrap Metal",
+                "value": 3,
+                "weight": 1
+            },
+            {
+                "categoryType": "Misc",
+                "count": 6,
+                "formId": "0x0006A80C",
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "Wonderglue",
+                "value": 8,
+                "weight": 0
+            },
+            {
+                "categoryType": "Misc",
+                "count": 14,
+                "formId": "0x00103964",
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "Empty Soda Bottle",
+                "value": 0,
+                "weight": 0
+            }
+        ]
+    },
+    "inventory.categories": {
+        "categories": [
+            {
+                "categoryId": "Weapons",
+                "count": 4,
+                "name": "Weapons"
+            },
+            {
+                "categoryId": "Apparel",
+                "count": 3,
+                "name": "Apparel"
+            },
+            {
+                "categoryId": "Potions",
+                "count": 28,
+                "name": "Aid"
+            },
+            {
+                "categoryId": "Books",
+                "count": 2,
+                "name": "Notes"
+            },
+            {
+                "categoryId": "Misc",
+                "count": 43,
+                "name": "Misc"
+            }
+        ]
+    },
+    "map.player": {
+        "position": {
+            "x": 6000,
+            "y": 6000,
+            "z": 1200,
+            "angle": 0,
+            "cell": "The Strip",
+            "cellFormId": "0x000DA726",
+            "isInterior": false,
+            "worldspace": "WastelandNV",
+            "worldspaceFormId": "0x000DA726",
+            "parentWorldspace": "WastelandNV",
+            "parentWorldspaceFormId": "0x000DA726"
+        }
+    },
+    "map.hotspots": {
+        "hot": [
+            { "type": "Town", "typeId": 1, "refId": "0x000DC983", "name": "Goodsprings", "x": -78000, "y": 42000, "isVisible": true, "canFastTravel": true },
+            { "type": "Town", "typeId": 1, "refId": "0x0010C0B0", "name": "Primm", "x": -60000, "y": -12000, "isVisible": true, "canFastTravel": true },
+            { "type": "Settlement", "typeId": 2, "refId": "0x0014E906", "name": "Nipton", "x": 24000, "y": -78000, "isVisible": true, "canFastTravel": true },
+            { "type": "Town", "typeId": 1, "refId": "0x0011D4C7", "name": "Novac", "x": 60000, "y": -36000, "isVisible": true, "canFastTravel": true },
+            { "type": "City", "typeId": 3, "refId": "0x000E26C2", "name": "The Strip", "x": 6000, "y": 6000, "isVisible": true, "canFastTravel": true },
+            { "type": "Monument", "typeId": 4, "refId": "0x000E2BC0", "name": "Hoover Dam", "x": 108000, "y": -18000, "isVisible": true, "canFastTravel": true },
+            { "type": "Vault", "typeId": 5, "refId": "0x0015B5BD", "name": "Vault 21", "x": 3000, "y": 9000, "isVisible": true, "canFastTravel": false }
+        ]
+    },
+    "map.questMarkers": {
+        "marker": [
+            {
+                "aliasId": 0,
+                "cell": null,
+                "cellFormId": null,
+                "isInterior": false,
+                "name": "Boone",
+                "objectiveIndex": 10,
+                "objectiveText": "Meet Boone at the dinosaur in Novac.",
+                "objectiveTextResolved": "Meet Boone at the dinosaur in Novac.",
+                "parentWorldspace": "WastelandNV",
+                "parentWorldspaceFormId": "0x000DA726",
+                "questEditorId": "VMS04",
+                "questFormId": "0x0010A23C",
+                "questName": "One for My Baby",
+                "questType": "SideQuest",
+                "refId": "0x0011D4C7",
+                "worldspace": "WastelandNV",
+                "worldspaceFormId": "0x000DA726",
+                "x": 60000,
+                "y": -36000,
+                "z": 0
+            }
+        ]
+    },
+    "game.status": {
+        "status": {
+            "canAct": true,
+            "controlsEnabled": true,
+            "dead": false,
+            "inCombat": false,
+            "inDialogue": false,
+            "inMainMenu": false,
+            "loading": false,
+            "paused": false
+        }
+    }
+}
