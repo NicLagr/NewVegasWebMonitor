@@ -155,13 +155,19 @@ std::string fields_for(const std::string& id) {
 
     if (id == "character.stats") {
         const GameSnapshot s = snapshot_get();
-        char buf[640];
+        // FNV XP curve: total XP to reach level N is 100*N*(N-1), so the
+        // threshold for the next level (current level L) is 100*(L+1)*L.
+        const long L = s.level > 0 ? s.level : 1;
+        const long xpNext = 100L * (L + 1) * L;
+        char buf[768];
         std::snprintf(buf, sizeof(buf),
-            "{\"health\":%.0f,\"healthBase\":%.0f,\"ap\":%.0f,\"apBase\":%.0f,"
-            "\"rads\":%.0f,\"radsMax\":%.0f,\"xp\":%.0f,\"carryWeight\":%.0f,"
+            "{\"level\":%d,\"xp\":%.0f,\"xpNext\":%ld,"
+            "\"health\":%.0f,\"healthBase\":%.0f,\"ap\":%.0f,\"apBase\":%.0f,"
+            "\"rads\":%.0f,\"radsMax\":%.0f,\"carryWeight\":%.0f,"
             "\"inventoryWeight\":%.1f,\"karma\":%.0f}",
+            s.level, s.xp, xpNext,
             s.health, s.healthMax, s.ap, s.apMax, s.rads, s.radsMax,
-            s.xp, s.carryWeight, s.invWeight, s.karma);
+            s.carryWeight, s.invWeight, s.karma);
         return buf;
     }
 

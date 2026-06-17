@@ -30,6 +30,7 @@ static void ReadPlayerStats() {
 
     s.inGame = true;
     ActorValueOwner& av = p->avOwner;
+    s.level     = (int)av.Fn_0A();           // GetLevel
     // Fn_03 = current actor value, Fn_08 = permanent/base (used for the bar max).
     s.health    = av.Fn_03(eActorVal_Health);
     s.healthMax = av.Fn_08(eActorVal_Health);
