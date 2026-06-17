@@ -100,15 +100,43 @@ static void rebuildInventory(PlayerCharacter* p) {
 
             if (f->refID == 0x0000000F) { caps = (float)count; continue; } // Caps
 
+            // Condition % + equipped state from per-stack extra data (weapons/armor only).
+            int  condPct  = 100;
+            bool equipped = false;
+            if (f->typeID == kFormType_TESObjectWEAP || f->typeID == kFormType_TESObjectARMO) {
+                const UInt32 maxH = (f->typeID == kFormType_TESObjectWEAP)
+                    ? ((TESObjectWEAP*)f)->health.health
+                    : ((TESObjectARMO*)f)->health.health;
+                bool gotHealth = false;
+                if (e->extendData) {
+                    for (auto xit = e->extendData->Begin(); !xit.End(); ++xit) {
+                        ExtraDataList* xdl = xit.Get();
+                        if (!xdl) continue;
+                        if (xdl->GetByType(kExtraData_Worn) || xdl->GetByType(kExtraData_WornLeft))
+                            equipped = true;
+                        if (!gotHealth) {
+                            ExtraHealth* h = (ExtraHealth*)xdl->GetByType(kExtraData_Health);
+                            if (h && maxH > 0) {
+                                int p = (int)((h->health / (float)maxH) * 100.0f);
+                                condPct = p < 0 ? 0 : (p > 100 ? 100 : p);
+                                gotHealth = true;
+                            }
+                        }
+                    }
+                }
+            }
+
             switch (f->typeID) {
                 case kFormType_TESObjectWEAP: {
                     TESObjectWEAP* w = (TESObjectWEAP*)f;
                     std::string o = "{"; appendBase(o, f, count);
                     char b[320];
                     std::snprintf(b, sizeof(b), ",\"categoryType\":\"Weapon\",\"damage\":%u,\"baseDamage\":%u,"
-                        "\"condition\":100,\"isEquipped\":false,\"equippedHand\":null,\"isTwoHanded\":false,"
+                        "\"condition\":%d,\"isEquipped\":%s,\"equippedHand\":%s,\"isTwoHanded\":false,"
                         "\"weaponType\":\"%s\",\"equipSlots\":[],\"enchantment\":null,\"enchantmentCharge\":null}",
-                        w->attackDmg.damage, w->attackDmg.damage, weaponTypeStr(w->eWeaponType));
+                        w->attackDmg.damage, w->attackDmg.damage, condPct,
+                        equipped ? "true" : "false", equipped ? "\"right\"" : "null",
+                        weaponTypeStr(w->eWeaponType));
                     o += b;
                     if (nWeap++) weapons += ","; weapons += o; break;
                 }
@@ -116,11 +144,11 @@ static void rebuildInventory(PlayerCharacter* p) {
                     TESObjectARMO* a = (TESObjectARMO*)f;
                     const char* cls = (a->armorFlags & 1) ? "Heavy" : "Light";
                     std::string o = "{"; appendBase(o, f, count);
-                    char b[200];
+                    char b[220];
                     std::snprintf(b, sizeof(b), ",\"categoryType\":\"Apparel\",\"damageThreshold\":%u,"
-                        "\"condition\":100,\"armorType\":\"%s\",\"bodySlots\":[\"Body\"],"
-                        "\"isEquipped\":false,\"equipSlots\":[],\"enchantment\":null}",
-                        a->armorRating, cls);
+                        "\"condition\":%d,\"armorType\":\"%s\",\"bodySlots\":[\"Body\"],"
+                        "\"isEquipped\":%s,\"equipSlots\":[],\"enchantment\":null}",
+                        a->armorRating, condPct, cls, equipped ? "true" : "false");
                     o += b;
                     if (nApp++) apparel += ","; apparel += o; break;
                 }
