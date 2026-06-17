@@ -5,7 +5,8 @@ cmake_policy(SET CMP0091 NEW)
 
 project(FNVWebSocket CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+# xNVSE headers use std::span / std::ranges → C++20 required.
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # xNVSE source (cloned by CI into plugin/extern/xnvse). We use it HEADER-ONLY:
