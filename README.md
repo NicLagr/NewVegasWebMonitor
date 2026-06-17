@@ -1,160 +1,122 @@
-[![Available in Obtainium](https://img.shields.io/badge/Available%20in-Obtainium-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/ImranR98/Obtainium)
+# NewVegasWebMonitor
 
-# SkyrimWebMonitor
+A Vue 3 + Vite + Capacitor **companion app for *Fallout: New Vegas*** — a Pip-Boy-style
+second screen that shows your character in real time: **status, inventory, and the
+Mojave map with fast travel**, streamed from the game over WebSocket.
 
-This is the **client** half of the project. The **server** half — the SKSE plugin that exposes Skyrim's game state over a WebSocket — lives in the companion repository:
-
-**[andreyvelsk/SkyrimWebSocket](https://github.com/andreyvelsk/SkyrimWebSocket)** — **install it inside Skyrim first; without it the monitor has nothing to talk to.**
-
-A Vue 3 + Vite PWA + capacitor + electron companion app for **The Elder Scrolls V: Skyrim**. It connects to a running Skyrim session over WebSocket and shows the player state — stats, inventory, magic, and hotkeys — in real time, on a separate screen.
-
-> **Live app:** https://andreyvelsk.github.io/SkyrimWebMonitor/
-
-> Designed primarily for the **[AYN Thor](https://www.ayntec.com/)** handheld as a second-screen Skyrim companion, but it runs on any modern browser (desktop, phone, tablet).
+> **Live PWA:** https://niclagr.github.io/NewVegasWebMonitor/
 >
-> Demo of gameplay is here - https://www.youtube.com/watch?v=6KL9jrvZpFg
+> Built for the **[AYN Thor](https://www.ayntec.com/)** (running FNV via GameHub Lite),
+> but it runs in any modern browser — desktop, phone, tablet.
 
-> *if you have troubles launching the app, feel free to ask for a help in youtube video comments*
+Adapted from [andreyvelsk/SkyrimWebMonitor](https://github.com/andreyvelsk/SkyrimWebMonitor)
+(MIT). The WebSocket protocol is unchanged; the UI, data models, theme, and map were
+re-targeted to New Vegas.
 
+---
+
+## How it works
+
+The app is a **WebSocket client**. The game state is served by an **NVSE plugin**
+(`FNVWebSocket`, in [`plugin/`](plugin/)) that runs inside FNV and exposes player data
+on `ws://127.0.0.1:8765`. The app connects and renders it live.
+
+```
+[ FNV + FNVWebSocket NVSE plugin ]  ──ws://…:8765──▶  [ NewVegasWebMonitor app ]
+        (the server)                                        (this repo)
+```
+
+- **Same device (AYN Thor / GameHub Lite):** game and app both on the Thor → `127.0.0.1`.
+- **PC + handheld:** FNV on a Windows PC, app on the Thor over WiFi → `<pc-ip>:8765`.
+
+The plugin is currently at the **spike stage** (transport proven; live game-data reads
+are the next phase). Full design & protocol: [`docs/fnv-websocket-plugin.md`](docs/fnv-websocket-plugin.md).
 
 ## Features
 
-- Real-time monitoring over WebSocket (stats, inventory, magic, hotkeys)
-- Installable as a Progressive Web App (offline shell, home-screen launch)
-- Multilingual UI (English / Russian) via `vue-i18n`
-- Skyrim-themed responsive design, optimized for handhelds
-- Works fully client-side — no backend besides the in-game plugin
+- **STATUS** — HP / AP / Rads bars, Level, XP, Caps, Karma, carry weight
+- **INV** — Weapons (condition %), Apparel (Damage Threshold), Aid/Chems, Notes/Holotapes, Misc
+- **MAP** — Mojave Wasteland map with location + quest markers and tap-to-**fast-travel**
+- Pip-Boy green-on-black terminal theme with CRT scanlines, monospace UI
+- Installable PWA (home-screen, offline shell) and Android APK
+- Game-agnostic WebSocket layer — the app doesn't care which build of the plugin it talks to
 
-## Quick start (use the public app)
+> SKILLS (S.P.E.C.I.A.L.) and DATA (quests) tabs are scaffolded and feature-gated off
+> for now.
 
-1. Install the **[SkyrimWebSocket](https://github.com/andreyvelsk/SkyrimWebSocket)** SKSE plugin in your Skyrim Special Edition. Follow the install guide in that repo. By default it listens on `ws://127.0.0.1:8765`.
-2. Launch Skyrim through `skse64_loader.exe` and load a save.
-3. Install latest .apk [release](https://github.com/andreyvelsk/SkyrimWebMonitor/releases/latest) (*recomended for most android devices*), OR, Open https://andreyvelsk.github.io/SkyrimWebMonitor/ in a browser on the same machine
-4. Configure the WebSocket URL on first launch and connect.
+## Download & try it
 
-## Install via Obtainium (Android)
+The current builds are a **self-contained demo** (bundled mock data) — open and you get
+the full UI + Mojave map with markers, **no game or plugin required**.
 
-If you use **[Obtainium](https://github.com/ImranR98/Obtainium)**, you can install and update the APK directly from this repository's GitHub Releases.
+- **PWA (no install):** open **https://niclagr.github.io/NewVegasWebMonitor/** and
+  "Add to Home Screen".
+- **Android APK:** GitHub **Actions → "Build Android APK" → Artifacts →
+  `newvegaswebmonitor-debug-apk`**. Unzip, install `app-debug.apk` (enable "install from
+  unknown sources"). Debug-signed.
+- **NVSE plugin DLL:** Actions → **"build-plugin" → `FNVWebSocket-dll`** (32-bit Windows).
 
-1. Open Obtainium and tap **Add App**.
-2. Choose **GitHub** as the source.
-3. Paste the repo URL: `https://github.com/andreyvelsk/SkyrimWebMonitor`.
-4. Select the latest release asset (`.apk`) and install.
-
-After that, Obtainium will notify you when a new release is published.
-
-## Install as a PWA
-
-The app can be installed to the home screen / start menu like a native app — it then opens fullscreen and works offline (UI shell only; live data still requires Skyrim + the plugin to be running). *Note: this normally way work only if app launched on same device with WS server*
-
-### Desktop — Native app
-
-1. Open latest [release](https://github.com/andreyvelsk/SkyrimWebMonitor/releases/latest)
-2. Look for a version of you OS (Linux or Windows)
-3. For Linux users - make app as executable, `chmod +x` and app file name
-
-### Desktop — Chrome / Edge / Brave
-
-1. Open https://andreyvelsk.github.io/SkyrimWebMonitor/.
-2. Look for the install icon (**⊕** / monitor-with-arrow) in the address bar, or open the browser menu and choose **Install SkyrimWebMonitor…** / **Apps → Install this site as an app**.
-3. Confirm. The app launches in its own window and gets a shortcut.
-
-### Android — Chrome
-
-1. Open the URL.
-2. Tap the **⋮** menu → **Add to Home screen** (or **Install app**).
-3. Confirm. Launch it from the home screen.
-
+To make a build that connects to the **live plugin** instead of mock data, remove the
+`VITE_USE_FIXTURES: 'true'` env from the build step in
+[`.github/workflows/android-apk.yml`](.github/workflows/android-apk.yml).
 
 ## Run locally / develop
 
-Requirements: Node.js 20+ and npm.
+Requires Node.js 20+.
 
 ```bash
-git clone https://github.com/andreyvelsk/SkyrimWebMonitor.git
-cd SkyrimWebMonitor
 npm install
 
-cp .env.example .env  # set VITE_WS_URL to your SkyrimWebSocket address
-npm run dev           # http://localhost:5173/SkyrimWebMonitor/
+# A) Offline demo with mock fixtures (no backend):
+echo "VITE_USE_FIXTURES=true" > .env.local
+npm run dev            # http://localhost:5173/NewVegasWebMonitor/
+
+# B) Live against a protocol-accurate mock server (real WebSocket path):
+npm run mock:server                       # ws://localhost:8765, streams Mojave data
+#   then in .env.local: VITE_WS_SERVER_URL=http://localhost:8765 (and remove VITE_USE_FIXTURES)
+npm run dev
 ```
 
-Other useful scripts:
+Other scripts:
 
 ```bash
-npm run build           # production build into dist/
-npm run preview         # serve the production build
-npm run tsc             # type-check
-npm run release         # bump patch, create git commit+tag, push main + tags
-npm run release -- minor
-npm run lint            # ESLint with --fix
-npm run lint:css        # Stylelint with --fix
-npm run format          # Prettier + Stylelint
+npm run build            # production web build → dist/
+npm run tsc              # type-check
+npm run lint             # ESLint --fix
+npm run map:placeholder  # regenerate a placeholder public/mojave-map.png
+npm run android:apk      # local APK build (needs Android SDK + JDK 17)
 ```
 
-## Releases
+### Swapping the map image
 
-Release orchestration is split between a local command and GitHub Actions:
+The world map is a single image at `public/mojave-map.png`. Replace it with your own
+Mojave render, set `MOJAVE_MAP_IMAGE_WIDTH/HEIGHT` in
+[`src/pages/map/composables/useMapProjection.ts`](src/pages/map/composables/useMapProjection.ts),
+then tap ~5 landmarks on the MAP tab (each logs `[map] image px: …`) and paste those into
+`REFERENCE_POINTS` in
+[`src/pages/map/composables/useMapCoordinates.ts`](src/pages/map/composables/useMapCoordinates.ts).
 
-```bash
-npm run release
-```
+## The FNVWebSocket plugin
 
-What it does:
-
-1. Works only on the `main` branch and requires a clean git working tree.
-2. Runs `npm run tsc` and `npm run build` as a preflight check.
-3. Bumps the npm version (`patch` by default, or `npm run release -- minor|major`).
-4. Creates the release commit and git tag via `npm version`.
-5. Pushes `main` and the new tag to `origin`.
-
-Pushing a tag like `v0.1.1` triggers `.github/workflows/release.yml`, which:
-
-1. Builds the production web assets and Capacitor Android project.
-2. Builds a release APK.
-3. Creates a GitHub Release automatically and uploads the APK.
-
-APK signing is optional but recommended. To sign release builds in CI, add these GitHub Actions secrets:
-
-- `ANDROID_KEYSTORE_BASE64`
-- `ANDROID_KEYSTORE_PASSWORD`
-- `ANDROID_KEY_ALIAS`
-- `ANDROID_KEY_PASSWORD`
-
-If those secrets are absent, the workflow still creates a GitHub Release and uploads the unsigned release APK.
-
-## Reporting bugs
-
-If you run into a bug, please [open a GitHub issue](https://github.com/andreyvelsk/SkyrimWebMonitor/issues/new) and include:
-
-1. A description of the problem and clear steps to reproduce it.
-2. A **trace-level log from `SkyrimWebSocket`** captured during reproduction. Set `LogLevel=trace` in `Data/SKSE/Plugins/SkyrimWebSocket.ini`, reproduce the issue, then attach the log file:
-   ```
-   %USERPROFILE%\Documents\My Games\Skyrim Special Edition\SKSE\SkyrimWebSocket.log
-   ```
-3. If the game crashed, also attach the `.dmp` file found in the same folder.
-4. Browser name + version, OS, and (if relevant) device — e.g. *AYN Thor, Android 14, Chrome 130*.
-5. Browser DevTools console output (any errors / warnings) and, if applicable, the failing WebSocket frame.
-
-The bug-report requirements mirror those of the [SkyrimWebSocket](https://github.com/andreyvelsk/SkyrimWebSocket#bug-reports) project — most of the data the app shows comes from there, so the plugin's trace log is what makes issues actionable.
+See [`plugin/README.md`](plugin/README.md) for build (free GitHub Actions MSVC),
+install (`Data/NVSE/Plugins/`), and the go/no-go test, and
+[`docs/fnv-websocket-plugin.md`](docs/fnv-websocket-plugin.md) for the full design,
+protocol contract, and phased plan.
 
 ## Tech stack
 
-- [Vue 3](https://vuejs.org/) (Composition API) + TypeScript
-- [Vite](https://vite.dev/) build tooling
-- [Pinia](https://pinia.vuejs.org/) state management
-- [vue-i18n](https://vue-i18n.intlify.dev/) internationalization
-- [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) (Workbox) PWA support
-- ESLint, Stylelint, Prettier
+Vue 3 (Composition API) + TypeScript · Vite · Pinia · vue-i18n · vite-plugin-pwa
+(Workbox) · OpenSeadragon (map) · Capacitor (Android) · C++ NVSE plugin (backend).
 
 ## Credits
 
-- Game icons by [game-icons.net](https://game-icons.net/) — used under the [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) license. Each icon retains its original author attribution; see folder names under `public/icons/`
-- Map from [Immersive Paper Map (3rd Edition)
-](https://www.nexusmods.com/skyrimspecialedition/mods/54710) by Ckw25
-- Fonts: **Cinzel** and **Cormorant Garamond** via [Google Fonts](https://fonts.google.com/) (Open Font License).
-- *The Elder Scrolls V: Skyrim* is © Bethesda Softworks / ZeniMax. This is an unofficial fan-made companion app and is not affiliated with or endorsed by Bethesda.
+- Adapted from **[SkyrimWebMonitor](https://github.com/andreyvelsk/SkyrimWebMonitor)** by
+  andreyvelsk (MIT) — original app + WebSocket protocol.
+- UI icons from [game-icons.net](https://game-icons.net/) — [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/); per-author attribution preserved in `public/icons/` folder names.
+- *Fallout: New Vegas* is © Bethesda Softworks / Obsidian Entertainment. This is an
+  unofficial fan-made companion app, not affiliated with or endorsed by either. Game map
+  imagery is property of its respective owners and used here for personal/non-commercial use.
 
 ## License
 
-Released under the [MIT License](LICENSE).
+[MIT](LICENSE).
