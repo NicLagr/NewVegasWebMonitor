@@ -148,8 +148,22 @@ std::string data_msg(const std::string& id, const std::string& fields) {
 
 std::string fields_for(const std::string& id) {
     if (id == "system")
-        // MAP comes once the player dot is calibrated to real coords.
-        return "{\"language\":\"en\",\"features\":[\"player\",\"inventory\"]}";
+        return "{\"language\":\"en\",\"features\":[\"player\",\"inventory\",\"map\"]}";
+
+    if (id == "map.player") {
+        const GameSnapshot s = snapshot_get();
+        if (!s.inGame) return "{\"position\":null}";
+        char buf[512];
+        std::snprintf(buf, sizeof(buf),
+            "{\"position\":{\"x\":%.1f,\"y\":%.1f,\"z\":%.1f,\"angle\":%.4f,"
+            "\"isInterior\":%s,\"worldspace\":\"%s\",\"parentWorldspace\":\"%s\","
+            "\"worldspaceFormId\":null,\"parentWorldspaceFormId\":null,\"cell\":null,\"cellFormId\":null}}",
+            s.posX, s.posY, s.posZ, s.angle, s.isInterior ? "true" : "false",
+            s.worldspace.c_str(), s.worldspace.c_str());
+        return buf;
+    }
+    if (id == "map.hotspots")     return "{\"hot\":[]}";        // markers: Phase 2c
+    if (id == "map.questMarkers") return "{\"marker\":[]}";
 
     if (id == "inventory.categories") { auto s = snapshot_get(); return s.cats.empty()    ? "{\"categories\":[]}" : s.cats; }
     if (id == "inventory.weapons")    { auto s = snapshot_get(); return s.weapons.empty() ? "{\"items\":[],\"ammo\":[]}" : s.weapons; }
