@@ -140,8 +140,15 @@ std::string data_msg(const std::string& id, const std::string& fields) {
 
 std::string fields_for(const std::string& id) {
     if (id == "system")
-        // Phase 2a ships STATUS only; inventory/map tabs come as those reads land.
+        // MAP comes once the player dot is calibrated to real coords.
         return "{\"language\":\"en\",\"features\":[\"player\",\"inventory\"]}";
+
+    if (id == "inventory.categories") { auto s = snapshot_get(); return s.cats.empty()    ? "{\"categories\":[]}" : s.cats; }
+    if (id == "inventory.weapons")    { auto s = snapshot_get(); return s.weapons.empty() ? "{\"items\":[],\"ammo\":[]}" : s.weapons; }
+    if (id == "inventory.apparel")    { auto s = snapshot_get(); return s.apparel.empty() ? "{\"items\":[]}" : s.apparel; }
+    if (id == "inventory.potions")    { auto s = snapshot_get(); return s.aid.empty()     ? "{\"items\":[]}" : s.aid; }
+    if (id == "inventory.books")      { auto s = snapshot_get(); return s.notes.empty()   ? "{\"items\":[]}" : s.notes; }
+    if (id == "inventory.misc")       { auto s = snapshot_get(); return s.misc.empty()    ? "{\"items\":[],\"gems\":[]}" : s.misc; }
 
     if (id == "game.status") {
         const GameSnapshot s = snapshot_get();
@@ -161,11 +168,11 @@ std::string fields_for(const std::string& id) {
         const long xpNext = 100L * (L + 1) * L;
         char buf[768];
         std::snprintf(buf, sizeof(buf),
-            "{\"level\":%d,\"xp\":%.0f,\"xpNext\":%ld,"
+            "{\"level\":%d,\"xp\":%.0f,\"xpNext\":%ld,\"caps\":%.0f,"
             "\"health\":%.0f,\"healthBase\":%.0f,\"ap\":%.0f,\"apBase\":%.0f,"
             "\"rads\":%.0f,\"radsMax\":%.0f,\"carryWeight\":%.0f,"
             "\"inventoryWeight\":%.1f,\"karma\":%.0f}",
-            s.level, s.xp, xpNext,
+            s.level, s.xp, xpNext, s.caps,
             s.health, s.healthMax, s.ap, s.apMax, s.rads, s.radsMax,
             s.carryWeight, s.invWeight, s.karma);
         return buf;

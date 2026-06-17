@@ -1,55 +1,211 @@
-// FNVWebSocket — NVSE plugin entry points (Phase 2a: live character stats).
+// FNVWebSocket — NVSE plugin (Phase 2b: stats + inventory + caps + position).
 //
-// Reads player actor values on the GAME MAIN THREAD via NVSE's kMessage_MainGameLoop
-// hook, stashes them in a thread-safe snapshot, and the WebSocket server thread
-// serializes that snapshot to the app. Reading game memory off the main thread is
-// unsafe — hence the message hook.
-//
-// Built against the real xNVSE headers (fetched in CI). g_thePlayer is defined here
-// at its runtime address so we don't have to compile the whole xNVSE source tree.
+// All game reads run on the MAIN THREAD via kMessage_MainGameLoop. Stats are read
+// every frame; the inventory walk (heavier) is throttled to ~1/sec. Results go into
+// a thread-safe snapshot the WebSocket thread serializes. Every game access is
+// null-guarded — a bad read here crashes FNV.
 #include "nvse/PluginAPI.h"
 #include "nvse/GameAPI.h"
 #include "nvse/GameObjects.h"
+#include "nvse/GameForms.h"
+#include "nvse/GameExtraData.h"
+#include "nvse/GameRTTI.h"
 
 #include "snapshot.h"
 #include "ws_server.h"
 
 #include <thread>
+#include <string>
+#include <cstdio>
+#include <cstdarg>
 
-// Runtime address of the player pointer (from xNVSE GameObjects.cpp).
-PlayerCharacter** g_thePlayer = (PlayerCharacter**)0x011DEA3C;
+// g_thePlayer is defined by the compiled xNVSE GameObjects.cpp.
 
 static PluginHandle            g_pluginHandle = kPluginHandle_Invalid;
 static NVSEMessagingInterface* g_messaging    = nullptr;
 
-// Read player stats. MUST run on the main thread (called from the game-loop message).
-static void ReadPlayerStats() {
+// Cached inventory payloads, rebuilt ~1/sec on the main thread.
+static std::string g_cats, g_weapons, g_apparel, g_aid, g_notes, g_misc;
+static float       g_caps  = 0;
+static int         g_frame = 0;
+
+static void logf(const char* fmt, ...) {
+    char buf[256]; va_list ap; va_start(ap, fmt);
+    std::vsnprintf(buf, sizeof(buf), fmt, ap); va_end(ap);
+    if (FILE* f = std::fopen("FNVWebSocket.log", "a")) { std::fprintf(f, "%s\n", buf); std::fclose(f); }
+}
+
+static std::string jsonEscape(const char* s) {
+    std::string o;
+    if (!s) return o;
+    for (; *s; ++s) {
+        char c = *s;
+        if (c == '"' || c == '\\') { o.push_back('\\'); o.push_back(c); }
+        else if ((unsigned char)c < 0x20) { /* skip control chars */ }
+        else o.push_back(c);
+    }
+    return o;
+}
+
+static const char* weaponTypeStr(UInt8 t) {
+    // Map FNV weapon-type to the app's icon enum (see weaponIcons.ts).
+    switch (t) {
+        case 0:  return "HandToHandMelee"; // hand to hand
+        case 1:  return "OneHandAxe";      // 1h melee (blade)
+        case 2:  return "TwoHandAxe";      // 2h melee
+        case 3:  return "OneHandSword";    // 1h pistol  -> pistol icon
+        case 4:  return "TwoHandSword";    // 2h rifle   -> rifle icon
+        default: return "OneHandSword";
+    }
+}
+
+static float itemValue(TESForm* f) {
+    TESValueForm* v = DYNAMIC_CAST(f, TESForm, TESValueForm);
+    return v ? (float)v->value : 0.0f;
+}
+static float itemWeight(TESForm* f) {
+    TESWeightForm* w = DYNAMIC_CAST(f, TESForm, TESWeightForm);
+    return w ? w->weight : 0.0f;
+}
+
+// Append the BaseItem fields shared by every category. Caller opens the `{`.
+static void appendBase(std::string& o, TESForm* f, int count) {
+    char buf[160];
+    std::snprintf(buf, sizeof(buf), "\"formId\":\"0x%08X\",\"count\":%d,\"value\":%.0f,\"weight\":%.2f,",
+                  f->refID, count, itemValue(f), itemWeight(f));
+    o += buf;
+    o += "\"name\":\""; o += jsonEscape(f->GetTheName()); o += "\",";
+    o += "\"isFavorite\":false,\"isStolen\":false";
+}
+
+static void rebuildInventory(PlayerCharacter* p) {
+    std::string weapons, apparel, aid, notes, misc;
+    int nWeap = 0, nApp = 0, nAid = 0, nNote = 0, nMisc = 0;
+    float caps = 0;
+
+    ExtraContainerChanges* cc = ExtraContainerChanges::GetForRef((TESObjectREFR*)p);
+    ExtraContainerChanges::EntryDataList* list = cc ? cc->GetEntryDataList() : nullptr;
+    if (list) {
+        for (auto it = list->Begin(); !it.End(); ++it) {
+            ExtraContainerChanges::EntryData* e = it.Get();
+            if (!e || !e->type) continue;
+            TESForm* f = e->type;
+            const int count = e->countDelta;
+            if (count <= 0) continue;
+
+            if (f->refID == 0x0000000F) { caps = (float)count; continue; } // Caps
+
+            switch (f->typeID) {
+                case kFormType_TESObjectWEAP: {
+                    TESObjectWEAP* w = (TESObjectWEAP*)f;
+                    std::string o = "{"; appendBase(o, f, count);
+                    char b[160];
+                    std::snprintf(b, sizeof(b), ",\"categoryType\":\"Weapon\",\"damage\":%u,\"baseDamage\":%u,"
+                        "\"condition\":100,\"isEquipped\":false,\"equippedHand\":null,\"isTwoHanded\":false,"
+                        "\"weaponType\":\"%s\",\"equipSlots\":[],\"enchantment\":null,\"enchantmentCharge\":null}",
+                        w->attackDmg.damage, w->attackDmg.damage, weaponTypeStr(w->eWeaponType));
+                    o += b;
+                    if (nWeap++) weapons += ","; weapons += o; break;
+                }
+                case kFormType_TESObjectARMO: {
+                    TESObjectARMO* a = (TESObjectARMO*)f;
+                    const char* cls = (a->armorFlags & 1) ? "Heavy" : "Light";
+                    std::string o = "{"; appendBase(o, f, count);
+                    char b[200];
+                    std::snprintf(b, sizeof(b), ",\"categoryType\":\"Apparel\",\"damageThreshold\":%u,"
+                        "\"condition\":100,\"armorType\":\"%s\",\"bodySlots\":[\"Body\"],"
+                        "\"isEquipped\":false,\"equipSlots\":[],\"enchantment\":null}",
+                        a->armorRating, cls);
+                    o += b;
+                    if (nApp++) apparel += ","; apparel += o; break;
+                }
+                case kFormType_AlchemyItem: {
+                    std::string o = "{"; appendBase(o, f, count);
+                    o += ",\"categoryType\":\"Potion\",\"effects\":[]}";
+                    if (nAid++) aid += ","; aid += o; break;
+                }
+                case kFormType_BGSNote:
+                case kFormType_TESObjectBOOK: {
+                    std::string o = "{"; appendBase(o, f, count);
+                    o += ",\"categoryType\":\"Book\",\"description\":\"\"}";
+                    if (nNote++) notes += ","; notes += o; break;
+                }
+                default: { // misc, keys, ammo, etc.
+                    std::string o = "{"; appendBase(o, f, count);
+                    o += ",\"categoryType\":\"Misc\"}";
+                    if (nMisc++) misc += ","; misc += o; break;
+                }
+            }
+        }
+    }
+
+    g_weapons = "{\"items\":[" + weapons + "],\"ammo\":[]}";
+    g_apparel = "{\"items\":[" + apparel + "]}";
+    g_aid     = "{\"items\":[" + aid + "]}";
+    g_notes   = "{\"items\":[" + notes + "]}";
+    g_misc    = "{\"items\":[" + misc + "],\"gems\":[]}";
+    g_caps    = caps;
+
+    // Categories drive the inventory subtabs (only show non-empty ones).
+    std::string cats;
+    auto addCat = [&](const char* id, const char* label, int n) {
+        if (!n) return;
+        char b[128];
+        std::snprintf(b, sizeof(b), "%s{\"categoryId\":\"%s\",\"name\":\"%s\",\"count\":%d}",
+                      cats.empty() ? "" : ",", id, label, n);
+        cats += b;
+    };
+    addCat("Weapons", "Weapons", nWeap);
+    addCat("Apparel", "Apparel", nApp);
+    addCat("Potions", "Aid",     nAid);
+    addCat("Books",   "Notes",   nNote);
+    addCat("Misc",    "Misc",    nMisc);
+    g_cats = "{\"categories\":[" + cats + "]}";
+}
+
+static void ReadGameState() {
     GameSnapshot s;
     PlayerCharacter* p = g_thePlayer ? *g_thePlayer : nullptr;
-    if (!p || !p->parentCell) { snapshot_set(s); return; } // not in-world yet
+    if (!p || !p->parentCell) { snapshot_set(s); return; }
 
     s.inGame = true;
     ActorValueOwner& av = p->avOwner;
-    s.level     = (int)av.Fn_0A();           // GetLevel
-    // Fn_03 = current actor value, Fn_08 = permanent/base (used for the bar max).
+    s.level     = (int)av.Fn_0A();
     s.health    = av.Fn_03(eActorVal_Health);
     s.healthMax = av.Fn_08(eActorVal_Health);
     s.ap        = av.Fn_03(eActorVal_ActionPoints);
     s.apMax     = av.Fn_08(eActorVal_ActionPoints);
     s.rads      = av.Fn_03(eActorVal_RadLevel);
-    s.radsMax   = 1000.0f; // FNV rads cap
+    s.radsMax   = 1000.0f;
     s.xp        = av.Fn_03(eActorVal_XP);
     s.carryWeight = av.Fn_08(eActorVal_CarryWeight);
     s.invWeight   = av.Fn_03(eActorVal_InventoryWeight);
     s.karma       = av.Fn_03(eActorVal_Karma);
-    // TODO Phase 2b: level (base form), caps (inventory count of 0x0000000F).
+
+    // Position + worldspace (for map; logged so we can calibrate to real coords).
+    s.posX = p->posX; s.posY = p->posY; s.posZ = p->posZ; s.angle = p->rotZ;
+    TESObjectCELL* cell = p->parentCell;
+    s.isInterior = cell->IsInterior();
+    if (!s.isInterior && cell->worldSpace) {
+        const char* eid = cell->worldSpace->GetName();
+        if (eid) s.worldspace = eid;
+    }
+
+    // Inventory: rebuild ~once per second (heavy).
+    if ((g_frame++ % 60) == 0) rebuildInventory(p);
+    s.caps = g_caps; s.cats = g_cats; s.weapons = g_weapons;
+    s.apparel = g_apparel; s.aid = g_aid; s.notes = g_notes; s.misc = g_misc;
+
+    // Log position periodically so you can read real coords for map calibration.
+    if ((g_frame % 180) == 0)
+        logf("[ws] pos x=%.0f y=%.0f ws=%s interior=%d", s.posX, s.posY,
+             s.worldspace.empty() ? "?" : s.worldspace.c_str(), (int)s.isInterior);
+
     snapshot_set(s);
 }
 
 static void MessageHandler(NVSEMessagingInterface::Message* msg) {
-    if (msg->type == NVSEMessagingInterface::kMessage_MainGameLoop) {
-        ReadPlayerStats();
-    }
+    if (msg->type == NVSEMessagingInterface::kMessage_MainGameLoop) ReadGameState();
 }
 
 extern "C" {
@@ -64,13 +220,9 @@ __declspec(dllexport) bool NVSEPlugin_Query(const NVSEInterface* nvse, PluginInf
 
 __declspec(dllexport) bool NVSEPlugin_Load(NVSEInterface* nvse) {
     g_pluginHandle = nvse->GetPluginHandle();
-
     g_messaging = (NVSEMessagingInterface*)nvse->QueryInterface(kInterface_Messaging);
     if (g_messaging)
         g_messaging->RegisterListener(g_pluginHandle, "NVSE", MessageHandler);
-
-    // WebSocket server on a detached background thread (socket I/O + JSON only;
-    // it reads the snapshot, never game memory directly).
     static std::thread server([]() { ws::run_server(8765); });
     server.detach();
     return true;
