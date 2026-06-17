@@ -72,10 +72,11 @@ static float itemWeight(TESForm* f) {
 }
 
 // Append the BaseItem fields shared by every category. Caller opens the `{`.
-static void appendBase(std::string& o, TESForm* f, int count) {
+// `value` is the (condition-adjusted) value to display.
+static void appendBase(std::string& o, TESForm* f, int count, float value) {
     char buf[160];
     std::snprintf(buf, sizeof(buf), "\"formId\":\"0x%08X\",\"count\":%d,\"value\":%.0f,\"weight\":%.2f,",
-                  f->refID, count, itemValue(f), itemWeight(f));
+                  f->refID, count, value, itemWeight(f));
     o += buf;
     o += "\"name\":\""; o += jsonEscape(f->GetTheName()); o += "\",";
     o += "\"isFavorite\":false,\"isStolen\":false";
@@ -126,15 +127,25 @@ static void rebuildInventory(PlayerCharacter* p) {
                 }
             }
 
+            // Condition-adjusted value (Pip-Boy shows value × condition). For
+            // non-degradable items condPct stays 100, so this is just base value.
+            const float condF = condPct / 100.0f;
+            const float effValue = itemValue(f) * condF;
+
             switch (f->typeID) {
                 case kFormType_TESObjectWEAP: {
                     TESObjectWEAP* w = (TESObjectWEAP*)f;
-                    std::string o = "{"; appendBase(o, f, count);
+                    // FNV displayed DAM = base × condition(0.5 floor) × skill(0.5..1.0).
+                    const UInt32 baseDmg = w->attackDmg.damage;
+                    float skill = p->avOwner.Fn_03(w->weaponSkill);
+                    if (skill < 0.0f) skill = 0.0f; else if (skill > 100.0f) skill = 100.0f;
+                    const int dispDmg = (int)(baseDmg * (0.5f + 0.5f * condF) * (0.5f + 0.5f * skill / 100.0f) + 0.5f);
+                    std::string o = "{"; appendBase(o, f, count, effValue);
                     char b[320];
-                    std::snprintf(b, sizeof(b), ",\"categoryType\":\"Weapon\",\"damage\":%u,\"baseDamage\":%u,"
+                    std::snprintf(b, sizeof(b), ",\"categoryType\":\"Weapon\",\"damage\":%d,\"baseDamage\":%u,"
                         "\"condition\":%d,\"isEquipped\":%s,\"equippedHand\":%s,\"isTwoHanded\":false,"
                         "\"weaponType\":\"%s\",\"equipSlots\":[],\"enchantment\":null,\"enchantmentCharge\":null}",
-                        w->attackDmg.damage, w->attackDmg.damage, condPct,
+                        dispDmg, baseDmg, condPct,
                         equipped ? "true" : "false", equipped ? "\"right\"" : "null",
                         weaponTypeStr(w->eWeaponType));
                     o += b;
@@ -143,7 +154,7 @@ static void rebuildInventory(PlayerCharacter* p) {
                 case kFormType_TESObjectARMO: {
                     TESObjectARMO* a = (TESObjectARMO*)f;
                     const char* cls = (a->armorFlags & 1) ? "Heavy" : "Light";
-                    std::string o = "{"; appendBase(o, f, count);
+                    std::string o = "{"; appendBase(o, f, count, effValue);
                     char b[220];
                     std::snprintf(b, sizeof(b), ",\"categoryType\":\"Apparel\",\"damageThreshold\":%u,"
                         "\"condition\":%d,\"armorType\":\"%s\",\"bodySlots\":[\"Body\"],"
@@ -153,18 +164,18 @@ static void rebuildInventory(PlayerCharacter* p) {
                     if (nApp++) apparel += ","; apparel += o; break;
                 }
                 case kFormType_AlchemyItem: {
-                    std::string o = "{"; appendBase(o, f, count);
+                    std::string o = "{"; appendBase(o, f, count, effValue);
                     o += ",\"categoryType\":\"Potion\",\"effects\":[]}";
                     if (nAid++) aid += ","; aid += o; break;
                 }
                 case kFormType_BGSNote:
                 case kFormType_TESObjectBOOK: {
-                    std::string o = "{"; appendBase(o, f, count);
+                    std::string o = "{"; appendBase(o, f, count, effValue);
                     o += ",\"categoryType\":\"Book\",\"description\":\"\"}";
                     if (nNote++) notes += ","; notes += o; break;
                 }
                 default: { // misc, keys, ammo, etc.
-                    std::string o = "{"; appendBase(o, f, count);
+                    std::string o = "{"; appendBase(o, f, count, effValue);
                     o += ",\"categoryType\":\"Misc\"}";
                     if (nMisc++) misc += ","; misc += o; break;
                 }
