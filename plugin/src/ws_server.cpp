@@ -1,6 +1,8 @@
 #include "ws_server.h"
 #include "sha1.h"
 #include "snapshot.h"
+#include "cmd_queue.h"
+#include <cstdlib>
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -41,16 +43,22 @@ uint64_t now_ms() {
 // ---- tiny JSON helpers (spike-grade: the app sends well-formed messages) ----
 // Replace with a real JSON parser when hardening (robustness, escaping, etc.).
 std::string find_string_field(const std::string& json, const std::string& key) {
+    // Match the KEY (token followed by ':'), not a value that happens to equal it
+    // (e.g. "command" appears as the value of "type":"command").
     const std::string needle = "\"" + key + "\"";
-    size_t k = json.find(needle);
-    if (k == std::string::npos) return "";
-    size_t colon = json.find(':', k + needle.size());
-    if (colon == std::string::npos) return "";
-    size_t q1 = json.find('"', colon + 1);
-    if (q1 == std::string::npos) return "";
-    size_t q2 = json.find('"', q1 + 1);
-    if (q2 == std::string::npos) return "";
-    return json.substr(q1 + 1, q2 - q1 - 1);
+    size_t from = 0;
+    for (;;) {
+        size_t k = json.find(needle, from);
+        if (k == std::string::npos) return "";
+        size_t p = k + needle.size();
+        while (p < json.size() && (json[p] == ' ' || json[p] == '\t')) ++p;
+        if (p >= json.size() || json[p] != ':') { from = k + 1; continue; } // a value, not a key
+        size_t q1 = json.find('"', p + 1);
+        if (q1 == std::string::npos) return "";
+        size_t q2 = json.find('"', q1 + 1);
+        if (q2 == std::string::npos) return "";
+        return json.substr(q1 + 1, q2 - q1 - 1);
+    }
 }
 
 long find_number_field(const std::string& json, const std::string& key, long fallback) {
@@ -254,8 +262,14 @@ void handle_client(SOCKET client) {
             } else if (type == "unsubscribe_all") {
                 subs.clear();
             } else if (type == "command") {
-                const std::string cmd = find_string_field(payload, "command");
-                log_fmt("[ws] command %s", cmd.c_str());
+                const std::string cmd    = find_string_field(payload, "command");
+                const std::string formIdS = find_string_field(payload, "formId");
+                const uint32_t formId = formIdS.empty() ? 0u
+                    : (uint32_t)std::strtoul(formIdS.c_str(), nullptr, 0);
+                const long count = find_number_field(payload, "count", 1);
+                if (!cmd.empty() && formId)
+                    cmd_push(cmd, formId, (int)count); // executed on the main thread
+                log_fmt("[ws] command %s form=0x%08X", cmd.c_str(), formId);
                 ws_send_text(client, "{\"type\":\"commandResult\",\"id\":\"" + id + "\",\"success\":true}");
             }
         }

@@ -13,11 +13,13 @@
 
 #include "snapshot.h"
 #include "ws_server.h"
+#include "cmd_queue.h"
 
 #include <thread>
 #include <string>
 #include <cstdio>
 #include <cstdarg>
+#include <unordered_map>
 
 // g_thePlayer is defined by the compiled xNVSE GameObjects.cpp.
 
@@ -28,6 +30,7 @@ static NVSEMessagingInterface* g_messaging    = nullptr;
 static std::string g_cats, g_weapons, g_apparel, g_aid, g_notes, g_misc;
 static float       g_caps  = 0;
 static int         g_frame = 0;
+static std::unordered_map<UInt32, TESForm*> g_formById; // refID -> form, for command lookup
 
 static void logf(const char* fmt, ...) {
     char buf[256]; va_list ap; va_start(ap, fmt);
@@ -83,6 +86,7 @@ static void rebuildInventory(PlayerCharacter* p) {
     int nWeap = 0, nApp = 0, nAid = 0, nNote = 0, nMisc = 0;
     float caps = 0;
 
+    g_formById.clear();
     ExtraContainerChanges* cc = ExtraContainerChanges::GetForRef((TESObjectREFR*)p);
     ExtraContainerChanges::EntryDataList* list = cc ? cc->GetEntryDataList() : nullptr;
     if (list) {
@@ -92,6 +96,7 @@ static void rebuildInventory(PlayerCharacter* p) {
             TESForm* f = e->type;
             const int count = e->countDelta;
             if (count <= 0) continue;
+            g_formById[f->refID] = f;
 
             if (f->refID == 0x0000000F) { caps = (float)count; continue; } // Caps
 
@@ -99,7 +104,7 @@ static void rebuildInventory(PlayerCharacter* p) {
                 case kFormType_TESObjectWEAP: {
                     TESObjectWEAP* w = (TESObjectWEAP*)f;
                     std::string o = "{"; appendBase(o, f, count);
-                    char b[160];
+                    char b[320];
                     std::snprintf(b, sizeof(b), ",\"categoryType\":\"Weapon\",\"damage\":%u,\"baseDamage\":%u,"
                         "\"condition\":100,\"isEquipped\":false,\"equippedHand\":null,\"isTwoHanded\":false,"
                         "\"weaponType\":\"%s\",\"equipSlots\":[],\"enchantment\":null,\"enchantmentCharge\":null}",
@@ -169,6 +174,25 @@ static void ReadGameState() {
     if (!p || !p->parentCell) { snapshot_set(s); return; }
 
     s.inGame = true;
+
+    // Execute queued commands on the main thread (equip/use/unequip), with a
+    // ~0.5s per-(item,action) debounce — the app fires bursts per tap, which
+    // would otherwise consume multiple aid items.
+    static std::unordered_map<uint64_t, int> cmdCooldown;
+    for (const PluginCmd& c : cmd_drain()) {
+        auto found = g_formById.find(c.formId);
+        if (found == g_formById.end() || !found->second) continue;
+        const uint64_t key = ((uint64_t)c.formId << 8) | (uint8_t)(c.type.empty() ? 0 : c.type[0]);
+        auto cd = cmdCooldown.find(key);
+        if (cd != cmdCooldown.end() && (g_frame - cd->second) < 30) continue;
+        cmdCooldown[key] = g_frame;
+
+        TESForm* f = found->second;
+        if (c.type == "equip" || c.type == "use")      p->EquipItem(f, 1, nullptr, 1, false, 1);
+        else if (c.type == "unequip")                  p->UnequipItem(f, 1, nullptr, 1, false, 1);
+        // "drop" — TODO (RemoveItem); acked already.
+    }
+
     ActorValueOwner& av = p->avOwner;
     s.level     = (int)av.Fn_0A();
     s.health    = av.Fn_03(eActorVal_Health);
