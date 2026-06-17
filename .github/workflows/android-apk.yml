@@ -45,11 +45,9 @@ jobs:
       # so no Deep-Zoom tile download is needed.
 
       - name: Build and sync Capacitor Android assets
-        # Demo build: bundle the mock fixtures so the APK shows the full themed UI
-        # (status, inventory, Mojave map + markers) with no backend. To ship a build
-        # that connects to the live FNVWebSocket plugin instead, remove this env.
-        env:
-          VITE_USE_FIXTURES: 'true'
+        # LIVE build: connects to the FNVWebSocket plugin over ws:// (cleartext is
+        # enabled in capacitor.config.ts). To make an offline demo APK instead, add
+        #   env: { VITE_USE_FIXTURES: 'true' }
         run: npm run cap:sync:android
 
       - name: Build debug APK
