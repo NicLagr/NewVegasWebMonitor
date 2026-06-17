@@ -65,27 +65,17 @@ export interface ReferencePoint {
 // console. Replace NOT_CALIBRATED with that object literal.
 // -----------------------------------------------------------------
 
-// Mojave landmarks. `imagePx` were calibrated by clicking each location on the
-// real 3500×3500 map. `game` coords are still placeholders (made-up but laid out
-// to roughly match the Mojave geography) — swap them for real FNV world coords
-// when the FNVWebSocket plugin reports them, then the live player position will
-// project exactly. For the mock demo (which uses these same game coords), markers
-// already land on their real map positions.
-export const GOODSPRINGS_GAME: Point = { x: -78000, y: 42000 };
-export const PRIMM_GAME: Point = { x: -60000, y: -12000 };
-export const NIPTON_GAME: Point = { x: 24000, y: -78000 };
-export const NOVAC_GAME: Point = { x: 60000, y: -36000 };
-export const STRIP_GAME: Point = { x: 6000, y: 6000 };
-export const VAULT21_GAME: Point = { x: 3000, y: 9000 };
-export const HOOVER_DAM_GAME: Point = { x: 108000, y: -18000 };
+// Mojave landmarks, calibrated against the real game: `game` = live FNV world
+// coords (player GetPos x/y), `imagePx` = the matching pixel on the 3500×3500 map.
+// Captured in-game by fast-travelling to each spot and tapping the player marker.
+// Add more pairs (NW/NE/S spread) to tighten the least-squares fit.
+export const GOODSPRINGS_GAME: Point = { x: -67900, y: 2234 };
+export const NOVAC_GAME: Point      = { x: 22094, y: -32735 };
+export const THE_FORT_GAME: Point   = { x: 95629, y: 38346 };
 
-export const GOODSPRINGS_IMAGE_PX: Point = { x: 581.18, y: 1021.46 };
-export const PRIMM_IMAGE_PX: Point = { x: 821.64, y: 1875.75 };
-export const NIPTON_IMAGE_PX: Point = { x: 2069.54, y: 2873.25 };
-export const NOVAC_IMAGE_PX: Point = { x: 2676.36, y: 2267.05 };
-export const STRIP_IMAGE_PX: Point = { x: 1829.72, y: 1641.33 };
-export const VAULT21_IMAGE_PX: Point = { x: 1743.68, y: 1540.09 };
-export const HOOVER_DAM_IMAGE_PX: Point = { x: 3420.26, y: 1989.70 };
+export const GOODSPRINGS_IMAGE_PX: Point = { x: 696, y: 1653 };
+export const NOVAC_IMAGE_PX: Point      = { x: 2076, y: 2196 };
+export const THE_FORT_IMAGE_PX: Point   = { x: 3246, y: 1148 };
 
 /**
  * Calibration set. Order is irrelevant. Entries with `game === null` or
@@ -94,12 +84,8 @@ export const HOOVER_DAM_IMAGE_PX: Point = { x: 3420.26, y: 1989.70 };
  */
 export const REFERENCE_POINTS: ReferencePoint[] = [
   { name: 'Goodsprings', game: GOODSPRINGS_GAME, imagePx: GOODSPRINGS_IMAGE_PX },
-  { name: 'Primm',       game: PRIMM_GAME,       imagePx: PRIMM_IMAGE_PX       },
-  { name: 'Nipton',      game: NIPTON_GAME,      imagePx: NIPTON_IMAGE_PX      },
   { name: 'Novac',       game: NOVAC_GAME,       imagePx: NOVAC_IMAGE_PX       },
-  { name: 'The Strip',   game: STRIP_GAME,       imagePx: STRIP_IMAGE_PX       },
-  { name: 'Vault 21',    game: VAULT21_GAME,     imagePx: VAULT21_IMAGE_PX     },
-  { name: 'Hoover Dam',  game: HOOVER_DAM_GAME,  imagePx: HOOVER_DAM_IMAGE_PX  },
+  { name: 'The Fort',    game: THE_FORT_GAME,    imagePx: THE_FORT_IMAGE_PX    },
 ];
 function solve3x3(
   M: readonly [readonly number[], readonly number[], readonly number[]],
