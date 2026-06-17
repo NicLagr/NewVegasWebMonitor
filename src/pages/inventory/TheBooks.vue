@@ -4,7 +4,7 @@
     :items="booksList"
     :active-item="activeItemData"
     :active-item-stats="previewStats"
-    preview-icon-path="lorc/open-book.svg"
+    preview-icon-path="delapouite/audio-cassette.svg"
     @favorite="toggleFavorite"
     @hotkey="openHotkeyPicker"
     @drop="startDrop"
@@ -50,8 +50,8 @@ function useItem(formId: string) {
   const item = booksList.value.find((f) => f.formId === formId);
   if (!item) return;
 
-  // Use (open/read) the book item
-  wsStore.sendCommand({ command: 'read_book', formId });
+  // Use (play/read) the note or holotape
+  wsStore.sendCommand({ command: 'use', formId });
 }
 </script>
 

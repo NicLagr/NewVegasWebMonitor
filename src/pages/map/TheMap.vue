@@ -27,31 +27,6 @@
           :background-color="isFollowPlayerMode ? 'var(--skyrim-accent-gold-light)' : 'var(--skyrim-text-dim)' "
         />
       </button>
-      <Transition
-        name="map-prefetch-backdrop"
-        appear
-      >
-        <div
-          v-if="isPrefetching"
-          class="skyrim-backdrop skyrim-backdrop--absolute skyrim-backdrop--dim skyrim-backdrop--blocking map-prefetch-backdrop"
-          style="--skyrim-backdrop-z: 5; --skyrim-backdrop-blur: 2px"
-          role="status"
-          aria-live="polite"
-        >
-          <div class="map-prefetch-backdrop__panel">
-            <span class="map-prefetch-backdrop__label">
-              {{ $t('pages.map.prefetch.label') }}
-            </span>
-            <div
-              class="map-prefetch-backdrop__bar"
-              :style="{ '--p': `${prefetchProgress}%` }"
-            />
-            <span class="map-prefetch-backdrop__pct">
-              {{ $t('pages.map.prefetch.progress', { progress: prefetchProgress }) }}
-            </span>
-          </div>
-        </div>
-      </Transition>
     </div>
   </div>
 </template>
@@ -60,13 +35,6 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch, type StyleValue } from 'vue';
 import { storeToRefs } from 'pinia';
 import OpenSeadragon from 'openseadragon';
-import {
-  MAP_DZI_URL,
-  prefetchMapTiles,
-  mapTileBlobUrls,
-  mapTilesPrefetchActive,
-  mapTilesPrefetchProgress,
-} from './preloadMap';
 import MapMarkers from './MapMarkers.vue';
 import { BaseIcon } from '@/shared/ui';
 import { useMapProjection } from './composables/useMapProjection';
@@ -76,30 +44,28 @@ import { useMapPlayerStore } from '@/stores/map/useMapPlayerStore';
 // Map view configuration
 // =============================================================
 
-/*
-to generate tiles use command
-
-vips dzsave public/skyrim.png public/map-dzi/skyrim \
-  --layout dz \
-  --tile-size 512 \
-  --overlap 1 \
-  --suffix '.webp[Q=80]'
-*/
-/** Initial zoom factor relative to the "cover" home zoom. */
-const INITIAL_ZOOM_FACTOR = 2.5;
+/**
+ * Single static map image, served from public/. Drop your Mojave map here as
+ * `public/mojave-map.png` (PNG/JPG/WebP all work). OpenSeadragon's simple-image
+ * source auto-detects its pixel dimensions; make sure those match
+ * MOJAVE_MAP_IMAGE_WIDTH/HEIGHT in useMapProjection.ts so markers line up.
+ */
+const MAP_IMAGE_URL = `${import.meta.env.BASE_URL}mojave-map.png`;
+/** Initial zoom factor relative to the home zoom (1 = show the whole map). */
+const INITIAL_ZOOM_FACTOR = 1;
 /** Max zoom factor relative to home zoom. */
 const MAX_ZOOM_FACTOR = 1;
 /** Background color around the map. */
 const BACKGROUND_COLOR = 'var(--skyrim-bg-medium)';
 /**
- * Pixels to hide on the LEFT and RIGHT edges of the map image (same on both sides).
- * Increase to push the dark horizontal borders out of view.
+ * Pixels to hide on each edge of the map image. The Mojave map is expected to
+ * be pre-cropped, so these are 0; bump them if your image has dark borders.
  */
-const MAP_CROP_X = 500;
+const MAP_CROP_X = 0;
 /** Pixels to hide on the TOP edge of the map image. */
-const MAP_CROP_Y_TOP = 1500;
+const MAP_CROP_Y_TOP = 0;
 /** Pixels to hide on the BOTTOM edge of the map image. */
-const MAP_CROP_Y_BOTTOM = 2000;
+const MAP_CROP_Y_BOTTOM = 0;
 
 // =============================================================
 // Torn-paper edge effect (unchanged)
@@ -152,11 +118,6 @@ const playerStore = useMapPlayerStore();
 const { displayPosition } = storeToRefs(playerStore);
 const { projectWorldToImage } = useMapProjection();
 
-/** Whether tile prefetch is still in progress (used to show a backdrop). */
-const isPrefetching = mapTilesPrefetchActive;
-/** 0..100 — how many tiles have been cached so far. */
-const prefetchProgress = mapTilesPrefetchProgress;
-
 const overlayStyle = computed<StyleValue>(() => ({
   width: `${imgNaturalW.value}px`,
   height: `${imgNaturalH.value}px`,
@@ -182,11 +143,10 @@ let viewer: OpenSeadragon.Viewer | null = null;
 
 type OsdTileSource = NonNullable<OpenSeadragon.Options['tileSources']>;
 
-async function detectTileSource(): Promise<OsdTileSource> {
-  // Always prefer DZI. The app precaches `map-dzi/**` for offline mode and
-  // a HEAD probe can fail against cache-only responses on some mobile PWAs.
-  // Using the DZI URL directly keeps map startup deterministic offline.
-  return MAP_DZI_URL;
+function detectTileSource(): OsdTileSource {
+  // Single static image. OSD's simple-image source loads the whole picture and
+  // derives its natural dimensions — no DZI tiling / prefetch pipeline needed.
+  return { type: 'image', url: MAP_IMAGE_URL } as unknown as OsdTileSource;
 }
 
 function syncOverlayTransform(): void {
@@ -266,39 +226,6 @@ function toggleFollowPlayerMode(): void {
   }
 }
 
-/**
- * Patch OSD's source so it serves DZI tiles from the shared blob-URL cache
- * populated by `prefetchMapTiles()` (kicked off at app start by
- * `useAppLoader`). Falls back to the original network URL for tiles that
- * are not cached yet, so the viewer is fully usable while the background
- * prefetch is still running.
- *
- * After the prefetch completes, the browser never re-hits the network for
- * tiles regardless of the server's Cache-Control headers, and OSD's
- * internal tile-cache evictions don't cost a thing because re-loading from
- * a blob URL is instant.
- */
-function attachSharedTileCache(item: OpenSeadragon.TiledImage): void {
-  const source = item.source as OpenSeadragon.TileSource & {
-    getTileUrl?: (_level: number, _x: number, _y: number) => string | (() => string);
-  };
-
-  if (typeof source.getTileUrl !== 'function') {
-    return; // Single-image source has no tile pyramid.
-  }
-
-  const originalGetTileUrl = source.getTileUrl.bind(source);
-  source.getTileUrl = ((level: number, x: number, y: number): string => {
-    const raw = originalGetTileUrl(level, x, y);
-    const realUrl = typeof raw === 'function' ? raw() : raw;
-    return mapTileBlobUrls.get(realUrl) ?? realUrl;
-  }) as typeof source.getTileUrl;
-
-  // Make sure the background prefetch is running. Idempotent: a no-op if it
-  // was already started by useAppLoader.
-  void prefetchMapTiles();
-}
-
 function applyHomeBounds(): void {
   if (!viewer) return;
   // Clamp current zoom to a sane initial level relative to home (cover).
@@ -309,11 +236,11 @@ function applyHomeBounds(): void {
   syncOverlayTransform();
 }
 
-async function setupViewer(): Promise<void> {
+function setupViewer(): void {
   const host = osdContainerRef.value;
   if (!host) return;
 
-  const tileSources = await detectTileSource();
+  const tileSources = detectTileSource();
 
   viewer = OpenSeadragon({
     element: host,
@@ -326,11 +253,13 @@ async function setupViewer(): Promise<void> {
     showHomeControl: false,
     showZoomControl: false,
     showRotationControl: false,
-    // Always cover viewport: home zoom fills, and we forbid any zoom-out below it.
-    homeFillsViewer: true,
-    visibilityRatio: 1.0,
+    // Fit the WHOLE map inside the viewport (contain, not cover). The Mojave
+    // map is square and the panel is wide, so letterbox space on the sides is
+    // expected — visibilityRatio < 1 allows that instead of forcing a crop.
+    homeFillsViewer: false,
+    visibilityRatio: 0.5,
     constrainDuringPan: true,
-    minZoomImageRatio: 3,
+    minZoomImageRatio: 0.5,
     maxZoomPixelRatio: MAX_ZOOM_FACTOR,
     animationTime: 0.3,
     springStiffness: 1,
@@ -411,7 +340,6 @@ async function setupViewer(): Promise<void> {
 
     syncContainerSize();
     applyHomeBounds();
-    attachSharedTileCache(item);
     centerOnPlayer(true);
   });
 
@@ -449,7 +377,7 @@ async function setupViewer(): Promise<void> {
 // =============================================================
 
 onMounted(() => {
-  void setupViewer();
+  setupViewer();
 });
 
 watch(displayPosition, () => {

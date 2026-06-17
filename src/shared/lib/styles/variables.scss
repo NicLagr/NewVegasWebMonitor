@@ -1,34 +1,37 @@
 /* ============================================
- * SKYRIM HANDHELD INTERFACE - CSS VARIABLES
+ * PIP-BOY HANDHELD INTERFACE - CSS VARIABLES
+ * Fallout: New Vegas green-on-black terminal theme.
+ * Variable names are kept from the original theme so component
+ * SCSS needs no changes — only the values are retuned to green.
  * ============================================ */
 
 :root {
   /* PRIMARY COLORS - Main interface colors */
-  --skyrim-bg-dark: #0d0d0d;
-  --skyrim-bg-medium: #1a1a1a;
-  --skyrim-bg-light: #252525;
+  --skyrim-bg-dark: #0a0a0a;
+  --skyrim-bg-medium: #0d140d;
+  --skyrim-bg-light: #14211a;
 
   /* TEXT COLORS - Typography hierarchy */
-  --skyrim-text-primary: #d4c4a8;
-  --skyrim-text-secondary: #9a8b70;
-  --skyrim-text-accent: #f5e6c8;
-  --skyrim-text-dim: #5a5040;
+  --skyrim-text-primary: #00ff41;
+  --skyrim-text-secondary: #1aa83b;
+  --skyrim-text-accent: #6dff8c;
+  --skyrim-text-dim: #0a5a22;
 
   /* ACCENT COLORS - Interactive elements */
-  --skyrim-accent-gold: #c9a227;
-  --skyrim-accent-gold-light: #e5c44d;
-  --skyrim-accent-gold-dim: #8b7220;
+  --skyrim-accent-gold: #00ff41;
+  --skyrim-accent-gold-light: #6dff8c;
+  --skyrim-accent-gold-dim: #0a9c30;
 
   /* BORDER & DIVIDER COLORS */
-  --skyrim-border-dark: #2a2a2a;
-  --skyrim-border-medium: #3d3d3d;
-  --skyrim-border-accent: #c9a227;
-  --skyrim-border-glow: rgb(201 162 39 / 30%);
+  --skyrim-border-dark: #103018;
+  --skyrim-border-medium: #1d5a2e;
+  --skyrim-border-accent: #00ff41;
+  --skyrim-border-glow: rgb(0 255 65 / 30%);
 
   /* TAB SPECIFIC COLORS */
   --tab-bg-inactive: transparent;
-  --tab-bg-hover: rgb(201 162 39 / 8%);
-  --tab-bg-active: rgb(201 162 39 / 15%);
+  --tab-bg-hover: rgb(0 255 65 / 8%);
+  --tab-bg-active: rgb(0 255 65 / 15%);
   --tab-text-inactive: var(--skyrim-text-secondary);
   --tab-text-hover: var(--skyrim-text-primary);
   --tab-text-active: var(--skyrim-accent-gold);
@@ -36,8 +39,8 @@
 
   /* SUB-TAB SPECIFIC COLORS */
   --subtab-bg-inactive: transparent;
-  --subtab-bg-hover: rgb(212 196 168 / 5%);
-  --subtab-bg-active: rgb(212 196 168 / 10%);
+  --subtab-bg-hover: rgb(0 255 65 / 5%);
+  --subtab-bg-active: rgb(0 255 65 / 10%);
   --subtab-text-inactive: var(--skyrim-text-dim);
   --subtab-text-hover: var(--skyrim-text-secondary);
   --subtab-text-active: var(--skyrim-text-primary);
@@ -45,7 +48,7 @@
 
   /* ORNAMENT & DECORATION */
   --ornament-color: var(--skyrim-text-accent);
-  --ornament-glow: rgb(201 162 39 / 20%);
+  --ornament-glow: rgb(0 255 65 / 20%);
 
   /* SHADOW & EFFECTS */
   --shadow-soft: 0 2px 8px rgb(0 0 0 / 40%);
@@ -54,8 +57,8 @@
   --glow-accent: 0 0 20px var(--skyrim-border-glow);
 
   /* TYPOGRAPHY */
-  --font-heading: 'Cinzel', serif;
-  --font-body: 'Cormorant Garamond', serif;
+  --font-heading: 'Share Tech Mono', 'Courier New', monospace;
+  --font-body: 'Share Tech Mono', 'Courier New', monospace;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
@@ -122,11 +125,11 @@
   --color-danger-dim: #7a2a2a;
   --color-danger-light: #d08a8a;
 
-  /* INTERACTIVE STATE BACKGROUNDS (gold accent transparency steps) */
-  --bg-accent-faint: rgb(201 162 39 / 4%);
-  --bg-accent-soft: rgb(201 162 39 / 8%);
-  --bg-accent-medium: rgb(201 162 39 / 12%);
-  --bg-accent-strong: rgb(201 162 39 / 20%);
+  /* INTERACTIVE STATE BACKGROUNDS (green accent transparency steps) */
+  --bg-accent-faint: rgb(0 255 65 / 4%);
+  --bg-accent-soft: rgb(0 255 65 / 8%);
+  --bg-accent-medium: rgb(0 255 65 / 12%);
+  --bg-accent-strong: rgb(0 255 65 / 20%);
   --bg-overlay: rgb(0 0 0 / 75%);
   --bg-inset-dark: inset 0 0 60px rgb(0 0 0 / 30%);
 }

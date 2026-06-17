@@ -35,10 +35,12 @@ const props = withDefaults(
 
 const stats = computed(() => [
   {
-    label: t('pages.inventory.apparel.armorRating'),
-    value: getRoundValue(
-      props.data?.armorRating ?? props.data?.armorRating
-    ),
+    label: t('pages.inventory.apparel.damageThreshold'),
+    value: getRoundValue(props.data?.damageThreshold),
+  },
+  {
+    label: t('pages.inventory.apparel.condition'),
+    value: props.data?.condition != null ? `${getRoundValue(props.data.condition)}%` : '-',
   },
   {
     label: t('pages.inventory.apparel.weight'),

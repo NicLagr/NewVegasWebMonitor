@@ -1,0 +1,31 @@
+name: build-plugin
+
+# Builds the 32-bit Windows FNVWebSocket.dll with MSVC on a free Windows runner.
+# Download it from the run's Artifacts and drop into the Thor's Wine prefix at
+# .../Fallout New Vegas/Data/NVSE/Plugins/FNVWebSocket.dll
+
+on:
+  push:
+    paths:
+      - 'plugin/**'
+      - '.github/workflows/plugin.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure (Win32 / MSVC)
+        run: cmake -S plugin -B plugin/build -A Win32
+
+      - name: Build (Release)
+        run: cmake --build plugin/build --config Release
+
+      - name: Upload DLL
+        uses: actions/upload-artifact@v4
+        with:
+          name: FNVWebSocket-dll
+          path: plugin/build/Release/FNVWebSocket.dll
+          if-no-files-found: error

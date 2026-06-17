@@ -97,7 +97,7 @@ export default defineConfig(({ mode }) => {
   // Base path for the deployed site. Defaults to the production path on
   // GitHub Pages, but can be overridden at build time (e.g. BASE_PATH=
   // /SkyrimWebMonitor/dev/ for the dev branch preview deploy).
-  const basePath = process.env.BASE_PATH || (isCapacitorBuild ? './' : '/SkyrimWebMonitor/');
+  const basePath = process.env.BASE_PATH || (isCapacitorBuild ? './' : '/NewVegasWebMonitor/');
 
   // The dev preview deploy must NOT cache anything: every reload should fetch
   // the latest build straight from the network. We also need to clean up any
@@ -118,15 +118,20 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      proxy: {
-        '/ws': {
-          // target must be http://, not ws:// — Vite handles the WS upgrade internally
-          target: env.VITE_WS_SERVER_URL,
-          ws: true,
-          rewriteWsOrigin: true,
-          changeOrigin: true,
-        },
-      },
+      // Only wire the /ws proxy when a backend target is configured. Without a
+      // target Vite throws "Must set target or forward" on every reconnect — and
+      // in fixture mode there is no backend to proxy to at all.
+      proxy: env.VITE_WS_SERVER_URL
+        ? {
+            '/ws': {
+              // target must be http://, not ws:// — Vite handles the WS upgrade internally
+              target: env.VITE_WS_SERVER_URL,
+              ws: true,
+              rewriteWsOrigin: true,
+              changeOrigin: true,
+            },
+          }
+        : undefined,
     },
     plugins: [
       vue(),
@@ -150,17 +155,13 @@ export default defineConfig(({ mode }) => {
         workbox: {
           skipWaiting: true,
           clientsClaim: true,
-          // App shell (auto-generated globs) + every used icon + map tiles.
-          // pruneUnusedIcons has already removed unused SVGs from dist/.
-          // `webp` and `dzi` are listed so the deep-zoom map pyramid under
-          // `dist/map-dzi/` is precached: Workbox stamps every file with a
-          // content-hash revision, so replacing `public/skyrim.png` and
-          // re-running `vips dzsave` will produce a new SW manifest and the
-          // browser will swap caches automatically on next visit
-          // (autoUpdate + skipWaiting + clientsClaim + cleanupOutdatedCaches).
+          // App shell (auto-generated globs) + every used icon + the map image.
+          // pruneUnusedIcons has already removed unused SVGs from dist/. The
+          // single Mojave map image (public/mojave-map.png) is covered by the
+          // png/jpg/webp pattern below, so swapping it produces a new SW
+          // manifest and caches refresh automatically on next visit.
           globPatterns: [
             '**/*.{js,css,html,ico,png,jpg,svg,webp,webmanifest,woff,woff2,ttf,otf,eot}',
-            'map-dzi/**/*.dzi',
             ...USED_ICONS.map((p) => `icons/${p}`),
           ],
           globIgnores: ['**/node_modules/**/*', 'fixtures.json', 'skyrim.png', 'skyrim.dds'],
@@ -256,12 +257,12 @@ export default defineConfig(({ mode }) => {
           ],
         },
         manifest: {
-          name: 'SkyrimWebMonitor',
-          short_name: 'Skyrim Monitor',
+          name: 'NewVegasWebMonitor',
+          short_name: 'New Vegas',
           description:
-            'Real-time companion app for The Elder Scrolls V: Skyrim. Monitors stats, inventory, magic and hotkeys over WebSocket.',
-          theme_color: '#0d0d0d',
-          background_color: '#0d0d0d',
+            'Real-time companion app for Fallout: New Vegas. Monitors status, inventory, chems and skills over WebSocket.',
+          theme_color: '#0a0a0a',
+          background_color: '#0a0a0a',
           display: 'standalone',
           scope: basePath,
           start_url: basePath,

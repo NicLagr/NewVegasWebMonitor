@@ -44,3 +44,5 @@ public/map.jpg
 *.sln
 *.sw?
 .env
+.env.local
+.env*.local

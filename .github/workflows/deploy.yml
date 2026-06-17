@@ -62,10 +62,10 @@ jobs:
         id: paths
         run: |
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            echo "base_path=/SkyrimWebMonitor/" >> "$GITHUB_OUTPUT"
+            echo "base_path=/NewVegasWebMonitor/" >> "$GITHUB_OUTPUT"
             echo "destination_dir=." >> "$GITHUB_OUTPUT"
           else
-            echo "base_path=/SkyrimWebMonitor/dev/" >> "$GITHUB_OUTPUT"
+            echo "base_path=/NewVegasWebMonitor/dev/" >> "$GITHUB_OUTPUT"
             echo "destination_dir=dev" >> "$GITHUB_OUTPUT"
           fi
 

@@ -10,7 +10,6 @@ import {
 } from '@/app/config/pageRegistry';
 import { GLOBAL_SUBSCRIPTIONS } from '@/app/config/globalSubscriptions';
 import { DataRouter } from '@/stores/adapters/dataRouter';
-import { prefetchMapTiles } from '@/pages/map';
 
 export function useAppLoader() {
   const navigationStore = useNavigationStore();
@@ -69,10 +68,13 @@ export function useAppLoader() {
   };
 
   onMounted(async () => {
-    // Kick off DZI tile prefetch in the background BEFORE awaiting the
-    // websocket connection. `connect()` can take a while (or hang while the
-    // game is not running), and we don't want that to delay map readiness.
-    void prefetchMapTiles();
+    // Fixture mode: the stores are already populated from public/fixtures.json
+    // (see useWebSocketStore init). Don't open a socket — there's no backend,
+    // and reconnect attempts would just spam errors.
+    if (import.meta.env.VITE_USE_FIXTURES === 'true') {
+      console.log('[AppLoader] Fixture mode — skipping WebSocket connection');
+      return;
+    }
 
     try {
       console.log('App mounted - initializing WebSocket connection...');

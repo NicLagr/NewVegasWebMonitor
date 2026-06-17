@@ -14,25 +14,32 @@
         :value="displayCarryWeight"
       />
       <attribute-row
-        :label="$t('pages.character.stats.gold')"
-        :value="displayGold"
+        :label="$t('pages.character.stats.caps')"
+        :value="displayCaps"
+      />
+      <attribute-row
+        :label="$t('pages.character.stats.karma')"
+        :value="displayKarma"
       />
     </div>
     <div class="d-flex flex-col gap-md">
       <stat-bar
+        :label="$t('pages.character.stats.hp')"
         :value="healthPercentage"
         :max="100"
-        color="health"
+        color="hp"
       />
       <stat-bar
-        :value="magickaPercentage"
+        :label="$t('pages.character.stats.ap')"
+        :value="apPercentage"
         :max="100"
-        color="magicka"
+        color="ap"
       />
       <stat-bar
-        :value="staminaPercentage"
+        :label="$t('pages.character.stats.rads')"
+        :value="radsPercentage"
         :max="100"
-        color="stamina"
+        color="rads"
       />
     </div>
   </div>
@@ -46,10 +53,11 @@ const {
   displayLevel,
   displayExperience,
   displayCarryWeight,
-  displayGold,
+  displayCaps,
+  displayKarma,
   healthPercentage,
-  magickaPercentage,
-  staminaPercentage,
+  apPercentage,
+  radsPercentage,
 } = useCharacterStatsDisplay();
 </script>
 

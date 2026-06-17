@@ -118,6 +118,8 @@ export interface WeaponItem extends BaseItem {
   categoryType: (typeof CATEGORY_TYPES)['WEAPON'];
   baseDamage: number;
   damage: number;
+  /** Weapon condition as a percentage (0–100). FNV-specific. */
+  condition: number;
   enchantment: ItemEnchantment | null;
   enchantmentCharge: number | null;
   equipSlots: EquipSlot[];
@@ -140,10 +142,14 @@ export interface WeaponsState {
 
 export interface ApparelItem extends BaseItem {
   categoryType: (typeof CATEGORY_TYPES)['APPAREL'];
-  armorRating: number;
+  /** Damage Threshold — FNV's flat damage reduction (replaces Skyrim armor rating). */
+  damageThreshold: number;
+  /** Damage Resistance — percentage-based reduction (optional, some armor only). */
+  damageResistance?: number;
+  /** Condition as a percentage (0–100). FNV-specific. */
+  condition: number;
   armorType: ArmorType;
   armorTypeId?: string;
-  baseArmorRating: number;
   bodySlots: BodySlot[];
   enchantment: ItemEnchantment | null;
   equipSlots: EquipSlot[];

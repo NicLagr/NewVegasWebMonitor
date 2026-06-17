@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">SkyrimWebMonitor</string>
-    <string name="title_activity_main">SkyrimWebMonitor</string>
-    <string name="package_name">com.andreyvelsk.skyrimwebmonitor</string>
-    <string name="custom_url_scheme">com.andreyvelsk.skyrimwebmonitor</string>
+    <string name="app_name">NewVegasWebMonitor</string>
+    <string name="title_activity_main">NewVegasWebMonitor</string>
+    <string name="package_name">com.nlagravinese.newvegaswebmonitor</string>
+    <string name="custom_url_scheme">com.nlagravinese.newvegaswebmonitor</string>
 </resources>

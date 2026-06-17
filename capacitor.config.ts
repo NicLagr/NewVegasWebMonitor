@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.andreyvelsk.skyrimwebmonitor',
-  appName: 'SkyrimWebMonitor',
+  appId: 'com.nlagravinese.newvegaswebmonitor',
+  appName: 'NewVegasWebMonitor',
   webDir: 'dist',
   android: {
     allowMixedContent: true,

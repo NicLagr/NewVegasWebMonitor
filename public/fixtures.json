@@ -1,283 +1,188 @@
 {
+    "system": {
+        "language": "en",
+        "features": ["player", "inventory", "map"]
+    },
     "character.stats": {
-        "carryWeight": 300,
-        "gold": 106,
-        "health": 100,
-        "healthBase": 100,
-        "inventoryWeight": 143.39999389648438,
-        "level": 1,
-        "magicka": 100,
-        "magickaBase": 100,
-        "stamina": 100,
-        "staminaBase": 100,
-        "xp": 148,
-        "xpNext": 100
+        "health": 185,
+        "healthBase": 220,
+        "ap": 88,
+        "apBase": 105,
+        "rads": 120,
+        "radsMax": 1000,
+        "level": 14,
+        "xp": 24850,
+        "xpNext": 28000,
+        "inventoryWeight": 142.5,
+        "carryWeight": 215,
+        "caps": 1342,
+        "karma": 250
     },
     "inventory.weapons": {
         "ammo": [
             {
                 "baseDamage": 0,
                 "categoryType": "Ammo",
-                "count": 1,
+                "count": 240,
                 "damage": 0,
-                "formId": "0x0001397D",
+                "formId": "0x0008ED02",
+                "isEquipped": true,
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "9mm Round",
+                "value": 1,
+                "weight": 0
+            },
+            {
+                "baseDamage": 0,
+                "categoryType": "Ammo",
+                "count": 64,
+                "damage": 0,
+                "formId": "0x0007558E",
                 "isEquipped": false,
                 "isFavorite": false,
                 "isStolen": false,
-                "name": "Железная стрела",
-                "value": 1,
-                "weight": -1
+                "name": "5.56mm Round",
+                "value": 2,
+                "weight": 0
             }
         ],
         "items": [
             {
-                "baseDamage": 9,
+                "baseDamage": 26,
                 "categoryType": "Weapon",
+                "condition": 88,
                 "count": 1,
-                "damage": 9,
+                "damage": 24,
                 "enchantment": null,
                 "enchantmentCharge": null,
-                "equipSlots": [
-                    "right",
-                    "left"
-                ],
+                "equipSlots": ["right"],
                 "equippedHand": "right",
-                "formId": "0x00013982",
+                "formId": "0x0008CDEA",
                 "isEquipped": true,
                 "isFavorite": true,
                 "isStolen": false,
                 "isTwoHanded": false,
-                "name": "Железная булава",
-                "value": 35,
-                "weaponType": "OneHandMace",
-                "weight": 13
+                "name": "9mm Pistol",
+                "value": 100,
+                "weaponType": "OneHandSword",
+                "weight": 3
             },
             {
-                "baseDamage": 18,
+                "baseDamage": 38,
                 "categoryType": "Weapon",
+                "condition": 61,
                 "count": 1,
-                "damage": 18,
+                "damage": 30,
                 "enchantment": null,
                 "enchantmentCharge": null,
-                "equipSlots": [
-                    "right"
-                ],
+                "equipSlots": ["right"],
                 "equippedHand": null,
-                "formId": "0x00013981",
+                "formId": "0x00074A18",
                 "isEquipped": false,
-                "isFavorite": false,
+                "isFavorite": true,
                 "isStolen": false,
                 "isTwoHanded": true,
-                "name": "Железный боевой молот",
-                "value": 60,
-                "weaponType": "TwoHandAxe",
-                "weight": 24
+                "name": "Varmint Rifle",
+                "value": 50,
+                "weaponType": "TwoHandSword",
+                "weight": 6
             },
             {
-                "baseDamage": 16,
+                "baseDamage": 17,
                 "categoryType": "Weapon",
+                "condition": 95,
                 "count": 1,
-                "damage": 16,
+                "damage": 17,
                 "enchantment": null,
                 "enchantmentCharge": null,
-                "equipSlots": [
-                    "right"
-                ],
+                "equipSlots": ["right"],
                 "equippedHand": null,
-                "formId": "0x00013980",
-                "isEquipped": false,
-                "isFavorite": false,
-                "isStolen": false,
-                "isTwoHanded": true,
-                "name": "Железная секира",
-                "value": 55,
-                "weaponType": "TwoHandAxe",
-                "weight": 20
-            },
-            {
-                "baseDamage": 7,
-                "categoryType": "Weapon",
-                "count": 2,
-                "damage": 7,
-                "enchantment": null,
-                "enchantmentCharge": null,
-                "equipSlots": [
-                    "right",
-                    "left"
-                ],
-                "equippedHand": null,
-                "formId": "0x00012EB7",
+                "formId": "0x0008F218",
                 "isEquipped": false,
                 "isFavorite": false,
                 "isStolen": false,
                 "isTwoHanded": false,
-                "name": "Железный меч",
+                "name": "Combat Knife",
                 "value": 25,
-                "weaponType": "OneHandSword",
-                "weight": 9
+                "weaponType": "OneHandDagger",
+                "weight": 2
+            },
+            {
+                "baseDamage": 22,
+                "categoryType": "Weapon",
+                "condition": 47,
+                "count": 1,
+                "damage": 18,
+                "enchantment": null,
+                "enchantmentCharge": null,
+                "equipSlots": ["right"],
+                "equippedHand": null,
+                "formId": "0x00004353",
+                "isEquipped": false,
+                "isFavorite": false,
+                "isStolen": false,
+                "isTwoHanded": false,
+                "name": "Laser Pistol",
+                "value": 250,
+                "weaponType": "Staff",
+                "weight": 4
             }
         ]
     },
     "inventory.apparel": {
         "items": [
             {
-                "armorRating": 31,
+                "damageThreshold": 14,
+                "damageResistance": 0,
+                "condition": 76,
                 "armorType": "Heavy",
                 "armorTypeId": "Heavy",
-                "baseArmorRating": 31,
-                "bodySlots": [
-                    "Body"
-                ],
+                "bodySlots": ["Body"],
                 "categoryType": "Apparel",
                 "count": 1,
                 "enchantment": null,
-                "formId": "0x00013952",
+                "formId": "0x00126500",
                 "isEquipped": true,
                 "isFavorite": false,
                 "isStolen": false,
-                "name": "Стальная броня",
-                "value": 275,
-                "weight": 35
+                "name": "Combat Armor",
+                "value": 1100,
+                "weight": 25
             },
             {
-                "armorRating": 22,
-                "armorType": "Clothing",
-                "armorTypeId": "Clothing",
-                "baseArmorRating": 22,
-                "bodySlots": [
-                    "Shield"
-                ],
+                "damageThreshold": 6,
+                "condition": 90,
+                "armorType": "Light",
+                "armorTypeId": "Light",
+                "bodySlots": ["Head"],
                 "categoryType": "Apparel",
                 "count": 1,
                 "enchantment": null,
-                "formId": "0x0001394B",
+                "formId": "0x00126501",
+                "isEquipped": true,
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "Combat Helmet",
+                "value": 175,
+                "weight": 3
+            },
+            {
+                "damageThreshold": 2,
+                "condition": 100,
+                "armorType": "Clothing",
+                "armorTypeId": "Clothing",
+                "bodySlots": ["Body"],
+                "categoryType": "Apparel",
+                "count": 1,
+                "enchantment": null,
+                "formId": "0x0014C03B",
                 "isEquipped": false,
                 "isFavorite": true,
                 "isStolen": false,
-                "name": "Прочный железный щит",
-                "value": 100,
-                "weight": 12
-            },
-            {
-                "armorRating": 15,
-                "armorType": "Heavy",
-                "armorTypeId": "Heavy",
-                "baseArmorRating": 15,
-                "bodySlots": [
-                    "Hair",
-                    "Circlet"
-                ],
-                "categoryType": "Apparel",
-                "count": 1,
-                "enchantment": null,
-                "formId": "0x00012E4D",
-                "isEquipped": true,
-                "isFavorite": false,
-                "isStolen": false,
-                "name": "Железный шлем",
-                "value": 60,
-                "weight": 5
-            },
-            {
-                "armorRating": 10,
-                "armorType": "Heavy",
-                "armorTypeId": "Heavy",
-                "baseArmorRating": 10,
-                "bodySlots": [
-                    "Feet"
-                ],
-                "categoryType": "Apparel",
-                "count": 1,
-                "enchantment": null,
-                "formId": "0x00012E4B",
-                "isEquipped": true,
-                "isFavorite": false,
-                "isStolen": false,
-                "name": "Железные сапоги",
+                "name": "Vault 21 Jumpsuit",
                 "value": 25,
-                "weight": 6
-            },
-            {
-                "armorRating": 10,
-                "armorType": "Heavy",
-                "armorTypeId": "Heavy",
-                "baseArmorRating": 10,
-                "bodySlots": [
-                    "Hands"
-                ],
-                "categoryType": "Apparel",
-                "count": 1,
-                "enchantment": null,
-                "formId": "0x00012E46",
-                "isEquipped": true,
-                "isFavorite": false,
-                "isStolen": false,
-                "name": "Железные перчатки",
-                "value": 25,
-                "weight": 5
-            }
-        ]
-    },
-    "inventory.food": {
-        "items": [
-            {
-                "categoryType": "Food",
-                "count": 1,
-                "effects": [
-                    {
-                        "description": "Восстановление 2 ед. здоровья.",
-                        "descriptionTemplate": "Восстановление <mag> ед. здоровья.",
-                        "duration": 0,
-                        "magnitude": 2,
-                        "name": "Восстановление здоровья"
-                    },
-                    {
-                        "description": "[SURV=Восстановление на <2> ед. от голода.]",
-                        "descriptionTemplate": "[SURV=Восстановление на <2> ед. от голода.]",
-                        "duration": 0,
-                        "magnitude": 0,
-                        "name": "Восстановление от очень малого голода"
-                    }
-                ],
-                "formId": "0x00065C98",
-                "isFavorite": false,
-                "isStolen": false,
-                "name": "Хлеб",
-                "value": 2,
-                "weight": 0.20000000298023224
-            },
-            {
-                "categoryType": "Food",
-                "count": 1,
-                "effects": [
-                    {
-                        "description": "Восстанавливает 15 ед. запаса сил.",
-                        "descriptionTemplate": "Восстанавливает <mag> ед. запаса сил.",
-                        "duration": 0,
-                        "magnitude": 15,
-                        "name": "Восстановление запаса сил"
-                    },
-                    {
-                        "description": "Запас сил восстанавливается на 30% медленнее в течение 30 с.",
-                        "descriptionTemplate": "Запас сил восстанавливается на <mag>% медленнее в течение <dur> с.",
-                        "duration": 30,
-                        "magnitude": 30,
-                        "name": "Повреждение регенерации запаса сил"
-                    },
-                    {
-                        "description": "[SURV=Восстановление на <2> ед. от голода.]",
-                        "descriptionTemplate": "[SURV=Восстановление на <2> ед. от голода.]",
-                        "duration": 0,
-                        "magnitude": 0,
-                        "name": "Восстановление от очень малого голода"
-                    }
-                ],
-                "formId": "0x0003133C",
-                "isFavorite": false,
-                "isStolen": false,
-                "name": "Вино",
-                "value": 7,
-                "weight": 0.5
+                "weight": 2
             }
         ]
     },
@@ -285,610 +190,221 @@
         "items": [
             {
                 "categoryType": "Potion",
+                "count": 12,
+                "effects": [
+                    {
+                        "description": "Restores 30 Hit Points over a short time.",
+                        "descriptionTemplate": "Restores <mag> Hit Points.",
+                        "duration": 0,
+                        "magnitude": 30,
+                        "name": "Restore Health"
+                    }
+                ],
+                "formId": "0x00015169",
+                "isFavorite": true,
+                "isStolen": false,
+                "name": "Stimpak",
+                "value": 75,
+                "weight": 0
+            },
+            {
+                "categoryType": "Potion",
                 "count": 5,
                 "effects": [
                     {
-                        "description": "Восстанавливает 25 ед. здоровья.",
-                        "descriptionTemplate": "Восстанавливает <mag> ед. здоровья.",
+                        "description": "Reduces radiation by 150 Rads over time.",
+                        "descriptionTemplate": "Reduces radiation by <mag> Rads.",
                         "duration": 0,
-                        "magnitude": 25,
-                        "name": "Восстановление здоровья"
+                        "magnitude": 150,
+                        "name": "Remove Radiation"
                     }
                 ],
-                "formId": "0x0003EADD",
+                "formId": "0x00015168",
                 "isFavorite": false,
                 "isStolen": false,
-                "name": "Слабое зелье лечения",
-                "value": 17,
-                "weight": 0.5
+                "name": "RadAway",
+                "value": 70,
+                "weight": 0
             },
             {
                 "categoryType": "Potion",
                 "count": 3,
                 "effects": [
                     {
-                        "description": "Восстанавливает 25 ед. магии.",
-                        "descriptionTemplate": "Восстанавливает <mag> ед. магии.",
-                        "duration": 0,
+                        "description": "+25 Radiation Resistance for 240 seconds.",
+                        "descriptionTemplate": "+<mag> Radiation Resistance for <dur>s.",
+                        "duration": 240,
                         "magnitude": 25,
-                        "name": "Восстановление магии"
+                        "name": "Radiation Resistance"
                     }
                 ],
-                "formId": "0x0003EAE0",
+                "formId": "0x000330C8",
                 "isFavorite": false,
                 "isStolen": false,
-                "name": "Слабое зелье магии",
-                "value": 20,
-                "weight": 0.5
+                "name": "Rad-X",
+                "value": 30,
+                "weight": 0
             },
             {
                 "categoryType": "Potion",
-                "count": 1,
+                "count": 8,
                 "effects": [
                     {
-                        "description": "Восстанавливает 25 ед. запаса сил.",
-                        "descriptionTemplate": "Восстанавливает <mag> ед. запаса сил.",
+                        "description": "Restores 20 Hit Points; +1 Rad.",
+                        "descriptionTemplate": "Restores <mag> Hit Points.",
                         "duration": 0,
-                        "magnitude": 25,
-                        "name": "Восстановление запаса сил"
+                        "magnitude": 20,
+                        "name": "Restore Health"
                     }
                 ],
-                "formId": "0x0003EAE5",
+                "formId": "0x00015166",
                 "isFavorite": false,
                 "isStolen": false,
-                "name": "Слабое зелье запаса сил",
+                "name": "Nuka-Cola",
                 "value": 20,
-                "weight": 0.5
-            }
-        ]
-    },
-    "inventory.ingredients": {
-        "items": [
-            {
-                "categoryType": "Ingredient",
-                "count": 1,
-                "effects": [
-                    {
-                        "known": true,
-                        "name": "Уязвимость к магии"
-                    },
-                    {
-                        "known": false,
-                        "name": "Повышение навыка: восстановление"
-                    },
-                    {
-                        "known": false,
-                        "name": "Замедление"
-                    },
-                    {
-                        "known": false,
-                        "name": "Регенерация магии"
-                    }
-                ],
-                "formId": "0x00034CDF",
-                "isFavorite": false,
-                "isStolen": false,
-                "name": "Соль",
-                "value": 2,
-                "weight": 0.20000000298023224
-            }
-        ]
-    },
-    "inventory.scrolls": {
-        "items": []
-    },
-    "inventory.keys": {
-        "items": [
-            {
-                "categoryType": "Key",
-                "count": 1,
-                "formId": "0x000B5178",
-                "isEquipped": false,
-                "isFavorite": false,
-                "isStolen": false,
-                "name": "Ключ от крепости Хелген",
-                "value": 0,
-                "weight": 0
+                "weight": 1
             }
         ]
     },
     "inventory.books": {
-        "items": []
+        "items": [
+            {
+                "categoryType": "Book",
+                "count": 1,
+                "description": "A hand-scrawled note warning of Powder Gangers along the I-15 toward Primm.",
+                "formId": "0x0010F76C",
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "Note: Powder Gangers",
+                "value": 0,
+                "weight": 0
+            },
+            {
+                "categoryType": "Book",
+                "count": 1,
+                "description": "A holotape recovered from a Vault 21 terminal. Plays a recorded log from the overseer.",
+                "formId": "0x00103970",
+                "isFavorite": true,
+                "isStolen": false,
+                "name": "Holotape: Vault 21 Log",
+                "value": 0,
+                "weight": 0
+            }
+        ]
     },
     "inventory.misc": {
         "gems": [],
         "items": [
             {
                 "categoryType": "Misc",
-                "count": 13,
-                "formId": "0x0000000A",
+                "count": 23,
+                "formId": "0x00006B0A",
                 "isFavorite": false,
                 "isStolen": false,
-                "name": "Отмычка",
-                "value": 2,
-                "weight": -1
+                "name": "Scrap Metal",
+                "value": 3,
+                "weight": 1
+            },
+            {
+                "categoryType": "Misc",
+                "count": 6,
+                "formId": "0x0006A80C",
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "Wonderglue",
+                "value": 8,
+                "weight": 0
+            },
+            {
+                "categoryType": "Misc",
+                "count": 14,
+                "formId": "0x00103964",
+                "isFavorite": false,
+                "isStolen": false,
+                "name": "Empty Soda Bottle",
+                "value": 0,
+                "weight": 0
             }
         ]
     },
     "inventory.categories": {
         "categories": [
             {
-                "categoryId": "Food",
-                "count": 2,
-                "name": "Food"
-            },
-            {
-                "categoryId": "Misc",
-                "count": 13,
-                "name": "Misc"
-            },
-            {
-                "categoryId": "Ammo",
-                "count": 1,
-                "name": "Ammo"
-            },
-            {
-                "categoryId": "Ingredients",
-                "count": 1,
-                "name": "Ingredients"
-            },
-            {
-                "categoryId": "Keys",
-                "count": 1,
-                "name": "Keys"
-            },
-            {
-                "categoryId": "Potions",
-                "count": 9,
-                "name": "Potions"
-            },
-            {
                 "categoryId": "Weapons",
-                "count": 5,
+                "count": 4,
                 "name": "Weapons"
             },
             {
                 "categoryId": "Apparel",
-                "count": 5,
+                "count": 3,
                 "name": "Apparel"
             },
             {
-                "categoryId": "Favorites",
+                "categoryId": "Potions",
+                "count": 28,
+                "name": "Aid"
+            },
+            {
+                "categoryId": "Books",
                 "count": 2,
-                "name": "Favorites"
-            }
-        ]
-    },
-    "magic.categories": {
-        "categories": [
-            {
-                "categoryId": "Destruction",
-                "count": 1,
-                "name": "Destruction"
+                "name": "Notes"
             },
             {
-                "categoryId": "Restoration",
-                "count": 1,
-                "name": "Restoration"
-            }
-        ]
-    },
-    "magic.destruction": {
-        "items": [
-            {
-                "castingType": "Concentration",
-                "categoryType": "Destruction",
-                "chargeTime": 0,
-                "cost": 13,
-                "costValue": 14,
-                "delivery": "Aimed",
-                "effects": [
-                    {
-                        "description": "Струя пламени, наносящая 8 ед. урона в секунду. Подожженные несут дополнительный урон.",
-                        "descriptionTemplate": "Струя пламени, наносящая <mag> ед. урона в секунду. Подожженные несут дополнительный урон.",
-                        "duration": 1,
-                        "magnitude": 8,
-                        "name": "Пламя"
-                    },
-                    {
-                        "description": "",
-                        "descriptionTemplate": "",
-                        "duration": 15,
-                        "magnitude": 99,
-                        "name": "Жаркое пламя - страх"
-                    }
-                ],
-                "equippedHand": null,
-                "formId": "0x00012FCD",
-                "hotkeys": [
-                    7
-                ],
-                "isActive": false,
-                "isEquipped": false,
-                "isFavorite": true,
-                "level": 0,
-                "name": "Пламя",
-                "range": 0
-            }
-        ]
-    },
-    "magic.alteration": {
-        "items": []
-    },
-    "magic.conjuration": {
-        "items": []
-    },
-    "magic.illusion": {
-        "items": []
-    },
-    "magic.restoration": {
-        "items": [
-            {
-                "castingType": "Concentration",
-                "categoryType": "Restoration",
-                "chargeTime": 0,
-                "cost": 11,
-                "costValue": 12,
-                "delivery": "Self",
-                "effects": [
-                    {
-                        "description": "Восстанавливает 10 ед. здоровья заклинателя в секунду.",
-                        "descriptionTemplate": "Восстанавливает <mag> ед. здоровья заклинателя в секунду.",
-                        "duration": 1,
-                        "magnitude": 10,
-                        "name": "Восстановление здоровья"
-                    },
-                    {
-                        "description": "",
-                        "descriptionTemplate": "",
-                        "duration": 1,
-                        "magnitude": 10,
-                        "name": "Восстановление запаса сил"
-                    }
-                ],
-                "equippedHand": "left",
-                "formId": "0x00012FCC",
-                "hotkeys": [
-                    0
-                ],
-                "isActive": false,
-                "isEquipped": true,
-                "isFavorite": true,
-                "level": 0,
-                "name": "Лечение",
-                "range": 0
-            }
-        ]
-    },
-    "magic.enchanting": {
-        "items": []
-    },
-    "hotkeys.items": {
-        "items": [
-            {
-                "bound": true,
-                "chargeTime": 0,
-                "cost": 11,
-                "formId": "0x00012FCC",
-                "kind": "spell",
-                "level": 0,
-                "name": "Лечение",
-                "school": "Restoration",
-                "slot": 1,
-                "spellType": "Spell"
-            },
-            {
-                "bound": false,
-                "slot": 2
-            },
-            {
-                "bound": false,
-                "slot": 3
-            },
-            {
-                "bound": true,
-                "categoryType": "Weapon",
-                "count": 1,
-                "formId": "0x00013982",
-                "isFavorite": true,
-                "kind": "item",
-                "name": "Железная булава",
-                "slot": 4,
-                "value": 35,
-                "weaponType": "OneHandMace",
-                "weight": 13
-            },
-            {
-                "bodySlot": "Shield",
-                "bound": true,
-                "categoryType": "Apparel",
-                "count": 1,
-                "formId": "0x0001394B",
-                "isFavorite": true,
-                "kind": "item",
-                "name": "Прочный железный щит",
-                "slot": 5,
-                "value": 100,
-                "weight": 12
-            },
-            {
-                "bound": false,
-                "slot": 6
-            },
-            {
-                "bound": false,
-                "slot": 7
-            },
-            {
-                "bound": true,
-                "chargeTime": 0,
-                "cost": 13,
-                "formId": "0x00012FCD",
-                "kind": "spell",
-                "level": 0,
-                "name": "Пламя",
-                "school": "Destruction",
-                "slot": 8,
-                "spellType": "Spell"
+                "categoryId": "Misc",
+                "count": 43,
+                "name": "Misc"
             }
         ]
     },
     "map.player": {
         "position": {
-            "angle": 4.774328231811523,
-            "cell": "Пустоши",
-            "cellFormId": "0x00009BB4",
+            "x": 6000,
+            "y": 6000,
+            "z": 1200,
+            "angle": 0,
+            "cell": "The Strip",
+            "cellFormId": "0x000DA726",
             "isInterior": false,
-            "parentWorldspace": "Tamriel",
-            "parentWorldspaceFormId": "0x0000003C",
-            "worldspace": "Tamriel",
-            "worldspaceFormId": "0x0000003C",
-            "x": -7371.52978515625,
-            "y": -63319.64453125,
-            "z": 818.838623046875
+            "worldspace": "WastelandNV",
+            "worldspaceFormId": "0x000DA726",
+            "parentWorldspace": "WastelandNV",
+            "parentWorldspaceFormId": "0x000DA726"
         }
     },
     "map.hotspots": {
         "hot": [
+            { "type": "Town", "typeId": 1, "refId": "0x000DC983", "name": "Goodsprings", "x": -78000, "y": 42000, "isVisible": true, "canFastTravel": true },
+            { "type": "Town", "typeId": 1, "refId": "0x0010C0B0", "name": "Primm", "x": -60000, "y": -12000, "isVisible": true, "canFastTravel": true },
+            { "type": "Settlement", "typeId": 2, "refId": "0x0014E906", "name": "Nipton", "x": 24000, "y": -78000, "isVisible": true, "canFastTravel": true },
+            { "type": "Town", "typeId": 1, "refId": "0x0011D4C7", "name": "Novac", "x": 60000, "y": -36000, "isVisible": true, "canFastTravel": true },
+            { "type": "City", "typeId": 3, "refId": "0x000E26C2", "name": "The Strip", "x": 6000, "y": 6000, "isVisible": true, "canFastTravel": true },
+            { "type": "Monument", "typeId": 4, "refId": "0x000E2BC0", "name": "Hoover Dam", "x": 108000, "y": -18000, "isVisible": true, "canFastTravel": true },
+            { "type": "Vault", "typeId": 5, "refId": "0x0015B5BD", "name": "Vault 21", "x": 3000, "y": 9000, "isVisible": true, "canFastTravel": false }
+        ]
+    },
+    "map.questMarkers": {
+        "marker": [
             {
-                "canFastTravel": true,
-                "isVisible": true,
-                "name": "Хелген",
-                "refId": "0x00017780",
-                "type": "Town",
-                "typeId": 2,
-                "x": 18350.400390625,
-                "y": -79480.96875
-            },
-            {
-                "canFastTravel": false,
-                "isVisible": true,
-                "name": "Фолкрит",
-                "refId": "0x00017760",
-                "type": "FalkreathCapitol",
-                "typeId": 50,
-                "x": -30296.33203125,
-                "y": -86283.8984375
-            },
-            {
-                "canFastTravel": false,
-                "isVisible": true,
-                "name": "Пещера Каменный Ручей",
-                "refId": "0x00080F13",
-                "type": "Cave",
-                "typeId": 4,
-                "x": 174741.984375,
-                "y": -24827.77734375
-            },
-            {
-                "canFastTravel": true,
-                "isVisible": true,
-                "name": "Вайтран - Конюшни",
-                "refId": "0x00072879",
-                "type": "Stable",
-                "typeId": 21,
-                "x": 18312.81640625,
-                "y": -10665.4560546875
-            },
-            {
-                "canFastTravel": false,
-                "isVisible": true,
-                "name": "Данстар",
-                "refId": "0x0001773A",
-                "type": "DawnstarCapitol",
-                "typeId": 52,
-                "x": 30808.154296875,
-                "y": 106138.28125
-            },
-            {
-                "canFastTravel": false,
-                "isVisible": true,
-                "name": "Могила чемпиона",
-                "refId": "0x0900CD93",
-                "type": "NordicRuin",
-                "typeId": 7,
-                "x": 191825.21875,
-                "y": -65998.8203125
-            },
-            {
-                "canFastTravel": true,
-                "isVisible": true,
-                "name": "Медоварня Хоннинга",
-                "refId": "0x00038593",
-                "type": "Settlement",
-                "typeId": 3,
-                "x": 30929.93359375,
-                "y": -17710.779296875
-            },
-            {
-                "canFastTravel": true,
-                "isVisible": true,
-                "name": "Камни-хранители",
-                "refId": "0x0001BABD",
-                "type": "Doomstone",
-                "typeId": 18,
-                "x": 2806.979736328125,
-                "y": -59215.84765625
-            },
-            {
-                "canFastTravel": false,
-                "isVisible": true,
-                "name": "Винтерхолд",
-                "refId": "0x000177EF",
-                "type": "WinterholdCapitol",
-                "typeId": 46,
-                "x": 109207.53125,
-                "y": 102864.0390625
-            },
-            {
-                "canFastTravel": true,
-                "isVisible": true,
-                "name": "Факельная шахта",
-                "refId": "0x000B6CDF",
-                "type": "Mine",
-                "typeId": 15,
-                "x": 8248.990234375,
-                "y": -57382.9375
-            },
-            {
-                "canFastTravel": false,
-                "isVisible": true,
-                "name": "Пещеры слива",
-                "refId": "0x070038D6",
-                "type": "Cave",
-                "typeId": 4,
-                "x": -103703.328125,
-                "y": -35798.7109375
-            },
-            {
-                "canFastTravel": true,
-                "isVisible": true,
-                "name": "Ривервуд",
-                "refId": "0x000162A4",
-                "type": "Town",
-                "typeId": 2,
-                "x": 21941.015625,
-                "y": -44792.43359375
-            },
-            {
-                "canFastTravel": true,
-                "isVisible": true,
-                "name": "Ферма Пелагио",
-                "refId": "0x00016373",
-                "type": "WheatMill",
-                "typeId": 19,
-                "x": 19263.994140625,
-                "y": -16976.1953125
-            },
-            {
-                "canFastTravel": false,
-                "isVisible": true,
-                "name": "Морфал",
-                "refId": "0x000177B0",
-                "type": "MorthalCapitol",
-                "typeId": 48,
-                "x": -38639.7421875,
-                "y": 66734.296875
-            },
-            {
-                "canFastTravel": false,
-                "isVisible": true,
-                "name": "Мирвотч",
-                "refId": "0xFE013FA2",
-                "type": "NordicTower",
-                "typeId": 31,
-                "x": -24536.19140625,
-                "y": 63564.9921875
-            },
-            {
-                "canFastTravel": false,
-                "isVisible": true,
-                "name": "Жилище в тундре",
-                "refId": "0x08000B8A",
-                "type": "Town",
-                "typeId": 2,
-                "x": 39685.3671875,
-                "y": 321.53350830078125
-            },
-            {
-                "canFastTravel": true,
-                "isVisible": true,
-                "name": "Ветреный пик",
-                "refId": "0x00016232",
-                "type": "NordicRuin",
-                "typeId": 7,
-                "x": 1482.456298828125,
-                "y": -41162.3203125
-            },
-            {
-                "canFastTravel": false,
-                "isVisible": true,
-                "name": "Виндхельм",
-                "refId": "0x00038436",
-                "type": "WindhelmCapitol",
-                "typeId": 38,
-                "x": 135025.78125,
-                "y": 35596.5859375
-            },
-            {
-                "canFastTravel": false,
-                "isVisible": true,
-                "name": "Рифтен",
-                "refId": "0x0001C390",
-                "type": "RiftenCapitol",
-                "typeId": 36,
-                "x": 173415.203125,
-                "y": -96600.1484375
-            },
-            {
-                "canFastTravel": false,
-                "isVisible": true,
-                "name": "Маркарт",
-                "refId": "0x0001C38A",
-                "type": "MarkarthCapitol",
-                "typeId": 44,
-                "x": -174024.296875,
-                "y": 5255.478515625
-            },
-            {
-                "canFastTravel": true,
-                "isVisible": true,
-                "name": "Драконий Предел",
-                "refId": "0x000C44AD",
-                "type": "WhiterunCastle",
-                "typeId": 39,
-                "x": 26871.640625,
-                "y": 209.0516357421875
-            },
-            {
-                "canFastTravel": true,
-                "isVisible": true,
-                "name": "Вайтран",
-                "refId": "0x000162CE",
-                "type": "WhiterunCapitol",
-                "typeId": 40,
-                "x": 19855.2265625,
-                "y": -7422.51025390625
-            },
-            {
-                "canFastTravel": false,
-                "isVisible": true,
-                "name": "Солитьюд",
-                "refId": "0x0004D0F4",
-                "type": "SolitudeCapitol",
-                "typeId": 42,
-                "x": -64942.99609375,
-                "y": 104648
-            },
-            {
-                "canFastTravel": true,
-                "isVisible": true,
-                "name": "Скайрим",
-                "refId": "0x04016FE6",
-                "type": "DLC02ToSkyrim",
-                "typeId": 57,
-                "x": 13982.345703125,
-                "y": 23713.3984375
+                "aliasId": 0,
+                "cell": null,
+                "cellFormId": null,
+                "isInterior": false,
+                "name": "Boone",
+                "objectiveIndex": 10,
+                "objectiveText": "Meet Boone at the dinosaur in Novac.",
+                "objectiveTextResolved": "Meet Boone at the dinosaur in Novac.",
+                "parentWorldspace": "WastelandNV",
+                "parentWorldspaceFormId": "0x000DA726",
+                "questEditorId": "VMS04",
+                "questFormId": "0x0010A23C",
+                "questName": "One for My Baby",
+                "questType": "SideQuest",
+                "refId": "0x0011D4C7",
+                "worldspace": "WastelandNV",
+                "worldspaceFormId": "0x000DA726",
+                "x": 60000,
+                "y": -36000,
+                "z": 0
             }
         ]
     },

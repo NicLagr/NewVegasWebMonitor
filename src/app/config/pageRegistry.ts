@@ -17,12 +17,6 @@ import {
   TheScrolls,
   TheKeys,
   TheBooks,
-  TheDestruction,
-  TheAlteration,
-  TheConjuration,
-  TheIllusion,
-  TheRestoration,
-  TheEnchanting,
   TheQuests,
   TheMap,
 } from '@/pages';
@@ -40,17 +34,18 @@ export const pagesRegistry: PagesRegistry = {
           id: 'character.stats',
           fields: {
             health: 'ActorValue::kHealth',
-            magicka: 'ActorValue::kMagicka',
-            stamina: 'ActorValue::kStamina',
+            ap: 'ActorValue::kActionPoints',
+            rads: 'ActorValue::kRadiationRads',
             healthBase: 'ActorValue::kHealth::Base',
-            magickaBase: 'ActorValue::kMagicka::Base',
-            staminaBase: 'ActorValue::kStamina::Base',
+            apBase: 'ActorValue::kActionPoints::Base',
+            radsMax: 'ActorValue::kRadiationRads::Max',
             level: 'Player::Level',
             xp: 'Player::XP::Current',
             xpNext: 'Player::XP::Next',
             inventoryWeight: 'Player::InventoryWeight',
             carryWeight: 'Player::CarryWeight',
-            gold: 'Inventory::Gold',
+            caps: 'Inventory::Caps',
+            karma: 'Player::Karma',
           },
         },
       ],
@@ -202,93 +197,6 @@ export const pagesRegistry: PagesRegistry = {
     },
   },
 
-  magic: {
-    destruction: {
-      component: TheDestruction,
-      subscriptions: [
-        {
-          id: 'magic.destruction',
-          fields: {
-            items: 'Magic::Items::Destruction',
-          },
-          settings: {
-            frequency: INVENTORY_FREQUENCY,
-          },
-        },
-      ],
-    },
-    alteration: {
-      component: TheAlteration,
-      subscriptions: [
-        {
-          id: 'magic.alteration',
-          fields: {
-            items: 'Magic::Items::Alteration',
-          },
-          settings: {
-            frequency: INVENTORY_FREQUENCY,
-          },
-        },
-      ],
-    },
-    conjuration: {
-      component: TheConjuration,
-      subscriptions: [
-        {
-          id: 'magic.conjuration',
-          fields: {
-            items: 'Magic::Items::Conjuration',
-          },
-          settings: {
-            frequency: INVENTORY_FREQUENCY,
-          },
-        },
-      ],
-    },
-    illusion: {
-      component: TheIllusion,
-      subscriptions: [
-        {
-          id: 'magic.illusion',
-          fields: {
-            items: 'Magic::Items::Illusion',
-          },
-          settings: {
-            frequency: INVENTORY_FREQUENCY,
-          },
-        },
-      ],
-    },
-    restoration: {
-      component: TheRestoration,
-      subscriptions: [
-        {
-          id: 'magic.restoration',
-          fields: {
-            items: 'Magic::Items::Restoration',
-          },
-          settings: {
-            frequency: INVENTORY_FREQUENCY,
-          },
-        },
-      ],
-    },
-    enchanting: {
-      component: TheEnchanting,
-      subscriptions: [
-        {
-          id: 'magic.enchanting',
-          fields: {
-            items: 'Magic::Items::Enchanting',
-          },
-          settings: {
-            frequency: INVENTORY_FREQUENCY,
-          },
-        },
-      ],
-    },
-  },
-
   quests: {
     questsList: {
       component: TheQuests,
@@ -351,12 +259,6 @@ export const TAB_CATEGORY_SUBSCRIPTIONS: Record<string, CategorySubscriptionConf
     subscriptionId: 'inventory.categories',
     fields: {
       categories: 'Inventory::Categories',
-    },
-  },
-  magic: {
-    subscriptionId: 'magic.categories',
-    fields: {
-      categories: 'Magic::Categories',
     },
   },
 };

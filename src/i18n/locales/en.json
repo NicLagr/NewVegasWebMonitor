@@ -6,45 +6,30 @@
     },
     "tabs": {
       "character": {
-        "label": "Character",
+        "label": "STATUS",
         "subtabs": {
-          "stats": "Stats",
-          "hotkeys": "Hotkeys"
+          "stats": "Status",
+          "skills": "Skills"
         }
       },
       "inventory": {
-        "label": "Inventory",
+        "label": "INV",
         "subtabs": {
           "weapons": "Weapons",
           "apparel": "Apparel",
-          "potions": "Potions",
-          "scrolls": "Scrolls",
-          "food": "Food",
-          "ingredients": "Ingredients",
-          "books": "Books",
-          "keys": "Keys",
+          "potions": "Aid",
+          "books": "Notes",
           "misc": "Misc"
         }
       },
-      "magic": {
-        "label": "Magic",
-        "subtabs": {
-          "destruction": "Destruction",
-          "alteration": "Alteration",
-          "conjuration": "Conjuration",
-          "illusion": "Illusion",
-          "restoration": "Restoration",
-          "enchanting": "Enchanting"
-        }
-      },
       "quests": {
-        "label": "Quests",
+        "label": "DATA",
         "subtabs": {
-          "questsList": "Journal"
+          "questsList": "Quests"
         }
       },
       "map": {
-        "label": "Map"
+        "label": "MAP"
       }
     },
     "content": {
@@ -54,14 +39,18 @@
   "pages": {
     "character": {
       "stats": {
-        "tab": "Stats",
+        "tab": "Status",
         "level": "Level",
         "experience": "Experience",
         "carryWeight": "Carry Weight",
-        "gold": "Gold"
+        "caps": "Caps",
+        "karma": "Karma",
+        "hp": "HP",
+        "ap": "AP",
+        "rads": "RADS"
       },
       "hotkeys": {
-        "tab": "Hotkeys",
+        "tab": "Skills",
         "emptySlot": "Empty",
         "slot": "Slot {n}"
       },
@@ -75,21 +64,23 @@
         "selectHand": "Select hand",
         "leftHand": "L",
         "rightHand": "R",
-        "waitingForData": "Waiting for weapon data...",
+        "waitingForData": "AWAITING WEAPON DATA…",
         "drop": "Drop",
         "unknown": "Unknown",
         "noDescription": "No description",
-        "damage": "Damage",
-        "weight": "Weight",
+        "damage": "DAM",
+        "condition": "CND",
+        "weight": "WG",
         "value": "Value"
       },
       "apparel": {
         "tab": "Apparel",
-        "waitingForData": "Waiting for apparel data...",
+        "waitingForData": "AWAITING APPAREL DATA…",
         "unknown": "Unknown",
         "noDescription": "No description",
-        "armorRating": "Armor",
-        "weight": "Weight",
+        "damageThreshold": "DT",
+        "condition": "CND",
+        "weight": "WG",
         "value": "Value"
       },
       "misc": {
@@ -98,44 +89,7 @@
         "containedSoul": "Contained Soul"
       },
       "potions": {
-        "tab": "Potions"
-      }
-    },
-    "magic": {
-      "unknown": "Unknown",
-      "destruction": {
-        "tab": "Destruction",
-        "waitingForData": "Waiting for destruction spells data..."
-      },
-      "alteration": {
-        "tab": "Alteration",
-        "waitingForData": "Waiting for alteration spells data..."
-      },
-      "conjuration": {
-        "tab": "Conjuration",
-        "waitingForData": "Waiting for conjuration spells data..."
-      },
-      "illusion": {
-        "tab": "Illusion",
-        "waitingForData": "Waiting for illusion spells data..."
-      },
-      "restoration": {
-        "tab": "Restoration",
-        "waitingForData": "Waiting for restoration spells data..."
-      },
-      "enchanting": {
-        "tab": "Enchanting",
-        "waitingForData": "Waiting for enchanting spells data..."
-      },
-      "spells": {
-        "tab": "Spells"
-      },
-      "shouts": {
-        "tab": "Shouts"
-      },
-      "powers": {
-        "tab": "Powers",
-        "placeholder": "Powers information to be implemented"
+        "tab": "Aid"
       }
     },
     "quests": {

@@ -7,10 +7,8 @@ export {
   MAP_DZI_URL,
 } from './preloadMap';
 export {
-  FWMF_MAP_BOUNDS,
-  FWMF_MAP_IMAGE_HEIGHT,
-  FWMF_MAP_IMAGE_WIDTH,
-  FWMF_MAP_MESH_NAME,
+  MOJAVE_MAP_IMAGE_WIDTH,
+  MOJAVE_MAP_IMAGE_HEIGHT,
   projectWorldToImage,
   useMapProjection,
 } from './composables/useMapProjection';

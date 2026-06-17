@@ -53,35 +53,44 @@ export function useCharacterStatsDisplay(): CharacterStatsDisplay {
   });
 
   /**
-   * Format gold for display
+   * Format caps (currency) for display
    */
-  const displayGold = computed(() => {
-    const gold = stats.value.gold;
-    return gold ? String(gold) : '-';
+  const displayCaps = computed(() => {
+    const caps = stats.value.caps;
+    return caps ? String(caps) : '-';
   });
 
   /**
-   * Get health percentage for display
+   * Format karma for display
+   */
+  const displayKarma = computed(() => {
+    const karma = stats.value.karma;
+    return karma !== null && karma !== undefined ? String(karma) : '-';
+  });
+
+  /**
+   * Get health (HP) percentage for display
    */
   const healthPercentage = computed(() => statsPercentage.value.health);
 
   /**
-   * Get magicka percentage for display
+   * Get action points (AP) percentage for display
    */
-  const magickaPercentage = computed(() => statsPercentage.value.magicka);
+  const apPercentage = computed(() => statsPercentage.value.ap);
 
   /**
-   * Get stamina percentage for display
+   * Get radiation (Rads) percentage for display
    */
-  const staminaPercentage = computed(() => statsPercentage.value.stamina);
+  const radsPercentage = computed(() => statsPercentage.value.rads);
 
   return {
     displayLevel,
     displayExperience,
     displayCarryWeight,
-    displayGold,
+    displayCaps,
+    displayKarma,
     healthPercentage,
-    magickaPercentage,
-    staminaPercentage,
+    apPercentage,
+    radsPercentage,
   };
 }

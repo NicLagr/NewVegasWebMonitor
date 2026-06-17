@@ -1,13 +1,14 @@
 {
-  "name": "skyrimwebmonitor",
+  "name": "newvegaswebmonitor",
   "private": true,
   "version": "0.1.10",
   "type": "module",
   "main": "electron/main.cjs",
-  "description": "A Vue 3 PWA companion app for The Elder Scrolls V: Skyrim. Monitors player stats, inventory, magic and hotkeys in real time over WebSocket. Designed primarily for the AYN Thor handheld.",
+  "description": "A Vue 3 PWA companion app for Fallout: New Vegas. Monitors player status, inventory, chems and skills in real time over WebSocket. Designed primarily for the AYN Thor handheld.",
   "keywords": [
-    "skyrim",
-    "the-elder-scrolls",
+    "fallout",
+    "fallout-new-vegas",
+    "pip-boy",
     "pwa",
     "vue",
     "vue3",
@@ -15,7 +16,7 @@
     "websocket",
     "companion-app",
     "ayn-thor",
-    "skse"
+    "nvse"
   ],
   "homepage": "https://andreyvelsk.github.io/SkyrimWebMonitor/",
   "repository": {
@@ -41,6 +42,8 @@
     "android:apk": "npm run cap:sync:android && cd android && ./gradlew assembleDebug",
     "android:open": "npm run cap:sync:android && npx cap open android",
     "export-fixtures": "node scripts/export-fixtures.js",
+    "mock:server": "node scripts/mock-server.js",
+    "map:placeholder": "node scripts/make-placeholder-map.js",
     "build:electron": "BASE_PATH=./ vite build",
     "electron:preview": "npm run build:electron && electron .",
     "electron:dist:linux-x64": "npm run build:electron && electron-builder --linux AppImage --x64",
@@ -89,8 +92,8 @@
     "ws": "^8.13.0"
   },
   "build": {
-    "appId": "com.andreyvelsk.skyrimwebmonitor",
-    "productName": "SkyrimWebMonitor",
+    "appId": "com.nlagravinese.newvegaswebmonitor",
+    "productName": "NewVegasWebMonitor",
     "icon": "build/icon.png",
     "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
     "files": [

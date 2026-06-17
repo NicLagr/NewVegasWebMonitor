@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import type { ExteriorPosition, PlayerPosition } from './types';
+import { WORLD_MAP_WORLDSPACE } from './types';
 import { useWebSocketStore } from '@/stores/use-websocket-store/useWebsocketStore';
 
 /**
@@ -45,7 +46,9 @@ export const useMapPlayerStore = defineStore('mapPlayer', () => {
    * global Tamriel map (player is outside, in Tamriel proper).
    */
   const isLivePositionRenderable = (p: PlayerPosition): boolean =>
-    !p.isInterior && p.worldspace === 'Tamriel' && p.parentWorldspace === 'Tamriel';
+    !p.isInterior &&
+    p.worldspace === WORLD_MAP_WORLDSPACE &&
+    p.parentWorldspace === WORLD_MAP_WORLDSPACE;
 
   /**
    * Fire a one-shot query for `Player::ExteriorPosition`. Safe to call
@@ -119,7 +122,7 @@ export const useMapPlayerStore = defineStore('mapPlayer', () => {
       return { x: p.x, y: p.y, angle: p.angle, pinned: false };
     }
     const ext = exteriorPosition.value;
-    if (ext && ext.parentWorldspace === 'Tamriel') {
+    if (ext && ext.parentWorldspace === WORLD_MAP_WORLDSPACE) {
       return { x: ext.x, y: ext.y, angle: p.angle, pinned: true };
     }
     return null;

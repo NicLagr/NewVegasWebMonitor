@@ -25,7 +25,7 @@ def releaseKeyPassword = System.getenv('ANDROID_KEY_PASSWORD')
 def hasReleaseSigning = releaseKeystorePath && releaseKeystorePassword && releaseKeyAlias && releaseKeyPassword
 
 android {
-    namespace "com.andreyvelsk.skyrimwebmonitor"
+    namespace "com.nlagravinese.newvegaswebmonitor"
     compileSdk rootProject.ext.compileSdkVersion
     signingConfigs {
         release {
@@ -38,7 +38,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId "com.andreyvelsk.skyrimwebmonitor"
+        applicationId "com.nlagravinese.newvegaswebmonitor"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode appVersionCode

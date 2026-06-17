@@ -1,8 +1,9 @@
 import { DataRouter } from '@/stores/adapters/dataRouter';
+import { useSystemStore } from '@/stores/system/useSystemStore';
 
 /**
  * Loads fixtures from a public file and applies them to stores via the DataRouter.
- * The file path can be overridden via `VITE_FIXTURES_PATH` (defaults to `/fixtures.json`).
+ * The file path can be overridden via `VITE_FIXTURES_PATH` (defaults to `<base>/fixtures.json`).
  * Only runs when `VITE_USE_FIXTURES` is set to `true`.
  */
 export async function applyFixturesIfEnabled(): Promise<void> {
@@ -10,7 +11,7 @@ export async function applyFixturesIfEnabled(): Promise<void> {
     const useFixtures = import.meta.env.VITE_USE_FIXTURES === 'true';
     if (!useFixtures) return;
 
-    const path = import.meta.env.VITE_FIXTURES_PATH ?? '/SkyrimWebMonitor/fixtures.json';
+    const path = import.meta.env.VITE_FIXTURES_PATH ?? `${import.meta.env.BASE_URL}fixtures.json`;
     console.log(`[FixtureLoader] VITE_USE_FIXTURES enabled — loading fixtures from ${path}`);
 
     const res = await fetch(path, { cache: 'no-store' });
@@ -35,6 +36,15 @@ export async function applyFixturesIfEnabled(): Promise<void> {
 
     for (const [subscriptionId, fields] of entries) {
       try {
+        // The `system` payload (language + feature flags) normally arrives as a
+        // query response, not through the DataRouter. Route it to the system
+        // store so feature-gated tabs (e.g. MAP) appear in fixtures mode too.
+        if (subscriptionId === 'system') {
+          useSystemStore().handleQueryResponse(fields as Record<string, unknown>);
+          console.log('[FixtureLoader] Applied system fixture (features/language)');
+          continue;
+        }
+
         const result = DataRouter.routeDataById(subscriptionId, fields);
         if (!result.success) {
           console.warn(`[FixtureLoader] Routing fixture for ${subscriptionId} failed: ${result.message}`);

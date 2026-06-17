@@ -1,0 +1,4 @@
+; Ensures the NVSE entry points export with clean (undecorated) names on x86.
+EXPORTS
+    NVSEPlugin_Query
+    NVSEPlugin_Load

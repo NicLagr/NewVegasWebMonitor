@@ -1,5 +1,5 @@
 const DEFAULT_WS_PORT = '8765';
-const WS_ENDPOINT_STORAGE_KEY = 'skyrim-web-monitor-ws-endpoint';
+const WS_ENDPOINT_STORAGE_KEY = 'newvegaswebmonitor-ws-endpoint';
 
 export function getDefaultWsUrl(): string {
   if (import.meta.env.PROD) {

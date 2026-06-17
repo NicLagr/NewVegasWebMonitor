@@ -5,7 +5,7 @@
     :active-item="activeItemData"
     :active-item-stats="previewStats"
     :preview-effects="previewEffects"
-    preview-icon-path="lorc/potion-ball.svg"
+    preview-icon-path="delapouite/medicine-pills.svg"
     @favorite="toggleFavorite"
     @hotkey="openHotkeyPicker"
     @drop="startDrop"

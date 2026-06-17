@@ -25,7 +25,7 @@ const props = defineProps<{
   label?: string;
   value: number;
   max: number;
-  color: 'health' | 'magicka' | 'stamina';
+  color: 'hp' | 'ap' | 'rads';
 }>();
 
 const pct = computed(() => (props.value / props.max) * 100);
@@ -68,19 +68,19 @@ const pct = computed(() => (props.value / props.max) * 100);
   height: 100%;
   transition: width var(--transition-normal);
 
-  &--health {
-    background: linear-gradient(90deg, #6b1f1f, #a83232);
-    box-shadow: 0 0 8px rgb(168 50 50 / 40%);
+  &--hp {
+    background: linear-gradient(90deg, #0a5a22, #00ff41);
+    box-shadow: 0 0 8px rgb(0 255 65 / 40%);
   }
 
-  &--magicka {
-    background: linear-gradient(90deg, #1f3a6b, #3264a8);
-    box-shadow: 0 0 8px rgb(50 100 168 / 40%);
+  &--ap {
+    background: linear-gradient(90deg, #0a5a4a, #00e0c0);
+    box-shadow: 0 0 8px rgb(0 224 192 / 40%);
   }
 
-  &--stamina {
-    background: linear-gradient(90deg, #4a6b1f, #72a832);
-    box-shadow: 0 0 8px rgb(114 168 50 / 40%);
+  &--rads {
+    background: linear-gradient(90deg, #6b6b1f, #d4d432);
+    box-shadow: 0 0 8px rgb(212 212 50 / 40%);
   }
 }
 </style>

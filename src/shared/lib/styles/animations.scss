@@ -46,3 +46,19 @@
 .animate-glow {
   animation: glow 2s ease-in-out infinite;
 }
+
+/* CRT flicker — subtle brightness wobble for the Pip-Boy terminal look */
+@keyframes crtFlicker {
+  0%,
+  100% {
+    opacity: 0.92;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  52% {
+    opacity: 0.88;
+  }
+}

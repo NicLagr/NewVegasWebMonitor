@@ -1,6 +1,6 @@
 <template>
   <div class="handheld-device">
-    <template v-if="isConnected">
+    <template v-if="isConnected || useFixtures">
       <skyrim-navigation
         :active-tab="activeTab"
         :active-sub-tab="activeSubTab"
@@ -42,6 +42,10 @@ const { activeTab, activeSubTab } = storeToRefs(navigationStore);
 
 const websocketStore = useWebSocketStore();
 const { isConnected } = storeToRefs(websocketStore);
+
+// In fixture mode there is no backend to connect to; the stores are populated
+// from public/fixtures.json, so render the UI regardless of socket status.
+const useFixtures = import.meta.env.VITE_USE_FIXTURES === 'true';
 
 useAppLoader();
 const { showToast } = useBackGuard();

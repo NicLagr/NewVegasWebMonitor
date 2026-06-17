@@ -6,45 +6,30 @@
     },
     "tabs": {
       "character": {
-        "label": "Персонаж",
+        "label": "СТАТУС",
         "subtabs": {
-          "stats": "Характеристики",
-          "hotkeys": "Хоткеи"
+          "stats": "Статус",
+          "skills": "Навыки"
         }
       },
       "inventory": {
-        "label": "Инвентарь",
+        "label": "ИНВ",
         "subtabs": {
           "weapons": "Оружие",
-          "apparel": "Одежда",
-          "potions": "Зелья",
-          "scrolls": "Свитки",
-          "food": "Еда",
-          "ingredients": "Ингредиенты",
-          "books": "Книги",
-          "keys": "Ключи",
+          "apparel": "Броня",
+          "potions": "Помощь",
+          "books": "Записи",
           "misc": "Разное"
         }
       },
-      "magic": {
-        "label": "Магия",
-        "subtabs": {
-          "destruction": "Разрушение",
-          "alteration": "Изменение",
-          "conjuration": "Колдовство",
-          "illusion": "Иллюзия",
-          "restoration": "Восстановление",
-          "enchanting": "Чарование"
-        }
-      },
       "quests": {
-        "label": "Квесты",
+        "label": "ДАННЫЕ",
         "subtabs": {
-          "questsList": "Журнал"
+          "questsList": "Задания"
         }
       },
       "map": {
-        "label": "Карта"
+        "label": "КАРТА"
       }
     },
     "content": {
@@ -54,11 +39,15 @@
   "pages": {
     "character": {
       "stats": {
-        "tab": "Характеристики",
+        "tab": "Статус",
         "level": "Уровень",
         "experience": "Опыт",
         "carryWeight": "Грузоподъёмность",
-        "gold": "Золото"
+        "caps": "Крышки",
+        "karma": "Карма",
+        "hp": "ОЗ",
+        "ap": "ОД",
+        "rads": "РАД"
       },
       "hotkeys": {
         "tab": "Хоткеи",
@@ -75,21 +64,23 @@
         "selectHand": "Выберите руку",
         "leftHand": "L",
         "rightHand": "R",
-        "waitingForData": "Ожидание данных оружия...",
+        "waitingForData": "ОЖИДАНИЕ ДАННЫХ ОРУЖИЯ…",
         "drop": "Выбросить",
         "unknown": "Неизвестно",
         "noDescription": "Нет описания",
-        "damage": "Урон",
-        "weight": "Вес",
+        "damage": "УРН",
+        "condition": "СОСТ",
+        "weight": "ВЕС",
         "value": "Стоимость"
       },
       "apparel": {
-        "tab": "Одежда",
-        "waitingForData": "Ожидание данных одежды...",
+        "tab": "Броня",
+        "waitingForData": "ОЖИДАНИЕ ДАННЫХ БРОНИ…",
         "unknown": "Неизвестно",
         "noDescription": "Нет описания",
-        "armorRating": "Броня",
-        "weight": "Вес",
+        "damageThreshold": "ПУ",
+        "condition": "СОСТ",
+        "weight": "ВЕС",
         "value": "Стоимость"
       },
       "misc": {
@@ -99,44 +90,7 @@
         "containedSoul": "Тип души"
       },
       "potions": {
-        "tab": "Зелья"
-      }
-    },
-    "magic": {
-      "unknown": "Неизвестно",
-      "destruction": {
-        "tab": "Разрушение",
-        "waitingForData": "Ожидание данных заклинаний разрушения..."
-      },
-      "alteration": {
-        "tab": "Изменение",
-        "waitingForData": "Ожидание данных заклинаний изменения..."
-      },
-      "conjuration": {
-        "tab": "Колдовство",
-        "waitingForData": "Ожидание данных заклинаний колдовства..."
-      },
-      "illusion": {
-        "tab": "Иллюзия",
-        "waitingForData": "Ожидание данных заклинаний иллюзии..."
-      },
-      "restoration": {
-        "tab": "Восстановление",
-        "waitingForData": "Ожидание данных заклинаний восстановления..."
-      },
-      "enchanting": {
-        "tab": "Чарование",
-        "waitingForData": "Ожидание данных заклинаний чарования..."
-      },
-      "spells": {
-        "tab": "Заклинания"
-      },
-      "shouts": {
-        "tab": "Боевые крики"
-      },
-      "powers": {
-        "tab": "Силы",
-        "placeholder": "Раздел сил в разработке"
+        "tab": "Помощь"
       }
     },
     "quests": {

@@ -4,8 +4,9 @@ export interface CharacterStatsDisplay {
   displayLevel: ComputedRef<string>;
   displayExperience: ComputedRef<string>;
   displayCarryWeight: ComputedRef<string>;
-  displayGold: ComputedRef<string>;
+  displayCaps: ComputedRef<string>;
+  displayKarma: ComputedRef<string>;
   healthPercentage: ComputedRef<number>;
-  magickaPercentage: ComputedRef<number>;
-  staminaPercentage: ComputedRef<number>;
+  apPercentage: ComputedRef<number>;
+  radsPercentage: ComputedRef<number>;
 }

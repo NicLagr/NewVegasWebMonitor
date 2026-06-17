@@ -6,17 +6,18 @@ export const useCharacterStore = defineStore('character', () => {
   // State for character/stats page
   const stats = ref<CharacterStats>({
     health: undefined,
-    magicka: undefined,
-    stamina: undefined,
     healthBase: undefined,
-    magickaBase: undefined,
-    staminaBase: undefined,
+    ap: undefined,
+    apBase: undefined,
+    rads: undefined,
+    radsMax: undefined,
     level: undefined,
     xp: undefined,
     xpNext: undefined,
     inventoryWeight: undefined,
     carryWeight: undefined,
-    gold: undefined,
+    caps: undefined,
+    karma: undefined,
   });
 
   /**
@@ -32,8 +33,8 @@ export const useCharacterStore = defineStore('character', () => {
    */
   const statsPercentage = computed(() => ({
     health: getPercentage(stats.value.health, stats.value.healthBase),
-    magicka: getPercentage(stats.value.magicka, stats.value.magickaBase),
-    stamina: getPercentage(stats.value.stamina, stats.value.staminaBase),
+    ap: getPercentage(stats.value.ap, stats.value.apBase),
+    rads: getPercentage(stats.value.rads, stats.value.radsMax),
   }));
 
   /**

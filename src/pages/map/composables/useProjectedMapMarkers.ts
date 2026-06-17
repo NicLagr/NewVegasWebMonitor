@@ -1,5 +1,6 @@
 import { computed, type Ref } from 'vue';
 import type { MapHotspot, MapQuestMarker } from '@/stores/map/types';
+import { WORLD_MAP_WORLDSPACE } from '@/stores/map/types';
 import type {
   LocationProjectedMarker,
   ProjectedMarker,
@@ -15,7 +16,9 @@ interface UseProjectedMapMarkersOptions {
   questIconUrl: string;
 }
 
-const EXCLUDED_HOTSPOT_TYPES = ['DLC02ToSkyrim'];
+// Hotspot `type` values to never render on the Mojave map (e.g. markers that
+// belong to a separate DLC worldspace). Empty for the base game.
+const EXCLUDED_HOTSPOT_TYPES: string[] = [];
 
 export function useProjectedMapMarkers({
   projectWorldToImage,
@@ -51,7 +54,7 @@ export function useProjectedMapMarkers({
     return questMarkers.value
       .filter(
         (marker) =>
-          isRenderableTamrielQuestMarker(marker) &&
+          isRenderableWorldQuestMarker(marker) &&
           Number.isFinite(marker.x) &&
           Number.isFinite(marker.y)
       )
@@ -89,10 +92,10 @@ function isProjectedMarker<T extends ProjectedMarker>(marker: T | null): marker 
   return marker !== null;
 }
 
-function isRenderableTamrielQuestMarker(marker: MapQuestMarker): boolean {
+function isRenderableWorldQuestMarker(marker: MapQuestMarker): boolean {
   return (
     !marker.isInterior &&
-    marker.worldspace === 'Tamriel' &&
-    (marker.parentWorldspace === null || marker.parentWorldspace === 'Tamriel')
+    marker.worldspace === WORLD_MAP_WORLDSPACE &&
+    (marker.parentWorldspace === null || marker.parentWorldspace === WORLD_MAP_WORLDSPACE)
   );
 }

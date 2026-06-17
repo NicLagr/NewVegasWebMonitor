@@ -41,20 +41,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Download pre-built map tiles
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          mkdir -p public
-          gh release download map-assets \
-            --pattern 'map-dzi.tar.gz' \
-            --output map-dzi.tar.gz
-          tar -xzf map-dzi.tar.gz -C public
-          rm map-dzi.tar.gz
-          test -f public/map-dzi/skyrim.dzi
-          echo "Tiles extracted: $(find public/map-dzi -name '*.webp' | wc -l) webp files"
+      # The world map is now a single committed image (public/mojave-map.png),
+      # so no Deep-Zoom tile download is needed.
 
       - name: Build and sync Capacitor Android assets
+        # Demo build: bundle the mock fixtures so the APK shows the full themed UI
+        # (status, inventory, Mojave map + markers) with no backend. To ship a build
+        # that connects to the live FNVWebSocket plugin instead, remove this env.
+        env:
+          VITE_USE_FIXTURES: 'true'
         run: npm run cap:sync:android
 
       - name: Build debug APK
@@ -66,6 +61,6 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: skyrim-web-monitor-debug-apk
+          name: newvegaswebmonitor-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error

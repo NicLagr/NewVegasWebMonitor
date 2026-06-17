@@ -1,6 +1,5 @@
 import type { HotkeySlot } from '@/api/websocket';
 import type { CategoryType, WeaponType, BodySlot } from '@/stores/inventory/types';
-import type { MagicSchool } from '@/stores/magic/types';
 
 export type HotkeyKind = 'spell' | 'item';
 
@@ -18,7 +17,7 @@ export interface HotkeySlotSpell {
   name: string;
   formId: string;
   spellType: SpellKind;
-  school: MagicSchool | 'None';
+  school: string | 'None';
   cost: number;
   level: number;
   chargeTime: number;

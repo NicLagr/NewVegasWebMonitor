@@ -11,10 +11,8 @@ export const useNavigationStore = defineStore('navigation', () => {
   const subTabsMap = ref<Record<string, SubTab[]>>({
     character: [
       { id: 'stats', label: t('pages.character.stats.tab') },
-      { id: 'hotkeys', label: t('pages.character.hotkeys.tab') },
     ],
     inventory: [],
-    magic: [],
     quests: [
       { id: 'questsList', label: t('pages.quests.questsList.tab') },
     ],
@@ -36,11 +34,6 @@ export const useNavigationStore = defineStore('navigation', () => {
       id: 'inventory',
       label: t('app.tabs.inventory.label'),
       subTabs: subTabsMap.value.inventory,
-    },
-    {
-      id: 'magic',
-      label: t('app.tabs.magic.label'),
-      subTabs: subTabsMap.value.magic,
     },
     ...(systemStore.isFeatureProvided('player.quests')
       ? [
@@ -76,15 +69,15 @@ export const useNavigationStore = defineStore('navigation', () => {
   // Optional ordering map: specify sub-tab ids order per tab.
   // If an entry is empty or missing, fallback to server order.
   const subTabsOrderMap = ref<Record<string, string[]>>({
+    // FNV Pip-Boy inventory order. Subtab ids are derived from the
+    // `inventory.categories` payload (categoryId.toLowerCase()); we reuse the
+    // existing registry ids — `potions` carries CHEMS/AID, `books` carries
+    // NOTES/HOLOTAPES — and their visible labels come from each category `name`.
     inventory: [
-      'weapons', 
-      'apparel', 
-      'potions', 
-      'scrolls', 
-      'food',
-      'ingredients',
+      'weapons',
+      'apparel',
+      'potions',
       'books',
-      'keys',
       'misc',
     ],
   });

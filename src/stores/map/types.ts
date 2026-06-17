@@ -1,37 +1,41 @@
 /**
+ * EditorID of the top-level worldspace that the global map renders. A player
+ * position / quest marker can be plotted directly on the map only when its
+ * `worldspace` (and `parentWorldspace`) resolves to this value. For Fallout:
+ * New Vegas the Mojave Wasteland worldspace EditorID is `WastelandNV`.
+ *
+ * NOTE: this must match exactly what the FNVWebSocket backend reports in the
+ * `worldspace` / `parentWorldspace` fields. If the plugin uses a different
+ * string, change it here (single source of truth).
+ */
+export const WORLD_MAP_WORLDSPACE = 'WastelandNV';
+
+/**
  * Hotspot type identifier sent by the game server in the `type` field.
  *
  * The set is open: any string is allowed, but the values listed here are the
- * ones we have already seen and the ones the marker icon map uses for lookup.
- * The numeric `typeId` is currently informational only.
+ * ones we expect for the Mojave map and the ones the marker icon map uses for
+ * lookup. The numeric `typeId` is currently informational only.
  *
  * To add a new type, append it to {@link KnownMapHotspotType} so it appears in
  * intellisense, then map it to an icon in
  * `src/pages/map/composables/useMapMarkerIcons.ts`.
  */
 export type KnownMapHotspotType =
-  | 'WhiterunCapitol'
-  | 'SolitudeCapitol'
-  | 'RiftenCapitol'
-  | 'MorthalCapitol'
-  | 'WinterholdCapitol'
-  | 'MarkarthCapitol'
-  | 'WindhelmCapitol'
-  | 'FalkreathCapitol'
-  | 'DawnstarCapitol'
-  | 'NordicTower'
-  | 'NordicRuin'
+  | 'Vault'
+  | 'City'
+  | 'Town'
+  | 'Settlement'
   | 'Cave'
+  | 'Factory'
+  | 'MilitaryBase'
   | 'Camp'
-  | 'Fort'
+  | 'Building'
+  | 'Ruins'
   | 'Mine'
-  | 'Farm'
-  | 'Shipwreck'
-  | 'Lighthouse'
-  | 'Shrine'
-  | 'StandingStone'
-  | 'WordWall'
-  | 'DragonLair';
+  | 'GasStation'
+  | 'Monument'
+  | 'Casino';
 
 export type MapHotspotType = KnownMapHotspotType | (string & {});
 

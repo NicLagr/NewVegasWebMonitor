@@ -10,7 +10,7 @@ import { computed, type ComputedRef } from 'vue';
 //   times per second; we MUST NOT convert it on every update.
 //
 // How calibration works:
-//   The Skyrim world map is hand-painted, so the relationship between game
+//   A game world map is a hand-made render, so the relationship between game
 //   coordinates and image pixels is NOT a perfect affine transform — there
 //   is slight artistic distortion. A 3-point exact affine fits the 3 chosen
 //   points but extrapolates poorly elsewhere. Instead we use a LEAST-SQUARES
@@ -20,14 +20,17 @@ import { computed, type ComputedRef } from 'vue';
 // Recommended number of reference points:
 //   3   — minimum. Exact fit at those 3, error grows with distance.
 //   5–6 — good balance. One per corner of the map plus center.
-//   9   — ideal for Skyrim: one per Hold capital. Even geographic coverage
-//         and natural choice of well-known landmarks. Adding more past ~10
-//         brings diminishing returns.
 //
-// To recalibrate: tap each landmark on the map (the click handler in
-// TheMap.vue prints image-pixel coords to the console) and update the
-// `imagePx` field of the corresponding entry in REFERENCE_POINTS. To add a
-// new landmark, push another entry — no other code changes are needed.
+// ⚠️ CALIBRATION FOR YOUR Mojave map image:
+//   The values below are a SELF-CONSISTENT EXAMPLE for a 4096×4096 image so the
+//   mock data renders sensibly out of the box. They are NOT accurate to a real
+//   Mojave map. To calibrate against your own public/mojave-map.png:
+//     1. Set MOJAVE_MAP_IMAGE_WIDTH/HEIGHT in useMapProjection.ts to your PNG size.
+//     2. In-game (or from the wiki) note each landmark's world (x, y).
+//     3. Open the Map tab, tap each landmark — TheMap.vue's click handler prints
+//        `[map] image px: { x, y }` to the console.
+//     4. Replace the `game` and `imagePx` numbers below with those values.
+//   Order is irrelevant; entries with a null field are skipped.
 // =============================================================
 
 export interface Point {
@@ -62,25 +65,27 @@ export interface ReferencePoint {
 // console. Replace NOT_CALIBRATED with that object literal.
 // -----------------------------------------------------------------
 
-export const WHITERUN_GAME: Point = { x: 19855.2265625, y: -7422.51025390625 };
-export const SOLITUDE_GAME: Point = { x: -64942.99609375, y: 104648.0 };
-export const RIFTEN_GAME: Point = { x: 173415.203125, y: -96600.1484375 };
-export const MARKARTH_GAME: Point = { x: -174024.296875, y: 5255.478515625 };
-export const WINDHELM_GAME: Point = { x: 135025.78125, y: 35596.5859375 };
-export const FALKREATH_GAME: Point = { x: -30296.33203125, y: -86283.8984375 };
-export const MORTHAL_GAME: Point = { x: -38639.7421875, y: 66734.296875 };
-export const DAWNSTAR_GAME: Point = { x: 30808.154296875, y: 106138.28125 };
-export const WINTERHOLD_GAME: Point = { x: 109207.53125, y: 102864.0390625 };
+// Mojave landmarks. `imagePx` were calibrated by clicking each location on the
+// real 3500×3500 map. `game` coords are still placeholders (made-up but laid out
+// to roughly match the Mojave geography) — swap them for real FNV world coords
+// when the FNVWebSocket plugin reports them, then the live player position will
+// project exactly. For the mock demo (which uses these same game coords), markers
+// already land on their real map positions.
+export const GOODSPRINGS_GAME: Point = { x: -78000, y: 42000 };
+export const PRIMM_GAME: Point = { x: -60000, y: -12000 };
+export const NIPTON_GAME: Point = { x: 24000, y: -78000 };
+export const NOVAC_GAME: Point = { x: 60000, y: -36000 };
+export const STRIP_GAME: Point = { x: 6000, y: 6000 };
+export const VAULT21_GAME: Point = { x: 3000, y: 9000 };
+export const HOOVER_DAM_GAME: Point = { x: 108000, y: -18000 };
 
-export const WHITERUN_IMAGE_PX: Point = { x: 6032.07, y: 4930.39 };
-export const SOLITUDE_IMAGE_PX: Point = { x: 4219.38, y: 2392.07 };
-export const RIFTEN_IMAGE_PX: Point = { x: 9625.23, y: 7005.07 };
-export const MARKARTH_IMAGE_PX: Point = { x: 1497.63, y: 4642.97 };
-export const WINDHELM_IMAGE_PX: Point = { x: 8682.57, y: 3974.99 };
-export const FALKREATH_IMAGE_PX: Point = { x: 4887.76, y: 6942.50 };
-export const MORTHAL_IMAGE_PX: Point = { x: 4627.66, y: 3117.10 };
-export const DAWNSTAR_IMAGE_PX: Point = { x: 6157.81, y: 2415.48 };
-export const WINTERHOLD_IMAGE_PX: Point = { x: 8116.69, y: 2364.11 };
+export const GOODSPRINGS_IMAGE_PX: Point = { x: 581.18, y: 1021.46 };
+export const PRIMM_IMAGE_PX: Point = { x: 821.64, y: 1875.75 };
+export const NIPTON_IMAGE_PX: Point = { x: 2069.54, y: 2873.25 };
+export const NOVAC_IMAGE_PX: Point = { x: 2676.36, y: 2267.05 };
+export const STRIP_IMAGE_PX: Point = { x: 1829.72, y: 1641.33 };
+export const VAULT21_IMAGE_PX: Point = { x: 1743.68, y: 1540.09 };
+export const HOOVER_DAM_IMAGE_PX: Point = { x: 3420.26, y: 1989.70 };
 
 /**
  * Calibration set. Order is irrelevant. Entries with `game === null` or
@@ -88,15 +93,13 @@ export const WINTERHOLD_IMAGE_PX: Point = { x: 8116.69, y: 2364.11 };
  * to the fit.
  */
 export const REFERENCE_POINTS: ReferencePoint[] = [
-  { name: 'Whiterun',   game: WHITERUN_GAME,   imagePx: WHITERUN_IMAGE_PX   },
-  { name: 'Solitude',   game: SOLITUDE_GAME,   imagePx: SOLITUDE_IMAGE_PX   },
-  { name: 'Riften',     game: RIFTEN_GAME,     imagePx: RIFTEN_IMAGE_PX     },
-  { name: 'Markarth',   game: MARKARTH_GAME,   imagePx: MARKARTH_IMAGE_PX   },
-  { name: 'Windhelm',   game: WINDHELM_GAME,   imagePx: WINDHELM_IMAGE_PX   },
-  { name: 'Falkreath',  game: FALKREATH_GAME,  imagePx: FALKREATH_IMAGE_PX  },
-  { name: 'Morthal',    game: MORTHAL_GAME,    imagePx: MORTHAL_IMAGE_PX    },
-  { name: 'Dawnstar',   game: DAWNSTAR_GAME,   imagePx: DAWNSTAR_IMAGE_PX   },
-  { name: 'Winterhold', game: WINTERHOLD_GAME, imagePx: WINTERHOLD_IMAGE_PX },
+  { name: 'Goodsprings', game: GOODSPRINGS_GAME, imagePx: GOODSPRINGS_IMAGE_PX },
+  { name: 'Primm',       game: PRIMM_GAME,       imagePx: PRIMM_IMAGE_PX       },
+  { name: 'Nipton',      game: NIPTON_GAME,      imagePx: NIPTON_IMAGE_PX      },
+  { name: 'Novac',       game: NOVAC_GAME,       imagePx: NOVAC_IMAGE_PX       },
+  { name: 'The Strip',   game: STRIP_GAME,       imagePx: STRIP_IMAGE_PX       },
+  { name: 'Vault 21',    game: VAULT21_GAME,     imagePx: VAULT21_IMAGE_PX     },
+  { name: 'Hoover Dam',  game: HOOVER_DAM_GAME,  imagePx: HOOVER_DAM_IMAGE_PX  },
 ];
 function solve3x3(
   M: readonly [readonly number[], readonly number[], readonly number[]],

@@ -55,6 +55,31 @@ body {
 }
 
 // ============================================
+// CRT SCANLINE OVERLAY (Pip-Boy terminal effect)
+// ============================================
+// A non-interactive overlay drawing horizontal scanlines and a faint green
+// vignette over the whole viewport. Add the `no-crt` class to <body> (or
+// remove this block) to disable.
+
+body:not(.no-crt)::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-tooltip);
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgb(0 0 0 / 0%) 0,
+      rgb(0 0 0 / 0%) 2px,
+      rgb(0 0 0 / 25%) 3px,
+      rgb(0 0 0 / 25%) 4px
+    ),
+    radial-gradient(ellipse at center, rgb(0 255 65 / 3%) 0%, rgb(0 0 0 / 35%) 100%);
+  animation: crtFlicker 4s infinite steps(60);
+}
+
+// ============================================
 // SCROLLBAR STYLING
 // ============================================
 // Overlay-style scrollbar: invisible while idle, appears on hover/scroll.

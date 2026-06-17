@@ -4,7 +4,8 @@ import type {
 
 /**
  * WebSocket Protocol Types and Interfaces
- * Based on: https://github.com/andreyvelsk/SkyrimWebSocket/blob/main/PROTOCOL.md
+ * The FNV backend (FNVWebSocket NVSE plugin) must implement this same protocol;
+ * it is identical to the original SkyrimWebSocket protocol.
  */
 
 // ============================================================================
@@ -17,9 +18,6 @@ export type CommandType =
   | 'use'
   | 'drop'
   | 'favorite'
-  | 'equip_spell'
-  | 'unequip_spell'
-  | 'favorite_spell'
   | 'hotkey_set'
   | 'hotkey_clear'
   | 'hotkey_trigger'
@@ -27,7 +25,6 @@ export type CommandType =
   | 'player_marker_set'
   | 'player_marker_clear'
   | 'fast_travel'
-  | 'read_book'
 export type EquipHand = EquippedHand
 export type HotkeySlot = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
 
@@ -36,12 +33,9 @@ export type HotkeySlot = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
  * - equip: Equips the item. Weapons use the hand parameter to select left/right hand.
  *          Apparel and ammo auto-select the correct slot.
  * - unequip: Removes the equipped item. For weapons, hand specifies which hand to unequip from.
- * - use: Consumes the item (applies effect). Scrolls are equipped for casting.
+ * - use: Consumes/activates the item (applies chem/aid effect, plays a holotape/note).
  * - drop: Drops count items from inventory onto the ground. Use count parameter to specify quantity.
  * - favorite: Toggles the item's favorite status on/off.
- * - equip_spell: Equips a spell to a hand for casting. Uses hand parameter (right/left).
- * - unequip_spell: Unequips a spell from a hand. Uses hand parameter (right/left).
- * - favorite_spell: Toggles the spell's favorite status on/off.
  * - hotkey_set: Binds a formId to a hotkey slot (1..8). Requires formId and slot.
  * - hotkey_clear: Removes the binding on a slot (1..8). Requires slot.
  * - hotkey_trigger: Fires the action bound to a slot (1..8). Requires slot.
@@ -119,9 +113,8 @@ export interface CommandMessage extends BaseMessage {
  *
  * Per-command required fields:
  *   - equip / unequip:                formId (+ optional hand)
- *   - use / favorite / favorite_spell: formId
+ *   - use / favorite:                  formId
  *   - drop:                            formId (+ optional count)
- *   - equip_spell / unequip_spell:    formId (+ optional hand)
  *   - hotkey_set:                      formId, slot
  *   - hotkey_clear / hotkey_trigger:  slot
  *   - quest_set_active:                formId, active

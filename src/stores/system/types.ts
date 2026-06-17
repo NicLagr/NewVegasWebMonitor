@@ -1,9 +1,8 @@
-export type Feature = 
-'player' | 
-'player.hotkeys' | 
+export type Feature =
+'player' |
+'player.hotkeys' |
 'player.quests' |
-'inventory' | 
-'magic' | 
+'inventory' |
 'map';
 
 export type Features = Array<Feature>;

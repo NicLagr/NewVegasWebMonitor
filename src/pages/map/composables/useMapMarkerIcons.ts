@@ -21,11 +21,20 @@ export const DEFAULT_MARKER_ICON = buildIconPath('map/location.svg');
  * strings, so any path under /public/icons is acceptable.
  */
 export const MARKER_ICON_MAP: Partial<Record<MapHotspotType, string>> = {
-  // WhiterunCapitol: buildIconPath('delapouite/whiterun.svg'),
-  // SolitudeCapitol: buildIconPath('delapouite/solitude.svg'),
-  // RiftenCapitol: buildIconPath('delapouite/riften.svg'),
-  // NordicTower: buildIconPath('delapouite/nordic-tower.svg'),
-  // NordicRuin: buildIconPath('delapouite/nordic-ruin.svg'),
+  Vault: buildIconPath('delapouite/cave-entrance.svg'),
+  City: buildIconPath('delapouite/modern-city.svg'),
+  Town: buildIconPath('delapouite/village.svg'),
+  Settlement: buildIconPath('delapouite/village.svg'),
+  Cave: buildIconPath('delapouite/cave-entrance.svg'),
+  Factory: buildIconPath('delapouite/factory.svg'),
+  MilitaryBase: buildIconPath('delapouite/barracks.svg'),
+  Camp: buildIconPath('delapouite/desert-camp.svg'),
+  Building: buildIconPath('delapouite/control-tower.svg'),
+  Ruins: buildIconPath('delapouite/ancient-ruins.svg'),
+  Mine: buildIconPath('delapouite/mine-wagon.svg'),
+  GasStation: buildIconPath('delapouite/gas-pump.svg'),
+  Monument: buildIconPath('delapouite/castle-ruins.svg'),
+  Casino: buildIconPath('lorc/poker-hand.svg'),
 };
 
 /**

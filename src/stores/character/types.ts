@@ -1,14 +1,15 @@
 export interface CharacterStats {
   health?: number | null;
-  magicka?: number | null;
-  stamina?: number | null;
   healthBase?: number | null;
-  magickaBase?: number | null;
-  staminaBase?: number | null;
+  ap?: number | null;
+  apBase?: number | null;
+  rads?: number | null;
+  radsMax?: number | null;
   level?: number | null;
   xp?: number | null;
   xpNext?: number | null;
   inventoryWeight?: number | null;
   carryWeight?: number | null;
-  gold?: number | null;
+  caps?: number | null;
+  karma?: number | null;
 }
