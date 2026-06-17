@@ -46,3 +46,6 @@ public/map.jpg
 .env
 .env.local
 .env*.local
+
+# xNVSE source (cloned by CI for plugin headers)
+plugin/extern/

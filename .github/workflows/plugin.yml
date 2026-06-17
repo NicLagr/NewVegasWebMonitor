@@ -17,6 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Fetch xNVSE headers
+        run: git clone --depth 1 https://github.com/xNVSE/NVSE plugin/extern/xnvse
+
       - name: Configure (Win32 / MSVC)
         run: cmake -S plugin -B plugin/build -A Win32
 

@@ -1,5 +1,6 @@
 #include "ws_server.h"
 #include "sha1.h"
+#include "snapshot.h"
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -139,12 +140,32 @@ std::string data_msg(const std::string& id, const std::string& fields) {
 
 std::string fields_for(const std::string& id) {
     if (id == "system")
-        return "{\"language\":\"en\",\"features\":[\"player\",\"inventory\",\"map\"]}";
-    if (id == "game.status")
-        return "{\"status\":{\"canAct\":true,\"controlsEnabled\":true,\"dead\":false,"
-               "\"inCombat\":false,\"inDialogue\":false,\"inMainMenu\":false,"
-               "\"loading\":false,\"paused\":false}}";
-    // Phase 2 fills these from real game reads (character.stats, inventory.*, map.*).
+        // Phase 2a ships STATUS only; inventory/map tabs come as those reads land.
+        return "{\"language\":\"en\",\"features\":[\"player\",\"inventory\"]}";
+
+    if (id == "game.status") {
+        const GameSnapshot s = snapshot_get();
+        const char* b = s.inGame ? "true" : "false";
+        const char* menu = s.inGame ? "false" : "true";
+        return std::string("{\"status\":{\"canAct\":") + b +
+               ",\"controlsEnabled\":" + b +
+               ",\"dead\":false,\"inCombat\":false,\"inDialogue\":false,\"inMainMenu\":" + menu +
+               ",\"loading\":false,\"paused\":false}}";
+    }
+
+    if (id == "character.stats") {
+        const GameSnapshot s = snapshot_get();
+        char buf[640];
+        std::snprintf(buf, sizeof(buf),
+            "{\"health\":%.0f,\"healthBase\":%.0f,\"ap\":%.0f,\"apBase\":%.0f,"
+            "\"rads\":%.0f,\"radsMax\":%.0f,\"xp\":%.0f,\"carryWeight\":%.0f,"
+            "\"inventoryWeight\":%.1f,\"karma\":%.0f}",
+            s.health, s.healthMax, s.ap, s.apMax, s.rads, s.radsMax,
+            s.xp, s.carryWeight, s.invWeight, s.karma);
+        return buf;
+    }
+
+    // inventory.* / map.* — Phase 2b/2c.
     return "{}";
 }
 
