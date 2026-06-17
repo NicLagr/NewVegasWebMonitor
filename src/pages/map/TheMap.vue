@@ -27,6 +27,12 @@
           :background-color="isFollowPlayerMode ? 'var(--skyrim-accent-gold-light)' : 'var(--skyrim-text-dim)' "
         />
       </button>
+      <div
+        v-if="tapReadout"
+        class="map-calib-readout"
+      >
+        {{ tapReadout }}
+      </div>
     </div>
   </div>
 </template>
@@ -188,8 +194,12 @@ function syncContainerSize(): void {
   }
 }
 
+/** Last tapped image-pixel coordinate, shown on-screen for map calibration. */
+const tapReadout = ref('');
+
 function logImagePxAt(imgX: number, imgY: number): void {
   console.log(`[map] image px: { x: ${imgX.toFixed(2)}, y: ${imgY.toFixed(2)} }`);
+  tapReadout.value = `px  x: ${imgX.toFixed(0)}   y: ${imgY.toFixed(0)}`;
 }
 
 function centerOnPlayer(immediately = true): void {
@@ -452,6 +462,23 @@ onBeforeUnmount(() => {
   top: 0;
   left: 0;
   pointer-events: none;
+}
+
+.map-calib-readout {
+  position: absolute;
+  left: calc(var(--spacing-md) + env(safe-area-inset-left));
+  bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
+  z-index: 6;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--skyrim-bg-dark);
+  border: var(--border-thin) solid var(--skyrim-border-accent);
+  border-radius: var(--radius-sm);
+  color: var(--skyrim-text-accent);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  user-select: text;
 }
 
 .map-follow-player-btn {
