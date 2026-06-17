@@ -199,7 +199,11 @@ const tapReadout = ref('');
 
 function logImagePxAt(imgX: number, imgY: number): void {
   console.log(`[map] image px: { x: ${imgX.toFixed(2)}, y: ${imgY.toFixed(2)} }`);
-  tapReadout.value = `px  x: ${imgX.toFixed(0)}   y: ${imgY.toFixed(0)}`;
+  // Pair the tapped pixel with the live in-game position, so calibration is just
+  // "stand somewhere, tap where you are, read this line".
+  const dp = displayPosition.value;
+  const world = dp ? `world ${dp.x.toFixed(0)}, ${dp.y.toFixed(0)}  →  ` : '';
+  tapReadout.value = `${world}px ${imgX.toFixed(0)}, ${imgY.toFixed(0)}`;
 }
 
 function centerOnPlayer(immediately = true): void {
