@@ -18,3 +18,6 @@ export { default as TheQuests } from './quests/TheQuests.vue';
 
 // Map page
 export { TheMap } from './map';
+
+// Radio page
+export { default as TheRadio } from './radio/TheRadio.vue';

@@ -19,6 +19,7 @@ import {
   TheBooks,
   TheQuests,
   TheMap,
+  TheRadio,
 } from '@/pages';
 
 const INVENTORY_FREQUENCY = 200; // ms
@@ -208,6 +209,21 @@ export const pagesRegistry: PagesRegistry = {
           },
           settings: {
             frequency: INVENTORY_FREQUENCY,
+          },
+        },
+      ],
+    },
+    radio: {
+      component: TheRadio,
+      subscriptions: [
+        {
+          id: 'radio.status',
+          fields: {
+            on: 'Game::Radio::On',
+            station: 'Game::Radio::Station',
+          },
+          settings: {
+            frequency: 1000,
           },
         },
       ],

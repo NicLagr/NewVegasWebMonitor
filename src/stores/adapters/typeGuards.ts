@@ -25,6 +25,7 @@ import { CATEGORY_TYPES } from '@/stores/inventory/types';
 import type { CategoriesData } from '@/shared/lib/types/types';
 import type { QuestsState, QuestJournalEntry, QuestListSection } from '@/stores/quests/types';
 import type { HotkeyItemsState } from '@/stores/hotkeys/types';
+import type { RadioState } from '@/stores/radio/useRadioStore';
 import type { GameStatusData } from '@/stores/game/types';
 import type {
   MapHotspotsState,
@@ -217,6 +218,15 @@ export function isQuestsData(data: unknown, id: string): data is QuestsState {
     data !== null &&
     'quests' in data &&
     Array.isArray((data as QuestsState).quests)
+  );
+}
+
+export function isRadioData(data: unknown, id: string): data is RadioState {
+  return (
+    id === 'radio.status' &&
+    typeof data === 'object' &&
+    data !== null &&
+    'on' in data
   );
 }
 

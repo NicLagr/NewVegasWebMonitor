@@ -6,8 +6,9 @@ import { useGameStatusStore } from '@/stores/game/useGameStatusStore';
 import { useMapHotspotsStore } from '@/stores/map/useMapHotspotsStore';
 import { useMapPlayerStore } from '@/stores/map/useMapPlayerStore';
 import { useQuestStore } from '@/stores/quests/useQuestStore';
+import { useRadioStore } from '@/stores/radio/useRadioStore';
 import type { RouterResult } from './types';
-import { isCharacterStatsData, isWeaponsData, isApparelData, isFoodData, isPotionsData, isScrollsData, isKeysData, isBooksData, isInventoryCategories, isIngredientsData, isMiscData, isHotkeyItemsData, isQuestsData, isGameStatusData, isMapHotspotsData, isMapQuestMarkersData, isPlayerPositionData } from './typeGuards';
+import { isCharacterStatsData, isWeaponsData, isApparelData, isFoodData, isPotionsData, isScrollsData, isKeysData, isBooksData, isInventoryCategories, isIngredientsData, isMiscData, isHotkeyItemsData, isQuestsData, isRadioData, isGameStatusData, isMapHotspotsData, isMapQuestMarkersData, isPlayerPositionData } from './typeGuards';
 export class DataRouter {
   static routeDataById(subscriptionId: string, data: unknown): RouterResult {
     const characterStore = useCharacterStore();
@@ -112,6 +113,11 @@ export class DataRouter {
         console.log('[DataRouter] Routing quests data to quests store');
         useQuestStore().setQuests(data);
         return { success: true, message: 'Data routed to quests store' };
+      }
+
+      if (isRadioData(data, subscriptionId)) {
+        useRadioStore().setRadio(data);
+        return { success: true, message: 'Data routed to radio store' };
       }
 
       if (isGameStatusData(data, subscriptionId)) {

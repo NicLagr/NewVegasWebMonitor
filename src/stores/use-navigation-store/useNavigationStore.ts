@@ -35,12 +35,17 @@ export const useNavigationStore = defineStore('navigation', () => {
       label: t('app.tabs.inventory.label'),
       subTabs: subTabsMap.value.inventory,
     },
-    ...(systemStore.isFeatureProvided('player.quests')
+    ...(systemStore.isFeatureProvided('player.quests') || systemStore.isFeatureProvided('game.radio')
       ? [
           {
             id: 'quests',
             label: t('app.tabs.quests.label'),
-            subTabs: subTabsMap.value.quests,
+            subTabs: [
+              ...(systemStore.isFeatureProvided('player.quests') ? subTabsMap.value.quests : []),
+              ...(systemStore.isFeatureProvided('game.radio')
+                ? [{ id: 'radio', label: t('pages.radio.status.tab') }]
+                : []),
+            ],
           },
         ]
       : []),

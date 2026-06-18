@@ -3,6 +3,7 @@ export type Feature =
 'player.hotkeys' |
 'player.quests' |
 'inventory' |
-'map';
+'map' |
+'game.radio';
 
 export type Features = Array<Feature>;
