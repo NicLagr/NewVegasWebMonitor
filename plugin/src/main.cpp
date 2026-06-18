@@ -72,6 +72,42 @@ static float itemWeight(TESForm* f) {
     return w ? w->weight : 0.0f;
 }
 
+// Pip-Boy weapon DAM, computed by the ENGINE's own routine (no formula guessing).
+// This replicates the core of JIP LN's ExtraContainerChanges::EntryData::
+// CalculateWeaponDamage (credit: JazzIsParis): it calls the engine per-attack
+// damage function at 0x644CE0, which already applies skill, condition, and
+// projectile count exactly as the in-game item card does. FNV 1.4.0.525 addrs.
+//   entry     = the ExtraContainerChanges::EntryData* for the weapon stack
+//   owner     = the actor (player); the engine reads owner->avOwner at +0xA4
+//   condition = health ratio 0..1
+//   ammo      = ammo form (may be null)
+// MUST be called on the main thread.
+static __declspec(naked) float __fastcall EngineWeaponDamage(
+    void* /*entry, ecx*/, void* /*edx unused*/, void* /*owner*/, float /*condition*/, void* /*ammo*/) {
+    __asm {
+        push    esi
+        mov     esi, ecx
+        cmp     dword ptr [esp+0x10], 0   // ammo != null ?
+        setnz   dl
+        movzx   edx, dl
+        push    edx
+        push    ecx
+        push    0
+        push    0
+        push    0x3F800000                // 1.0f
+        push    dword ptr [esp+0x20]      // condition
+        push    dword ptr [ecx+8]         // entry->type (the weapon)
+        mov     ecx, [esp+0x24]           // owner
+        add     ecx, 0xA4                 // -> owner->avOwner
+        push    ecx
+        mov     eax, 0x644CE0
+        call    eax
+        add     esp, 0x20
+        pop     esi
+        ret     0xC                       // __fastcall: clean owner/condition/ammo
+    }
+}
+
 // Append the BaseItem fields shared by every category. Caller opens the `{`.
 // `value` is the (condition-adjusted) value to display.
 static void appendBase(std::string& o, TESForm* f, int count, float value) {
@@ -134,16 +170,17 @@ static void rebuildInventory(PlayerCharacter* p) {
                         }
                     }
                 }
-                // DEBUG: log each equipped weapon ONCE (no per-snapshot flood) so we
-                // can solve the gun skill/damage formula from real numbers.
+                // DEBUG: log each equipped weapon ONCE (no per-snapshot flood) so we can
+                // verify the engine-computed DAM against the in-game Pip-Boy.
                 if (equipped && f->typeID == kFormType_TESObjectWEAP) {
                     static std::unordered_set<UInt32> dbgLoggedWeap;
                     if (dbgLoggedWeap.insert(f->refID).second) {
                         TESObjectWEAP* w = (TESObjectWEAP*)f;
                         const char* nm = f->GetTheName(); if (!nm) nm = "?";
-                        logf("[dbg] WEAP %s baseDmg=%u maxH=%u cur=%.0f cond=%d skillAV=%u skill=%.0f baseVal=%.0f",
-                             nm, w->attackDmg.damage, dbgMaxH, dbgCur, condPct,
-                             w->weaponSkill, p->avOwner.Fn_03(w->weaponSkill), itemValue(f));
+                        const int   np  = w->numProjectiles ? w->numProjectiles : 1;
+                        const float ed  = EngineWeaponDamage(e, 0, p, healthRatio, nullptr);
+                        logf("[dbg] WEAP %s baseDmg=%u cond=%d engineDAM=%.2f perShot=%.2f nProj=%d",
+                             nm, w->attackDmg.damage, condPct, ed, ed / (float)np, np);
                     }
                 }
                 (void)dbgCur; (void)dbgMaxH;
@@ -157,30 +194,22 @@ static void rebuildInventory(PlayerCharacter* p) {
             switch (f->typeID) {
                 case kFormType_TESObjectWEAP: {
                     TESObjectWEAP* w = (TESObjectWEAP*)f;
-                    // FNV displayed DAM (GECK weapon damage formula):
-                    //   Dam = base × Skill × Cond + Bonus
-                    //   Skill = (50 + skillLevel/2)/100   -> 0.5 .. 1.0
-                    //   Cond  = (50 + condition%/2)/100   -> 0.5 .. 1.0
-                    //   Bonus = melee/unarmed Strength bonus (0 for ranged weapons)
-                    // Ranged weapons (Guns/Energy/Explosives) get no Bonus; melee/unarmed
-                    // add the derived MeleeDamage/UnarmedDamage actor value.
                     const UInt32 baseDmg = w->attackDmg.damage;
-                    float skill = p->avOwner.Fn_03(w->weaponSkill);
-                    if (skill < 0.0f) skill = 0.0f; else if (skill > 100.0f) skill = 100.0f;
-                    const float skillMult = (50.0f + skill * 0.5f) / 100.0f;
-                    const float condMult  = 0.5f + 0.5f * healthRatio; // = (50 + cond%/2)/100
-                    float dmg = baseDmg * skillMult * condMult;
-                    if (w->weaponSkill == eActorVal_MeleeWeapons)
-                        dmg += p->avOwner.Fn_03(eActorVal_MeleeDamage);
-                    else if (w->weaponSkill == eActorVal_Unarmed)
-                        dmg += p->avOwner.Fn_03(eActorVal_UnarmedDamage);
-                    const int dispDmg = (int)(dmg + 0.5f);
+                    // Pip-Boy DAM straight from the engine's own routine (exact: skill,
+                    // condition, projectile count all handled by the game). Returns the
+                    // total per-attack damage; for multi-projectile weapons (shotguns)
+                    // the card shows per-pellet × count, so report both.
+                    const int   nProj   = w->numProjectiles ? w->numProjectiles : 1;
+                    const float engDmg  = EngineWeaponDamage(e, 0, p, healthRatio, nullptr);
+                    const int   dispDmg = (int)(engDmg + 0.5f);
+                    const float perShot = engDmg / (float)nProj;
                     std::string o = "{"; appendBase(o, f, count, effValue);
-                    char b[320];
+                    char b[360];
                     std::snprintf(b, sizeof(b), ",\"categoryType\":\"Weapon\",\"damage\":%d,\"baseDamage\":%u,"
+                        "\"damagePerShot\":%.1f,\"numProjectiles\":%d,"
                         "\"condition\":%d,\"isEquipped\":%s,\"equippedHand\":%s,\"isTwoHanded\":false,"
                         "\"weaponType\":\"%s\",\"equipSlots\":[],\"enchantment\":null,\"enchantmentCharge\":null}",
-                        dispDmg, baseDmg, condPct,
+                        dispDmg, baseDmg, perShot, nProj, condPct,
                         equipped ? "true" : "false", equipped ? "\"right\"" : "null",
                         weaponTypeStr(w->eWeaponType));
                     o += b;
