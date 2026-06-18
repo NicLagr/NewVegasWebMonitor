@@ -19,7 +19,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { BasePreview } from '@/shared/ui/items';
 import { WeaponIcon } from '@/entities/ui';
-import { getRoundValue, getWeightValue } from '@/shared/lib/utils/getDescriptionValues';
+import { getRoundValue, getStackWeight, getStackValue } from '@/shared/lib/utils/getDescriptionValues';
 import type { WeaponItem } from '@/stores/inventory/types';
 
 const { t } = useI18n();
@@ -44,11 +44,11 @@ const stats = computed(() => [
   },
   {
     label: t('pages.inventory.weapons.weight'),
-    value: getWeightValue(props.data?.weight),
+    value: getStackWeight(props.data?.weight, props.data?.count),
   },
   {
     label: t('pages.inventory.weapons.value'),
-    value: getRoundValue(props.data?.value),
+    value: getStackValue(props.data?.value, props.data?.count),
   },
 ]);
 </script>

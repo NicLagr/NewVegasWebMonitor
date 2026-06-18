@@ -17,7 +17,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { BasePreview } from '@/shared/ui/items';
 import { BaseIcon } from '@/shared/ui';
-import { getRoundValue } from '@/shared/lib/utils/getDescriptionValues';
+import { getStackWeight, getStackValue } from '@/shared/lib/utils/getDescriptionValues';
 import type { MiscItem } from '@/stores/inventory/types';
 
 const { t } = useI18n();
@@ -29,11 +29,11 @@ const props = defineProps<{
 const stats = computed(() => [
   {
     label: t('common.weight'),
-    value: getRoundValue(props.data?.weight),
+    value: getStackWeight(props.data?.weight, props.data?.count),
   },
   {
     label: t('common.value'),
-    value: getRoundValue(props.data?.value),
+    value: getStackValue(props.data?.value, props.data?.count),
   },
 ]);
 </script>

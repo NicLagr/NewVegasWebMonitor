@@ -21,7 +21,7 @@ import { InventoryList } from '@/features/ui';
 import { useInventoryStore } from '@/stores/inventory/useInventoryStore';
 import { useWebSocketStore } from '@/stores/use-websocket-store/useWebsocketStore';
 import { useInventoryItemActions } from '@/pages/inventory/composables/useInventoryItemActions';
-import { getRoundValue } from '@/shared/lib/utils/getDescriptionValues';
+import { getStackWeight, getStackValue } from '@/shared/lib/utils/getDescriptionValues';
 import { isPotionItem } from '@/stores/adapters/typeGuards';
 
 const inventoryStore = useInventoryStore();
@@ -40,11 +40,11 @@ const {
 const previewStats = computed(() => [
   {
     label: t('common.weight'),
-    value: getRoundValue(activeItemData.value?.weight),
+    value: getStackWeight(activeItemData.value?.weight, activeItemData.value?.count),
   },
   {
     label: t('common.value'),
-    value: getRoundValue(activeItemData.value?.value),
+    value: getStackValue(activeItemData.value?.value, activeItemData.value?.count),
   },
 ]);
 

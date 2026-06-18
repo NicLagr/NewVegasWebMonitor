@@ -8,7 +8,31 @@
       "Bash(git commit -q -m 'frontend: fix map nav focus-trap \\(100dvh\\), green player marker, weapon tap = direct equip \\(no hand picker\\) *)",
       "Bash(git commit -q -m 'plugin: real weapon/armor condition % + equipped state \\(per-stack ExtraHealth/ExtraWorn\\) *)",
       "Bash(git commit -q -m 'plugin: condition-adjusted value + FNV damage formula \\(condition x skill\\) to match Pip-Boy *)",
-      "Bash(git commit -q -m 'inventory: show weapon/apparel weight with decimals \\(light items no longer round to 0\\) *)"
+      "Bash(git commit -q -m 'inventory: show weapon/apparel weight with decimals \\(light items no longer round to 0\\) *)",
+      "Bash(sed -n '2360,2400p' nvse/nvse/GameForms.h)",
+      "Bash(awk 'NR>=2360 && NR<=2400' nvse/nvse/GameForms.h)",
+      "Bash(sed -n '546,556p' nvse/nvse/GameExtraData.h)",
+      "Bash(awk '/class ExtraHealthPerc/,/};/' nvse/nvse/GameExtraData.h)",
+      "Bash(git commit -q -m 'plugin: armor DT reads damageThreshold \\(FNV\\), not armorRating; debug-log equipped weap/armor breakdown *)",
+      "Bash(git commit -q -m 'plugin: fix Pip-Boy value \\(base×ratio^1.5\\) and weapon DAM \\(condition only, no skill term\\) *)",
+      "Bash(git commit -q -m 'plugin: floor inventory weight to match Pip-Boy \\(210 not 211\\); re-add one-shot weapon debug log to solve gun skill formula *)",
+      "WebFetch(domain:geckwiki.com)",
+      "WebFetch(domain:fallout.fandom.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(sed -n '330,360p' /tmp/xnvse-probe/nvse/nvse/GameAPI.h)",
+      "Read(//private/tmp/xnvse-probe/nvse/nvse/**)",
+      "Bash(git commit -q -m 'plugin: weapon DAM uses GECK formula \\(base x Skill x Cond + melee/unarmed Bonus\\) *)",
+      "Bash(cd /tmp/xnvse-probe && grep -rin \"GetModBonuses\\\\|CalculateDamage\\\\|GetDamage\\\\|weaponDamage\\\\|GetAttackDamage\\\\|fHandwaveAmount\\\\|attackDamage\" nvse/nvse/*.h nvse/nvse/*.cpp 2>/dev/null | grep -iv \"//\\\\|comment\" | head -30)",
+      "Read(//private/tmp/xnvse-probe/**)",
+      "Bash(cd /tmp/JohnnyGuitarNVSE && grep -rin \"GetCalculatedWeaponDamage\\\\|CalculateWeaponDamage\\\\|CalculateDamage\" --include=*.cpp --include=*.h --include=*.hpp . | head -30)",
+      "Read(//private/tmp/JohnnyGuitarNVSE/**)",
+      "Bash(cd /tmp/JIP-LN-NVSE-Library && grep -rin \"0x645380\\\\|GetWeaponDPS\\\\|CalculatedWeaponDamage\\\\|GetWeaponDamage\\\\|0x6453\\\\|WeaponDPS\\\\|645380\" . 2>/dev/null | head -20; echo \"=== search both repos for 0x645 addresses near damage ===\"; grep -rin \"0x6452\\\\|0x6453\\\\|0x6454\" /tmp/JIP-LN-NVSE-Library /tmp/JohnnyGuitarNVSE 2>/dev/null | head)",
+      "Read(//private/tmp/JIP-LN-NVSE-Library/**)",
+      "Bash(cd /tmp && grep -rin \"numProjectiles\\\\|projectileCount\\\\|nbProjectiles\\\\|UInt32 numProj\" JohnnyGuitarNVSE JIP-LN-NVSE-Library xnvse-probe 2>/dev/null | grep -i \"weap\\\\|proj\" | head; echo \"=== TESObjectWEAP attackDmg / fields ===\"; grep -rn \"numProjectiles\\\\|attackDmg\\\\|UInt8\\\\s*numProj\\\\|projectile\" /tmp/xnvse-probe/nvse/nvse/GameForms.h 2>/dev/null | head)",
+      "Read(//private/tmp/**)",
+      "Bash(awk '/struct EntryData|class EntryData/{f=1} f{print NR\": \"$0} f&&/};/{c++; if\\(c>=1\\) exit}' nvse/nvse/GameExtraData.h)",
+      "Bash(git commit -q -m 'plugin: weapon DAM from engine'\\\\''s own routine \\(exact Pip-Boy match\\) *)",
+      "Bash(git commit -q -m 'ui: stackable items show per-unit weight/value + stack total in parens *)"
     ]
   }
 }
