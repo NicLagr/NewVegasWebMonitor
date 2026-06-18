@@ -41,6 +41,13 @@
       </div>
     </div>
 
+    <div
+      v-if="description"
+      class="note-body"
+    >
+      {{ description }}
+    </div>
+
     <slot name="effect">
       <div
         v-if="effects && effects.length"
@@ -70,11 +77,14 @@ const props = withDefaults(
     data?: ListItem | null;
     stats?: PreviewStats[];
     effects?: ItemEnchantmentEffect[];
+    /** Free-text body shown in a scrollable block (e.g. a note's contents). */
+    description?: string;
   }>(),
   {
     data: null,
     stats: () => [],
     effects: () => [],
+    description: '',
   }
 );
 
@@ -118,6 +128,16 @@ const isStolen = computed(() => {
         color: var(--skyrim-text-primary);
       }
     }
+  }
+
+  .note-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    color: var(--skyrim-text-secondary);
+    font-size: var(--font-size-base);
+    line-height: 1.4;
   }
 
   .enchantment {

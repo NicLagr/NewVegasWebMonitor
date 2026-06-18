@@ -368,8 +368,18 @@ static void rebuildInventory(PlayerCharacter* p) {
                 }
                 case kFormType_BGSNote:
                 case kFormType_TESObjectBOOK: {
+                    // Text notes (noteType==1) carry a readable body in noteText;
+                    // holotapes/images/voice have none (played via "use").
+                    const char* body = nullptr;
+                    if (f->typeID == kFormType_BGSNote) {
+                        BGSNote* note = (BGSNote*)f;
+                        if (note->unk07C == 1 && note->noteText) // unk07C = noteType
+                            body = note->noteText->Get((TESForm*)note, 'MANT');
+                    }
                     std::string o = "{"; appendBase(o, f, count, effValue);
-                    o += ",\"categoryType\":\"Book\",\"description\":\"\"}";
+                    o += ",\"categoryType\":\"Book\",\"description\":\"";
+                    o += jsonEscape(body ? body : "");
+                    o += "\"}";
                     if (nNote++) notes += ","; notes += o; break;
                 }
                 default: { // misc, keys, ammo, etc.

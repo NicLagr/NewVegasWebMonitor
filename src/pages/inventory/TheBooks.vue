@@ -4,6 +4,7 @@
     :items="booksList"
     :active-item="activeItemData"
     :active-item-stats="previewStats"
+    :preview-description="bookDescription"
     preview-icon-path="delapouite/audio-cassette.svg"
     @favorite="toggleFavorite"
     @hotkey="openHotkeyPicker"
@@ -45,6 +46,12 @@ const previewStats = computed(() => [
     value: getRoundValue(activeItemData.value?.value),
   },
 ]);
+
+// Note/holotape body text (empty for holotapes — those are played via "use").
+const bookDescription = computed(() => {
+  const d = activeItemData.value as { description?: string } | null;
+  return d?.description ?? '';
+});
 
 function useItem(formId: string) {
   const item = booksList.value.find((f) => f.formId === formId);

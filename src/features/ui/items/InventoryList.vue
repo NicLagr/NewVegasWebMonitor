@@ -89,6 +89,7 @@
           :data="activeItem"
           :stats="activeItemStats"
           :effects="previewEffects"
+          :description="previewDescription"
         >
           <template #icon>
             <base-icon
@@ -137,6 +138,7 @@ interface Props {
   activeItemStats?: PreviewStats[];
   previewEffects?: ItemEnchantmentEffect[];
   previewIconPath?: string;
+  previewDescription?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -159,6 +161,7 @@ const props = withDefaults(defineProps<Props>(), {
   activeItemStats: () => [],
   previewEffects: () => [],
   previewIconPath: 'lorc/cog.svg',
+  previewDescription: '',
 });
 
 const emit = defineEmits<{
