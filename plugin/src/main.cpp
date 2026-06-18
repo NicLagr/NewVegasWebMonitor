@@ -10,6 +10,7 @@
 #include "nvse/GameForms.h"
 #include "nvse/GameExtraData.h"
 #include "nvse/GameRTTI.h"
+#include "nvse/GameData.h"
 
 #include "snapshot.h"
 #include "ws_server.h"
@@ -279,16 +280,62 @@ static void rebuildQuests(PlayerCharacter* p) {
     g_quests = "{\"quests\":[" + arr + "]}";
 }
 
-// Read the currently-tuned Pip-Boy radio station from the engine global at
-// 0x11DD42C (RadioEntry*). Pure read. FNV 1.4.0.525.
+// ExtraRadioData layout (xNVSE lacks the class). radius@0C, rangeType@10,
+// staticPerc@14, positionRef@18. rangeType 0 = local radius; !=0 = broadcast
+// across the worldspace (always receivable). FNV 1.4.0.525.
+struct ExtraRadioDataMin { char _hdr[0x0C]; float radius; UInt32 rangeType; float staticPerc; TESObjectREFR* positionRef; };
+
+// Enumerate receivable radio stations: every ref with ExtraRadioData that the
+// player can currently pick up (worldspace broadcasts always; local ones only
+// in range). Mirrors how the game/JIP scans (DataHandler::cellArray for
+// kExtraData_RadioData). Heavy-ish -> run on a slower cadence than the rest.
+static std::string g_radioStations = ""; // cached {"refId","name"} array body
+static void rebuildRadioStations(PlayerCharacter* p) {
+    DataHandler* dh = DataHandler::Get();
+    if (!dh) return;
+    const float px = p->posX, py = p->posY;
+    std::string arr; int n = 0;
+    std::unordered_set<std::string> seen;
+    auto& cells = dh->cellArray;
+    const int count = cells.firstFreeEntry;
+    for (int i = 0; i < count && n < 40; i++) {
+        TESObjectCELL* c = cells.data[i];
+        if (!c) continue;
+        for (auto it = c->objectList.Begin(); !it.End(); ++it) {
+            TESObjectREFR* r = it.Get();
+            if (!r) continue;
+            BSExtraData* xd = r->extraDataList.GetByType(kExtraData_RadioData);
+            if (!xd) continue;
+            ExtraRadioDataMin* rd = (ExtraRadioDataMin*)xd;
+            bool receivable = (rd->rangeType != 0);
+            if (!receivable && rd->radius > 0.0f) {
+                TESObjectREFR* o = rd->positionRef ? rd->positionRef : r;
+                const float dx = px - o->posX, dy = py - o->posY;
+                receivable = (dx * dx + dy * dy) <= (rd->radius * rd->radius);
+            }
+            if (!receivable) continue;
+            const char* nm = r->GetTheName();
+            if (!nm || !*nm) continue;
+            if (!seen.insert(nm).second) continue; // dedupe by name
+            char b[256];
+            std::snprintf(b, sizeof(b), "%s{\"refId\":\"0x%08X\",\"name\":\"%s\"}",
+                          n ? "," : "", r->refID, jsonEscape(nm).c_str());
+            arr += b; if (++n >= 40) break;
+        }
+    }
+    g_radioStations = arr;
+}
+
+// Combine the cached station list with the currently-tuned station (read each
+// tick from the engine RadioEntry global at 0x11DD42C). Cheap.
 static void rebuildRadio() {
     RadioEntry* pr = *(RadioEntry**)0x11DD42C;
-    if (pr && pr->radioRef) {
-        const char* nm = pr->radioRef->GetTheName();
-        g_radio = std::string("{\"on\":true,\"station\":\"") + jsonEscape(nm ? nm : "") + "\"}";
-    } else {
-        g_radio = "{\"on\":false,\"station\":null}";
-    }
+    char head[80];
+    if (pr && pr->radioRef)
+        std::snprintf(head, sizeof(head), "\"on\":true,\"currentRefId\":\"0x%08X\",", pr->radioRef->refID);
+    else
+        std::snprintf(head, sizeof(head), "\"on\":false,\"currentRefId\":null,");
+    g_radio = std::string("{") + head + "\"stations\":[" + g_radioStations + "]}";
 }
 
 static void rebuildInventory(PlayerCharacter* p) {
@@ -545,7 +592,13 @@ static void ReadGameState() {
     }
 
     // Inventory + map markers + quests + radio: rebuild ~once per second (heavy).
-    if ((g_frame++ % 60) == 0) { rebuildInventory(p); rebuildHotspots(p); rebuildQuests(p); rebuildRadio(); }
+    if ((g_frame++ % 60) == 0) {
+        rebuildInventory(p); rebuildHotspots(p); rebuildQuests(p);
+        // Station list scans every cell -> only ~every 5s; current station each tick.
+        static int radioTick = 0;
+        if ((radioTick++ % 5) == 0) rebuildRadioStations(p);
+        rebuildRadio();
+    }
     s.caps = g_caps; s.cats = g_cats; s.weapons = g_weapons;
     s.apparel = g_apparel; s.aid = g_aid; s.notes = g_notes; s.misc = g_misc;
     s.hotspots = g_hotspots; s.quests = g_quests; s.radio = g_radio;

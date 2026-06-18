@@ -1,27 +1,37 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-/** `radio.status` payload — the Pip-Boy radio's current state. */
+export interface RadioStation {
+  refId: string;
+  name: string;
+}
+
+/** `radio.status` payload — the Pip-Boy radio's current state + receivable stations. */
 export interface RadioState {
   on: boolean;
-  station: string | null;
+  currentRefId: string | null;
+  stations?: RadioStation[];
 }
 
 export const useRadioStore = defineStore('radio', () => {
   /** Whether the Pip-Boy radio is currently playing. */
   const on = ref(false);
-  /** Name of the currently-tuned station, or null when off. */
-  const station = ref<string | null>(null);
+  /** refId of the currently-tuned station, or null when off. */
+  const currentRefId = ref<string | null>(null);
+  /** Receivable (in-range) stations the player can tune to. */
+  const stations = ref<RadioStation[]>([]);
 
   function setRadio(data: RadioState | null | undefined): void {
     if (!data) {
       on.value = false;
-      station.value = null;
+      currentRefId.value = null;
+      stations.value = [];
       return;
     }
     on.value = !!data.on;
-    station.value = data.station ?? null;
+    currentRefId.value = data.currentRefId ?? null;
+    stations.value = Array.isArray(data.stations) ? data.stations : [];
   }
 
-  return { on, station, setRadio };
+  return { on, currentRefId, stations, setRadio };
 });
