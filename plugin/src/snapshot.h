@@ -24,6 +24,9 @@ struct GameSnapshot {
     // Inventory payloads — each is a ready-to-send `fields` object, e.g.
     // {"items":[...]} or {"categories":[...]}. Empty string => not built yet.
     std::string cats, weapons, apparel, aid, notes, misc;
+
+    // Map hotspots — ready-to-send {"hot":[...]} (discovered map markers).
+    std::string hotspots;
 };
 
 // inline → one shared instance across translation units.

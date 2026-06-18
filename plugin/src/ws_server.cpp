@@ -163,7 +163,7 @@ std::string fields_for(const std::string& id) {
             s.worldspace.c_str(), s.worldspace.c_str());
         return buf;
     }
-    if (id == "map.hotspots")     return "{\"hot\":[]}";        // markers: Phase 2c
+    if (id == "map.hotspots")     { auto s = snapshot_get(); return s.hotspots.empty() ? "{\"hot\":[]}" : s.hotspots; }
     if (id == "map.questMarkers") return "{\"marker\":[]}";
 
     if (id == "inventory.categories") { auto s = snapshot_get(); return s.cats.empty()    ? "{\"categories\":[]}" : s.cats; }

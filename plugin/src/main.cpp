@@ -29,6 +29,7 @@ static NVSEMessagingInterface* g_messaging    = nullptr;
 
 // Cached inventory payloads, rebuilt ~1/sec on the main thread.
 static std::string g_cats, g_weapons, g_apparel, g_aid, g_notes, g_misc;
+static std::string g_hotspots; // discovered map markers, {"hot":[...]}
 static float       g_caps  = 0;
 static int         g_frame = 0;
 static std::unordered_map<UInt32, TESForm*> g_formById; // refID -> form, for command lookup
@@ -117,6 +118,63 @@ static void appendBase(std::string& o, TESForm* f, int count, float value) {
     o += buf;
     o += "\"name\":\""; o += jsonEscape(f->GetTheName()); o += "\",";
     o += "\"isFavorite\":false,\"isStolen\":false";
+}
+
+// FNV ExtraMapMarker type (0-14) -> frontend KnownMapHotspotType icon key.
+static const char* mapMarkerTypeStr(unsigned t) {
+    switch (t) {
+        case 1:  return "City";          // kType_City
+        case 2:  return "Settlement";    // kType_Settlement
+        case 3:  return "Camp";          // kType_Encampment
+        case 4:  return "Monument";      // kType_NaturalLandmark
+        case 5:  return "Cave";          // kType_Cave
+        case 6:  return "Factory";       // kType_Factory
+        case 7:  return "Monument";      // kType_Memorial
+        case 8:  return "MilitaryBase";  // kType_Military
+        case 9:  return "Building";      // kType_Office
+        case 10: return "Ruins";         // kType_TownRuins
+        case 11: return "Ruins";         // kType_UrbanRuins
+        case 12: return "Ruins";         // kType_SewerRuins
+        case 13: return "Building";      // kType_Metro
+        case 14: return "Vault";         // kType_Vault
+        default: return "Building";      // kType_None / unknown
+    }
+}
+
+// The player's known map markers live at PlayerCharacter+0x7C8 as a
+// tList<MapMarkerInfo> (not exposed by xNVSE). FNV 1.4.0.525 layout.
+struct MapMarkerInfo {
+    ExtraMapMarker::MarkerData* markerData;
+    TESObjectREFR*              markerRef;
+};
+
+// Build {"hot":[...]} from discovered (visible) map markers. Pure read; the
+// world position is the same raw coord space the map projection expects.
+static void rebuildHotspots(PlayerCharacter* p) {
+    std::string hot;
+    int n = 0;
+    auto* list = (tList<MapMarkerInfo>*)((char*)p + 0x7C8);
+    for (auto it = list->Begin(); !it.End(); ++it) {
+        MapMarkerInfo* mi = it.Get();
+        if (!mi || !mi->markerData || !mi->markerRef) continue;
+        ExtraMapMarker::MarkerData* md = mi->markerData;
+        const unsigned flags = md->flags;
+        if (!(flags & ExtraMapMarker::kFlag_Visible)) continue; // only discovered
+        const bool canTravel = (flags & ExtraMapMarker::kFlag_CanTravel) != 0;
+        const unsigned type  = md->type;
+        const char* name = md->fullName.name.m_data;
+        if (!name || !*name) name = mi->markerRef->GetTheName();
+        if (!name) name = "";
+        TESObjectREFR* r = mi->markerRef;
+        char b[320];
+        std::snprintf(b, sizeof(b),
+            "%s{\"type\":\"%s\",\"typeId\":%u,\"refId\":\"0x%08X\",\"name\":\"%s\","
+            "\"x\":%.1f,\"y\":%.1f,\"isVisible\":true,\"canFastTravel\":%s}",
+            n ? "," : "", mapMarkerTypeStr(type), type, r->refID,
+            jsonEscape(name).c_str(), r->posX, r->posY, canTravel ? "true" : "false");
+        hot += b; n++;
+    }
+    g_hotspots = "{\"hot\":[" + hot + "]}";
 }
 
 static void rebuildInventory(PlayerCharacter* p) {
@@ -305,10 +363,11 @@ static void ReadGameState() {
         if (eid) s.worldspace = eid;
     }
 
-    // Inventory: rebuild ~once per second (heavy).
-    if ((g_frame++ % 60) == 0) rebuildInventory(p);
+    // Inventory + map markers: rebuild ~once per second (heavy).
+    if ((g_frame++ % 60) == 0) { rebuildInventory(p); rebuildHotspots(p); }
     s.caps = g_caps; s.cats = g_cats; s.weapons = g_weapons;
     s.apparel = g_apparel; s.aid = g_aid; s.notes = g_notes; s.misc = g_misc;
+    s.hotspots = g_hotspots;
 
     // Log position periodically so you can read real coords for map calibration.
     if ((g_frame % 180) == 0)
