@@ -170,19 +170,6 @@ static void rebuildInventory(PlayerCharacter* p) {
                         }
                     }
                 }
-                // DEBUG: log each equipped weapon ONCE (no per-snapshot flood) so we can
-                // verify the engine-computed DAM against the in-game Pip-Boy.
-                if (equipped && f->typeID == kFormType_TESObjectWEAP) {
-                    static std::unordered_set<UInt32> dbgLoggedWeap;
-                    if (dbgLoggedWeap.insert(f->refID).second) {
-                        TESObjectWEAP* w = (TESObjectWEAP*)f;
-                        const char* nm = f->GetTheName(); if (!nm) nm = "?";
-                        const int   np  = w->numProjectiles ? w->numProjectiles : 1;
-                        const float ed  = EngineWeaponDamage(e, 0, p, healthRatio, nullptr);
-                        logf("[dbg] WEAP %s baseDmg=%u cond=%d engineDAM=%.2f perShot=%.2f nProj=%d",
-                             nm, w->attackDmg.damage, condPct, ed, ed / (float)np, np);
-                    }
-                }
                 (void)dbgCur; (void)dbgMaxH;
             }
 
