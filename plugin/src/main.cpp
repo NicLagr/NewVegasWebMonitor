@@ -20,6 +20,7 @@
 #include <cstdio>
 #include <cstdarg>
 #include <unordered_map>
+#include <unordered_set>
 
 // g_thePlayer is defined by the compiled xNVSE GameObjects.cpp.
 
@@ -133,7 +134,19 @@ static void rebuildInventory(PlayerCharacter* p) {
                         }
                     }
                 }
-                (void)dbgCur; (void)dbgMaxH; // (debug breakdown logging removed — formulas verified)
+                // DEBUG: log each equipped weapon ONCE (no per-snapshot flood) so we
+                // can solve the gun skill/damage formula from real numbers.
+                if (equipped && f->typeID == kFormType_TESObjectWEAP) {
+                    static std::unordered_set<UInt32> dbgLoggedWeap;
+                    if (dbgLoggedWeap.insert(f->refID).second) {
+                        TESObjectWEAP* w = (TESObjectWEAP*)f;
+                        const char* nm = f->GetTheName(); if (!nm) nm = "?";
+                        logf("[dbg] WEAP %s baseDmg=%u maxH=%u cur=%.0f cond=%d skillAV=%u skill=%.0f baseVal=%.0f",
+                             nm, w->attackDmg.damage, dbgMaxH, dbgCur, condPct,
+                             w->weaponSkill, p->avOwner.Fn_03(w->weaponSkill), itemValue(f));
+                    }
+                }
+                (void)dbgCur; (void)dbgMaxH;
             }
 
             // Condition-adjusted value. FNV's Pip-Boy scales value by the health

@@ -10,6 +10,7 @@
 
 #include <cstdint>
 #include <cstdio>
+#include <cmath>
 #include <cstdarg>
 #include <chrono>
 #include <map>
@@ -196,7 +197,9 @@ std::string fields_for(const std::string& id) {
             "\"inventoryWeight\":%.1f,\"karma\":%.0f}",
             s.level, s.xp, xpNext, s.caps,
             s.health, s.healthMax, s.ap, s.apMax, s.rads, s.radsMax,
-            s.carryWeight, s.invWeight, s.karma);
+            // Pip-Boy floors the displayed inventory weight (210.6 -> 210), so
+            // floor here too rather than letting the frontend round up to 211.
+            s.carryWeight, std::floor(s.invWeight), s.karma);
         return buf;
     }
 
