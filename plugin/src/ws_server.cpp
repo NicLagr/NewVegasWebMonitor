@@ -149,7 +149,7 @@ std::string data_msg(const std::string& id, const std::string& fields) {
 
 std::string fields_for(const std::string& id) {
     if (id == "system")
-        return "{\"language\":\"en\",\"features\":[\"player\",\"inventory\",\"map\"]}";
+        return "{\"language\":\"en\",\"features\":[\"player\",\"player.quests\",\"inventory\",\"map\"]}";
 
     if (id == "map.player") {
         const GameSnapshot s = snapshot_get();
@@ -165,6 +165,8 @@ std::string fields_for(const std::string& id) {
     }
     if (id == "map.hotspots")     { auto s = snapshot_get(); return s.hotspots.empty() ? "{\"hot\":[]}" : s.hotspots; }
     if (id == "map.questMarkers") return "{\"marker\":[]}";
+
+    if (id == "quests.questsList") { auto s = snapshot_get(); return s.quests.empty() ? "{\"quests\":[]}" : s.quests; }
 
     if (id == "inventory.categories") { auto s = snapshot_get(); return s.cats.empty()    ? "{\"categories\":[]}" : s.cats; }
     if (id == "inventory.weapons")    { auto s = snapshot_get(); return s.weapons.empty() ? "{\"items\":[],\"ammo\":[]}" : s.weapons; }

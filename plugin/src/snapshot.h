@@ -27,6 +27,9 @@ struct GameSnapshot {
 
     // Map hotspots — ready-to-send {"hot":[...]} (discovered map markers).
     std::string hotspots;
+
+    // Quest journal — ready-to-send {"quests":[...]}.
+    std::string quests;
 };
 
 // inline → one shared instance across translation units.

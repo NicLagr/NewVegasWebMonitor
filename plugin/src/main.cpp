@@ -21,6 +21,8 @@
 #include <cstdarg>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
+#include <algorithm>
 
 // g_thePlayer is defined by the compiled xNVSE GameObjects.cpp.
 
@@ -30,6 +32,7 @@ static NVSEMessagingInterface* g_messaging    = nullptr;
 // Cached inventory payloads, rebuilt ~1/sec on the main thread.
 static std::string g_cats, g_weapons, g_apparel, g_aid, g_notes, g_misc;
 static std::string g_hotspots; // discovered map markers, {"hot":[...]}
+static std::string g_quests;   // quest journal, {"quests":[...]}
 static float       g_caps  = 0;
 static int         g_frame = 0;
 static std::unordered_map<UInt32, TESForm*> g_formById;        // refID -> form, for command lookup
@@ -195,6 +198,62 @@ static void rebuildHotspots(PlayerCharacter* p) {
         hot += b; n++;
     }
     g_hotspots = "{\"hot\":[" + hot + "]}";
+}
+
+// Build {"quests":[...]} from the player's quest log. The active objectives live
+// in PlayerCharacter::questObjectiveList (+0x6BC); the tracked quest pointer is
+// activeQuest (+0x6B8). We group objectives by their parent quest and emit the
+// QuestJournalEntry shape the frontend expects. FNV 1.4.0.525 offsets.
+static void rebuildQuests(PlayerCharacter* p) {
+    TESQuest* activeQ = *(TESQuest**)((char*)p + 0x6B8);
+    auto* objList = (tList<BGSQuestObjective>*)((char*)p + 0x6BC);
+
+    // Unique parent quests, in first-seen order.
+    std::vector<TESQuest*> quests;
+    for (auto it = objList->Begin(); !it.End(); ++it) {
+        BGSQuestObjective* o = it.Get();
+        if (!o || !o->quest) continue;
+        if (std::find(quests.begin(), quests.end(), o->quest) == quests.end())
+            quests.push_back(o->quest);
+    }
+
+    std::string arr; int nq = 0;
+    for (TESQuest* q : quests) {
+        std::string steps; int ns = 0; bool allDone = true, anyStep = false;
+        for (auto it = objList->Begin(); !it.End(); ++it) {
+            BGSQuestObjective* o = it.Get();
+            if (!o || o->quest != q) continue;
+            anyStep = true;
+            const bool completed = (o->status & 2) != 0;
+            if (!completed) allDone = false;
+            const char* txt = o->displayText.m_data ? o->displayText.m_data : "";
+            std::string et = jsonEscape(txt);
+            char sb[700];
+            std::snprintf(sb, sizeof(sb),
+                "%s{\"index\":%u,\"text\":\"%s\",\"textRaw\":\"%s\",\"completed\":%s,"
+                "\"failed\":false,\"state\":\"\",\"stateRaw\":%u,\"instanceId\":%u}",
+                ns ? "," : "", o->objectiveId, et.c_str(), et.c_str(),
+                completed ? "true" : "false", o->status, o->objectiveId);
+            steps += sb; ns++;
+        }
+        const bool running     = (q->flags & 1) != 0;
+        const bool isActive     = (q == activeQ);
+        const bool isCompleted  = anyStep && allDone;
+        const char* nm = q->GetTheName(); if (!nm) nm = "";
+        std::string en = jsonEscape(nm);
+        char hb[1024];
+        std::snprintf(hb, sizeof(hb),
+            "%s{\"type\":\"quest\",\"formId\":\"0x%08X\",\"questFormId\":\"0x%08X\","
+            "\"questEditorId\":\"\",\"name\":\"%s\",\"nameRaw\":\"%s\",\"description\":\"\","
+            "\"descriptionRaw\":\"\",\"descriptionStage\":0,\"questType\":\"\",\"isMisc\":false,"
+            "\"isActive\":%s,\"isRunning\":%s,\"isCompleted\":%s,\"currentStage\":%u,"
+            "\"currentInstanceId\":0,\"steps\":[%s]}",
+            nq ? "," : "", q->refID, q->refID, en.c_str(), en.c_str(),
+            isActive ? "true" : "false", running ? "true" : "false",
+            isCompleted ? "true" : "false", q->currentStage, steps.c_str());
+        arr += hb; nq++;
+    }
+    g_quests = "{\"quests\":[" + arr + "]}";
 }
 
 static void rebuildInventory(PlayerCharacter* p) {
@@ -410,11 +469,11 @@ static void ReadGameState() {
         g_lastWorldSpace = cell->worldSpace; // remember for custom-marker placement
     }
 
-    // Inventory + map markers: rebuild ~once per second (heavy).
-    if ((g_frame++ % 60) == 0) { rebuildInventory(p); rebuildHotspots(p); }
+    // Inventory + map markers + quests: rebuild ~once per second (heavy).
+    if ((g_frame++ % 60) == 0) { rebuildInventory(p); rebuildHotspots(p); rebuildQuests(p); }
     s.caps = g_caps; s.cats = g_cats; s.weapons = g_weapons;
     s.apparel = g_apparel; s.aid = g_aid; s.notes = g_notes; s.misc = g_misc;
-    s.hotspots = g_hotspots;
+    s.hotspots = g_hotspots; s.quests = g_quests;
 
     // Log position periodically so you can read real coords for map calibration.
     if ((g_frame % 180) == 0)
