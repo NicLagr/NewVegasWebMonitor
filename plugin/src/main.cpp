@@ -28,11 +28,16 @@
 
 static PluginHandle            g_pluginHandle = kPluginHandle_Invalid;
 static NVSEMessagingInterface* g_messaging    = nullptr;
+static NVSEConsoleInterface*   g_console      = nullptr; // for RunScriptLine (radio tune/off)
+
+// Currently-tuned Pip-Boy radio entry (global). FNV 1.4.0.525.
+struct RadioEntry { TESObjectREFR* radioRef; void* ptr04; UInt32 unk08[7]; };
 
 // Cached inventory payloads, rebuilt ~1/sec on the main thread.
 static std::string g_cats, g_weapons, g_apparel, g_aid, g_notes, g_misc;
 static std::string g_hotspots; // discovered map markers, {"hot":[...]}
 static std::string g_quests;   // quest journal, {"quests":[...]}
+static std::string g_radio;    // pip-boy radio, {"on":bool,"station":...}
 static float       g_caps  = 0;
 static int         g_frame = 0;
 static std::unordered_map<UInt32, TESForm*> g_formById;        // refID -> form, for command lookup
@@ -266,6 +271,18 @@ static void rebuildQuests(PlayerCharacter* p) {
     g_quests = "{\"quests\":[" + arr + "]}";
 }
 
+// Read the currently-tuned Pip-Boy radio station from the engine global at
+// 0x11DD42C (RadioEntry*). Pure read. FNV 1.4.0.525.
+static void rebuildRadio() {
+    RadioEntry* pr = *(RadioEntry**)0x11DD42C;
+    if (pr && pr->radioRef) {
+        const char* nm = pr->radioRef->GetTheName();
+        g_radio = std::string("{\"on\":true,\"station\":\"") + jsonEscape(nm ? nm : "") + "\"}";
+    } else {
+        g_radio = "{\"on\":false,\"station\":null}";
+    }
+}
+
 static void rebuildInventory(PlayerCharacter* p) {
     std::string weapons, apparel, aid, notes, misc;
     int nWeap = 0, nApp = 0, nAid = 0, nNote = 0, nMisc = 0;
@@ -457,6 +474,20 @@ static void ReadGameState() {
         }
         if (c.type == "player_marker_clear") { EngineClearCustomMarker(p); continue; }
 
+        // Radio: turn off / tune via the vanilla PipBoyRadio script command.
+        if (c.type == "radio_off") {
+            if (g_console) g_console->RunScriptLine2("PipBoyRadioOff", nullptr, true);
+            continue;
+        }
+        if (c.type == "radio_tune") {
+            if (g_console && c.formId) {
+                char line[48];
+                std::snprintf(line, sizeof(line), "PipBoyRadio 1 %X", c.formId);
+                g_console->RunScriptLine2(line, nullptr, true);
+            }
+            continue;
+        }
+
         // Track/untrack a quest (the Pip-Boy "active" quest driving the compass).
         if (c.type == "quest_set_active") {
             auto qit = g_questById.find(c.formId);
@@ -505,11 +536,11 @@ static void ReadGameState() {
         g_lastWorldSpace = cell->worldSpace; // remember for custom-marker placement
     }
 
-    // Inventory + map markers + quests: rebuild ~once per second (heavy).
-    if ((g_frame++ % 60) == 0) { rebuildInventory(p); rebuildHotspots(p); rebuildQuests(p); }
+    // Inventory + map markers + quests + radio: rebuild ~once per second (heavy).
+    if ((g_frame++ % 60) == 0) { rebuildInventory(p); rebuildHotspots(p); rebuildQuests(p); rebuildRadio(); }
     s.caps = g_caps; s.cats = g_cats; s.weapons = g_weapons;
     s.apparel = g_apparel; s.aid = g_aid; s.notes = g_notes; s.misc = g_misc;
-    s.hotspots = g_hotspots; s.quests = g_quests;
+    s.hotspots = g_hotspots; s.quests = g_quests; s.radio = g_radio;
 
     // Log position periodically so you can read real coords for map calibration.
     if ((g_frame % 180) == 0)
@@ -538,6 +569,7 @@ __declspec(dllexport) bool NVSEPlugin_Load(NVSEInterface* nvse) {
     g_messaging = (NVSEMessagingInterface*)nvse->QueryInterface(kInterface_Messaging);
     if (g_messaging)
         g_messaging->RegisterListener(g_pluginHandle, "NVSE", MessageHandler);
+    g_console = (NVSEConsoleInterface*)nvse->QueryInterface(kInterface_Console);
     static std::thread server([]() { ws::run_server(8765); });
     server.detach();
     return true;

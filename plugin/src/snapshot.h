@@ -30,6 +30,9 @@ struct GameSnapshot {
 
     // Quest journal — ready-to-send {"quests":[...]}.
     std::string quests;
+
+    // Pip-Boy radio — ready-to-send {"on":bool,"station":"name"|null}.
+    std::string radio;
 };
 
 // inline → one shared instance across translation units.

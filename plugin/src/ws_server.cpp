@@ -149,7 +149,7 @@ std::string data_msg(const std::string& id, const std::string& fields) {
 
 std::string fields_for(const std::string& id) {
     if (id == "system")
-        return "{\"language\":\"en\",\"features\":[\"player\",\"player.quests\",\"inventory\",\"map\"]}";
+        return "{\"language\":\"en\",\"features\":[\"player\",\"player.quests\",\"inventory\",\"map\",\"game.radio\"]}";
 
     if (id == "map.player") {
         const GameSnapshot s = snapshot_get();
@@ -167,6 +167,7 @@ std::string fields_for(const std::string& id) {
     if (id == "map.questMarkers") return "{\"marker\":[]}";
 
     if (id == "quests.questsList") { auto s = snapshot_get(); return s.quests.empty() ? "{\"quests\":[]}" : s.quests; }
+    if (id == "radio.status")      { auto s = snapshot_get(); return s.radio.empty()  ? "{\"on\":false,\"station\":null}" : s.radio; }
 
     if (id == "inventory.categories") { auto s = snapshot_get(); return s.cats.empty()    ? "{\"categories\":[]}" : s.cats; }
     if (id == "inventory.weapons")    { auto s = snapshot_get(); return s.weapons.empty() ? "{\"items\":[],\"ammo\":[]}" : s.weapons; }
@@ -295,6 +296,12 @@ void handle_client(SOCKET client) {
                 } else if (cmd == "player_marker_clear") {
                     cmd_push_marker(cmd, 0.f, 0.f, 0.f);
                     log_fmt("[ws] command player_marker_clear");
+                } else if (cmd == "radio_off") {
+                    cmd_push("radio_off", 0, 0);
+                    log_fmt("[ws] command radio_off");
+                } else if (cmd == "radio_tune") {
+                    if (formId) cmd_push("radio_tune", formId, 0);
+                    log_fmt("[ws] command radio_tune form=0x%08X", formId);
                 } else if (cmd == "quest_set_active") {
                     const bool active = payload.find("\"active\":true") != std::string::npos;
                     if (formId) cmd_push(cmd, formId, active ? 1 : 0);
