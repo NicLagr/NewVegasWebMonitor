@@ -243,30 +243,38 @@ static void rebuildQuests(PlayerCharacter* p) {
             if (!completed) allDone = false;
             const char* txt = o->displayText.m_data ? o->displayText.m_data : "";
             std::string et = jsonEscape(txt);
-            char sb[700];
-            std::snprintf(sb, sizeof(sb),
-                "%s{\"index\":%u,\"text\":\"%s\",\"textRaw\":\"%s\",\"completed\":%s,"
-                "\"failed\":false,\"state\":\"\",\"stateRaw\":%u,\"instanceId\":%u}",
-                ns ? "," : "", o->objectiveId, et.c_str(), et.c_str(),
+            // Variable-length text -> build with std::string (a fixed buffer could
+            // truncate mid-JSON and break the whole payload).
+            char si[40], sf[112];
+            std::snprintf(si, sizeof(si), "\"index\":%u,", o->objectiveId);
+            std::snprintf(sf, sizeof(sf),
+                "\"completed\":%s,\"failed\":false,\"state\":\"\",\"stateRaw\":%u,\"instanceId\":%u}",
                 completed ? "true" : "false", o->status, o->objectiveId);
-            steps += sb; ns++;
+            if (ns) steps += ",";
+            steps += "{"; steps += si;
+            steps += "\"text\":\""; steps += et; steps += "\",\"textRaw\":\""; steps += et; steps += "\",";
+            steps += sf;
+            ns++;
         }
         const bool running     = (q->flags & 1) != 0;
         const bool isActive     = (q == activeQ);
         const bool isCompleted  = anyStep && allDone;
         const char* nm = q->GetTheName(); if (!nm) nm = "";
         std::string en = jsonEscape(nm);
-        char hb[1024];
-        std::snprintf(hb, sizeof(hb),
-            "%s{\"type\":\"quest\",\"formId\":\"0x%08X\",\"questFormId\":\"0x%08X\","
-            "\"questEditorId\":\"\",\"name\":\"%s\",\"nameRaw\":\"%s\",\"description\":\"\","
-            "\"descriptionRaw\":\"\",\"descriptionStage\":0,\"questType\":\"\",\"isMisc\":false,"
-            "\"isActive\":%s,\"isRunning\":%s,\"isCompleted\":%s,\"currentStage\":%u,"
-            "\"currentInstanceId\":0,\"steps\":[%s]}",
-            nq ? "," : "", q->refID, q->refID, en.c_str(), en.c_str(),
+        char ids[80], fl[176];
+        std::snprintf(ids, sizeof(ids),
+            "\"formId\":\"0x%08X\",\"questFormId\":\"0x%08X\",", q->refID, q->refID);
+        std::snprintf(fl, sizeof(fl),
+            "\"isActive\":%s,\"isRunning\":%s,\"isCompleted\":%s,\"currentStage\":%u,\"currentInstanceId\":0,",
             isActive ? "true" : "false", running ? "true" : "false",
-            isCompleted ? "true" : "false", q->currentStage, steps.c_str());
-        arr += hb; nq++;
+            isCompleted ? "true" : "false", q->currentStage);
+        if (nq) arr += ",";
+        arr += "{\"type\":\"quest\","; arr += ids;
+        arr += "\"questEditorId\":\"\",\"name\":\""; arr += en; arr += "\",\"nameRaw\":\""; arr += en;
+        arr += "\",\"description\":\"\",\"descriptionRaw\":\"\",\"descriptionStage\":0,\"questType\":\"\",\"isMisc\":false,";
+        arr += fl;
+        arr += "\"steps\":["; arr += steps; arr += "]}";
+        nq++;
     }
     g_quests = "{\"quests\":[" + arr + "]}";
 }
