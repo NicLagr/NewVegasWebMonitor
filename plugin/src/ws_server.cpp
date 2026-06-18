@@ -284,9 +284,19 @@ void handle_client(SOCKET client) {
                 const uint32_t formId = formIdS.empty() ? 0u
                     : (uint32_t)std::strtoul(formIdS.c_str(), nullptr, 0);
                 const long count = find_number_field(payload, "count", 1);
-                if (!cmd.empty() && formId)
+                if (cmd == "player_marker_set") {
+                    const float x = (float)find_number_field(payload, "x", 0);
+                    const float y = (float)find_number_field(payload, "y", 0);
+                    const float z = (float)find_number_field(payload, "z", 0);
+                    cmd_push_marker(cmd, x, y, z);
+                    log_fmt("[ws] command player_marker_set x=%.0f y=%.0f", x, y);
+                } else if (cmd == "player_marker_clear") {
+                    cmd_push_marker(cmd, 0.f, 0.f, 0.f);
+                    log_fmt("[ws] command player_marker_clear");
+                } else if (!cmd.empty() && formId) {
                     cmd_push(cmd, formId, (int)count); // executed on the main thread
-                log_fmt("[ws] command %s form=0x%08X", cmd.c_str(), formId);
+                    log_fmt("[ws] command %s form=0x%08X", cmd.c_str(), formId);
+                }
                 ws_send_text(client, "{\"type\":\"commandResult\",\"id\":\"" + id + "\",\"success\":true}");
             }
         }

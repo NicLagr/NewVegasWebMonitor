@@ -264,6 +264,7 @@ function handleClickAt(imgX: number, imgY: number): boolean {
     const half = markerSize.value * 0.5;
     if (Math.abs(imgX - cm.x) <= half && Math.abs(imgY - cm.y) <= half) {
       customMarkerStore.clearMarker();
+      wsStore.sendCommand({ command: 'player_marker_clear' });
       return true;
     }
   }

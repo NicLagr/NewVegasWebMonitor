@@ -40,6 +40,18 @@ static std::unordered_map<UInt32, TESObjectREFR*> g_markerById; // map-marker re
 typedef void (__cdecl *MoveToMarker_t)(TESObjectREFR*, TESObjectREFR*, void*, void*, void*);
 static const MoveToMarker_t EngineMoveToMarker = (MoveToMarker_t)0x5CCB20;
 
+// Player's custom map marker (the red X you place on the Pip-Boy world map).
+// thiscall on the player. Set: (x, y, z, worldspace/cell as TESForm*); Clear: ().
+// Addresses from JohnnyGuitar's SetCustomMapMarker/ClearCustomMapMarker (FNV 1.4.0.525).
+typedef void (__thiscall *SetCustomMarker_t)(void* player, float x, float y, float z, TESForm* space);
+typedef void (__thiscall *ClearCustomMarker_t)(void* player);
+static const SetCustomMarker_t   EngineSetCustomMarker   = (SetCustomMarker_t)0x952E60;
+static const ClearCustomMarker_t EngineClearCustomMarker = (ClearCustomMarker_t)0x952F90;
+
+// Last exterior worldspace the player was in — used as the marker's worldspace
+// when placing a custom marker (the web map is always the Mojave world map).
+static TESWorldSpace* g_lastWorldSpace = nullptr;
+
 static void logf(const char* fmt, ...) {
     char buf[256]; va_list ap; va_start(ap, fmt);
     std::vsnprintf(buf, sizeof(buf), fmt, ap); va_end(ap);
@@ -336,8 +348,12 @@ static void ReadGameState() {
     // would otherwise consume multiple aid items.
     static std::unordered_map<uint64_t, int> cmdCooldown;
     for (const PluginCmd& c : cmd_drain()) {
-        // Per-(target,action) debounce — the app fires bursts per tap.
-        const uint64_t key = ((uint64_t)c.formId << 8) | (uint8_t)(c.type.empty() ? 0 : c.type[0]);
+        // Per-(target,action) debounce — the app fires bursts per tap. Key on the
+        // full action (FNV-1a hash) so distinct verbs sharing a first letter
+        // (use/unequip, player_marker_set/clear) don't collide.
+        uint32_t th = 2166136261u;
+        for (char ch : c.type) th = (th ^ (uint8_t)ch) * 16777619u;
+        const uint64_t key = ((uint64_t)c.formId << 32) | th;
         auto cd = cmdCooldown.find(key);
         if (cd != cmdCooldown.end() && (g_frame - cd->second) < 30) continue;
         cmdCooldown[key] = g_frame;
@@ -349,6 +365,18 @@ static void ReadGameState() {
                 EngineMoveToMarker((TESObjectREFR*)p, mit->second, nullptr, nullptr, nullptr);
             continue;
         }
+
+        // Custom map marker (the Pip-Boy world-map "X"). Set at the tapped world
+        // coords in the Mojave worldspace; clear removes it.
+        if (c.type == "player_marker_set") {
+            TESObjectCELL* pcell = p->parentCell;
+            TESForm* space = nullptr;
+            if (pcell && !pcell->IsInterior() && pcell->worldSpace) space = (TESForm*)pcell->worldSpace;
+            else if (g_lastWorldSpace) space = (TESForm*)g_lastWorldSpace;
+            if (space) EngineSetCustomMarker(p, c.x, c.y, c.z, space);
+            continue;
+        }
+        if (c.type == "player_marker_clear") { EngineClearCustomMarker(p); continue; }
 
         // Inventory actions need the form looked up in the inventory map.
         auto found = g_formById.find(c.formId);
@@ -379,6 +407,7 @@ static void ReadGameState() {
     if (!s.isInterior && cell->worldSpace) {
         const char* eid = cell->worldSpace->GetName();
         if (eid) s.worldspace = eid;
+        g_lastWorldSpace = cell->worldSpace; // remember for custom-marker placement
     }
 
     // Inventory + map markers: rebuild ~once per second (heavy).

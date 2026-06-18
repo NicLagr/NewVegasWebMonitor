@@ -46,6 +46,7 @@ import { BaseIcon } from '@/shared/ui';
 import { useMapProjection } from './composables/useMapProjection';
 import { useMapPlayerStore } from '@/stores/map/useMapPlayerStore';
 import { useCustomMarkerStore } from '@/stores/map/useCustomMarkerStore';
+import { useWebSocketStore } from '@/stores/use-websocket-store/useWebsocketStore';
 
 // =============================================================
 // Map view configuration
@@ -125,6 +126,7 @@ const playerStore = useMapPlayerStore();
 const { displayPosition } = storeToRefs(playerStore);
 const { projectWorldToImage, projectImageToWorld } = useMapProjection();
 const customMarkerStore = useCustomMarkerStore();
+const wsStore = useWebSocketStore();
 
 const overlayStyle = computed<StyleValue>(() => ({
   width: `${imgNaturalW.value}px`,
@@ -394,7 +396,11 @@ function setupViewer(): void {
       const vp = viewer.viewport.pointFromPixel(pos);
       const img = item.viewportToImageCoordinates(vp);
       const world = projectImageToWorld(img.x, img.y);
-      if (world) customMarkerStore.setMarker(world);
+      if (world) {
+        customMarkerStore.setMarker(world);
+        // Mirror onto the in-game Pip-Boy world map (custom destination marker).
+        wsStore.sendCommand({ command: 'player_marker_set', x: world.x, y: world.y });
+      }
     }, LONG_PRESS_MS);
   });
   viewer.addHandler('canvas-drag', cancelLongPress);
