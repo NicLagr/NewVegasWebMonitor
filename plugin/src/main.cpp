@@ -103,6 +103,7 @@ static void rebuildInventory(PlayerCharacter* p) {
 
             // Condition % + equipped state from per-stack extra data (weapons/armor only).
             int    condPct = 100;
+            float  healthRatio = 1.0f; // precise cur/maxH (Pip-Boy value uses the exact ratio, not the rounded %)
             bool   equipped = false;
             UInt32 dbgMaxH = 0;
             float  dbgCur  = -1.0f;
@@ -122,7 +123,9 @@ static void rebuildInventory(PlayerCharacter* p) {
                             if (h) {
                                 dbgCur = h->health;
                                 if (dbgMaxH > 0) {
-                                    int pc = (int)((h->health / (float)dbgMaxH) * 100.0f);
+                                    float r = h->health / (float)dbgMaxH;
+                                    healthRatio = r < 0.0f ? 0.0f : (r > 1.0f ? 1.0f : r);
+                                    int pc = (int)(healthRatio * 100.0f + 0.5f);
                                     condPct = pc < 0 ? 0 : (pc > 100 ? 100 : pc);
                                 }
                                 gotHealth = true;
@@ -130,35 +133,22 @@ static void rebuildInventory(PlayerCharacter* p) {
                         }
                     }
                 }
-                // DEBUG: log equipped weapon/armor so we can verify the value/damage/DT math.
-                if (equipped) {
-                    const char* nm = f->GetTheName(); if (!nm) nm = "?";
-                    if (f->typeID == kFormType_TESObjectWEAP) {
-                        TESObjectWEAP* w = (TESObjectWEAP*)f;
-                        logf("[dbg] WEAP %s baseDmg=%u maxH=%u cur=%.0f cond=%d skillAV=%u skill=%.0f baseVal=%.0f",
-                             nm, w->attackDmg.damage, dbgMaxH, dbgCur, condPct,
-                             w->weaponSkill, p->avOwner.Fn_03(w->weaponSkill), itemValue(f));
-                    } else {
-                        TESObjectARMO* a = (TESObjectARMO*)f;
-                        logf("[dbg] ARMO %s DT=%.1f AR=%u maxH=%u cur=%.0f cond=%d baseVal=%.0f",
-                             nm, a->damageThreshold, a->armorRating, dbgMaxH, dbgCur, condPct, itemValue(f));
-                    }
-                }
+                (void)dbgCur; (void)dbgMaxH; // (debug breakdown logging removed — formulas verified)
             }
 
-            // Condition-adjusted value (Pip-Boy shows value × condition). For
-            // non-degradable items condPct stays 100, so this is just base value.
-            const float condF = condPct / 100.0f;
-            const float effValue = itemValue(f) * condF;
+            // Condition-adjusted value. FNV's Pip-Boy scales value by the health
+            // ratio raised to ~1.5 (verified: machete 75×0.92^1.5=66, Legion armor
+            // 300×0.552^1.5=123). Non-degradable items keep ratio 1.0 → base value.
+            const float effValue = itemValue(f) * powf(healthRatio, 1.5f);
 
             switch (f->typeID) {
                 case kFormType_TESObjectWEAP: {
                     TESObjectWEAP* w = (TESObjectWEAP*)f;
-                    // FNV displayed DAM = base × condition(0.5 floor) × skill(0.5..1.0).
+                    // FNV's Pip-Boy DAM = base × condition only (0.5 floor at 0%).
+                    // Skill does NOT scale the displayed number (verified: machete
+                    // base 15 @ 92% = 14, regardless of 40 Melee).
                     const UInt32 baseDmg = w->attackDmg.damage;
-                    float skill = p->avOwner.Fn_03(w->weaponSkill);
-                    if (skill < 0.0f) skill = 0.0f; else if (skill > 100.0f) skill = 100.0f;
-                    const int dispDmg = (int)(baseDmg * (0.5f + 0.5f * condF) * (0.5f + 0.5f * skill / 100.0f) + 0.5f);
+                    const int dispDmg = (int)(baseDmg * (0.5f + 0.5f * healthRatio) + 0.5f);
                     std::string o = "{"; appendBase(o, f, count, effValue);
                     char b[320];
                     std::snprintf(b, sizeof(b), ",\"categoryType\":\"Weapon\",\"damage\":%d,\"baseDamage\":%u,"
