@@ -157,11 +157,24 @@ static void rebuildInventory(PlayerCharacter* p) {
             switch (f->typeID) {
                 case kFormType_TESObjectWEAP: {
                     TESObjectWEAP* w = (TESObjectWEAP*)f;
-                    // FNV's Pip-Boy DAM = base × condition only (0.5 floor at 0%).
-                    // Skill does NOT scale the displayed number (verified: machete
-                    // base 15 @ 92% = 14, regardless of 40 Melee).
+                    // FNV displayed DAM (GECK weapon damage formula):
+                    //   Dam = base × Skill × Cond + Bonus
+                    //   Skill = (50 + skillLevel/2)/100   -> 0.5 .. 1.0
+                    //   Cond  = (50 + condition%/2)/100   -> 0.5 .. 1.0
+                    //   Bonus = melee/unarmed Strength bonus (0 for ranged weapons)
+                    // Ranged weapons (Guns/Energy/Explosives) get no Bonus; melee/unarmed
+                    // add the derived MeleeDamage/UnarmedDamage actor value.
                     const UInt32 baseDmg = w->attackDmg.damage;
-                    const int dispDmg = (int)(baseDmg * (0.5f + 0.5f * healthRatio) + 0.5f);
+                    float skill = p->avOwner.Fn_03(w->weaponSkill);
+                    if (skill < 0.0f) skill = 0.0f; else if (skill > 100.0f) skill = 100.0f;
+                    const float skillMult = (50.0f + skill * 0.5f) / 100.0f;
+                    const float condMult  = 0.5f + 0.5f * healthRatio; // = (50 + cond%/2)/100
+                    float dmg = baseDmg * skillMult * condMult;
+                    if (w->weaponSkill == eActorVal_MeleeWeapons)
+                        dmg += p->avOwner.Fn_03(eActorVal_MeleeDamage);
+                    else if (w->weaponSkill == eActorVal_Unarmed)
+                        dmg += p->avOwner.Fn_03(eActorVal_UnarmedDamage);
+                    const int dispDmg = (int)(dmg + 0.5f);
                     std::string o = "{"; appendBase(o, f, count, effValue);
                     char b[320];
                     std::snprintf(b, sizeof(b), ",\"categoryType\":\"Weapon\",\"damage\":%d,\"baseDamage\":%u,"
