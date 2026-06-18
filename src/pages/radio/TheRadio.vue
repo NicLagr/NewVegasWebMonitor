@@ -9,11 +9,11 @@
     </div>
 
     <ul
-      v-if="stations.length"
+      v-if="visibleStations.length"
       class="radio-stations"
     >
       <li
-        v-for="s in stations"
+        v-for="s in visibleStations"
         :key="s.refId"
         class="radio-station"
         :class="{ 'is-current': on && s.refId === currentRefId }"
@@ -21,6 +21,12 @@
       >
         <span class="radio-station__dot" />
         <span class="radio-station__name">{{ s.name }}</span>
+        <button
+          type="button"
+          class="radio-station__action"
+          :title="$t('pages.radio.status.hide')"
+          @click.stop="hiddenStore.hide(s.name)"
+        >✕</button>
       </li>
     </ul>
     <div
@@ -30,33 +36,69 @@
       {{ $t('pages.radio.status.noStations') }}
     </div>
 
-    <button
-      type="button"
-      class="radio-off-btn"
-      :disabled="!on"
-      @click="turnOff"
+    <div class="radio-footer">
+      <button
+        type="button"
+        class="radio-text-btn"
+        :disabled="!on"
+        @click="turnOff"
+      >
+        {{ $t('pages.radio.status.turnOff') }}
+      </button>
+      <button
+        v-if="hiddenStations.length"
+        type="button"
+        class="radio-text-btn"
+        @click="showHidden = !showHidden"
+      >
+        {{ showHidden ? $t('pages.radio.status.hideHidden') : $t('pages.radio.status.showHidden', { n: hiddenStations.length }) }}
+      </button>
+    </div>
+
+    <ul
+      v-if="showHidden && hiddenStations.length"
+      class="radio-stations radio-stations--hidden"
     >
-      {{ $t('pages.radio.status.turnOff') }}
-    </button>
+      <li
+        v-for="s in hiddenStations"
+        :key="s.refId"
+        class="radio-station is-hidden"
+      >
+        <span class="radio-station__name">{{ s.name }}</span>
+        <button
+          type="button"
+          class="radio-station__action"
+          :title="$t('pages.radio.status.unhide')"
+          @click.stop="hiddenStore.unhide(s.name)"
+        >↺</button>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRadioStore } from '@/stores/radio/useRadioStore';
+import { useHiddenStationsStore } from '@/stores/radio/useHiddenStationsStore';
 import { useWebSocketStore } from '@/stores/use-websocket-store/useWebsocketStore';
 
 const radioStore = useRadioStore();
 const { on, currentRefId, stations } = storeToRefs(radioStore);
+const hiddenStore = useHiddenStationsStore();
+const { hidden } = storeToRefs(hiddenStore);
 const wsStore = useWebSocketStore();
+
+const showHidden = ref(false);
+
+const visibleStations = computed(() => stations.value.filter((s) => !hidden.value.has(s.name)));
+const hiddenStations = computed(() => stations.value.filter((s) => hidden.value.has(s.name)));
 
 const currentName = computed(
   () => stations.value.find((s) => s.refId === currentRefId.value)?.name ?? null
 );
 
 function tune(refId: string): void {
-  // Tapping the active station turns the radio off; otherwise tune to it.
   if (on.value && refId === currentRefId.value) {
     wsStore.sendCommand({ command: 'radio_off' });
   } else {
@@ -113,6 +155,12 @@ function turnOff(): void {
   margin: 0;
   padding: 0;
   border-top: var(--border-thin) solid var(--skyrim-border-dark);
+
+  &--hidden {
+    flex: 0 1 auto;
+    max-height: 40%;
+    opacity: 0.6;
+  }
 }
 
 .radio-station {
@@ -139,12 +187,38 @@ function turnOff(): void {
     }
   }
 
+  &.is-hidden {
+    cursor: default;
+  }
+
   &__dot {
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 999px;
     border: var(--border-thin) solid var(--skyrim-border-medium);
     flex: 0 0 auto;
+  }
+
+  &__name {
+    flex: 1 1 auto;
+  }
+
+  &__action {
+    flex: 0 0 auto;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    border: var(--border-thin) solid var(--skyrim-border-dark);
+    border-radius: var(--radius-sm);
+    background-color: transparent;
+    color: var(--skyrim-text-dim);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--skyrim-border-accent);
+      color: var(--skyrim-text-accent);
+    }
   }
 }
 
@@ -158,17 +232,22 @@ function turnOff(): void {
   font-size: var(--font-size-base);
 }
 
-.radio-off-btn {
+.radio-footer {
   flex: 0 0 auto;
-  align-self: flex-start;
-  padding: var(--spacing-xs) var(--spacing-lg);
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+.radio-text-btn {
+  padding: var(--spacing-xs) var(--spacing-md);
   border: var(--border-thin) solid var(--skyrim-border-medium);
   border-radius: var(--radius-sm);
   background-color: var(--skyrim-bg-dark);
   color: var(--skyrim-text-primary);
   font-family: var(--font-heading);
-  font-size: var(--font-size-base);
-  letter-spacing: 0.08em;
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.06em;
   cursor: pointer;
 
   &:hover:not(:disabled) {

@@ -110,7 +110,11 @@
         "nowPlaying": "Now Playing",
         "off": "Radio Off",
         "turnOff": "Turn Off",
-        "noStations": "No stations in range"
+        "noStations": "No stations in range",
+        "hide": "Hide station",
+        "unhide": "Restore station",
+        "showHidden": "Show hidden ({n})",
+        "hideHidden": "Done"
       }
     },
     "map": {
