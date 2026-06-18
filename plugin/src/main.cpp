@@ -293,7 +293,7 @@ static std::string g_radioStations = ""; // cached {"refId","name"} array body
 static void rebuildRadioStations(PlayerCharacter* p) {
     DataHandler* dh = DataHandler::Get();
     if (!dh) return;
-    const float px = p->posX, py = p->posY;
+    (void)p;
     std::string arr; int n = 0;
     std::unordered_set<std::string> seen;
     auto& cells = dh->cellArray;
@@ -307,14 +307,17 @@ static void rebuildRadioStations(PlayerCharacter* p) {
             BSExtraData* xd = r->extraDataList.GetByType(kExtraData_RadioData);
             if (!xd) continue;
             ExtraRadioDataMin* rd = (ExtraRadioDataMin*)xd;
-            bool receivable = (rd->rangeType != 0);
-            if (!receivable && rd->radius > 0.0f) {
-                TESObjectREFR* o = rd->positionRef ? rd->positionRef : r;
-                const float dx = px - o->posX, dy = py - o->posY;
-                receivable = (dx * dx + dy * dy) <= (rd->radius * rd->radius);
-            }
-            if (!receivable) continue;
             const char* nm = r->GetTheName();
+            // DEBUG: log every radio ref found once, so the filter can be tuned.
+            static std::unordered_set<UInt32> dbgRadio;
+            if (dbgRadio.insert(r->refID).second)
+                logf("[dbg] RADIO %s rangeType=%u radius=%.0f flags=0x%08X",
+                     nm ? nm : "?", rd->rangeType, rd->radius, r->flags);
+            // Pip-Boy stations are broadcast (rangeType != 0); rangeType 0 is local
+            // positional audio (casino lounges, launch music) — not tunable. Skip
+            // disabled emitters (inactive quest stations like NCR Emergency Radio).
+            if (rd->rangeType == 0) continue;
+            if (r->flags & 0x800) continue; // disabled reference
             if (!nm || !*nm) continue;
             if (!seen.insert(nm).second) continue; // dedupe by name
             char b[256];
