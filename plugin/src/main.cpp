@@ -32,7 +32,13 @@ static std::string g_cats, g_weapons, g_apparel, g_aid, g_notes, g_misc;
 static std::string g_hotspots; // discovered map markers, {"hot":[...]}
 static float       g_caps  = 0;
 static int         g_frame = 0;
-static std::unordered_map<UInt32, TESForm*> g_formById; // refID -> form, for command lookup
+static std::unordered_map<UInt32, TESForm*> g_formById;        // refID -> form, for command lookup
+static std::unordered_map<UInt32, TESObjectREFR*> g_markerById; // map-marker refID -> ref, for fast-travel
+
+// Engine "move a reference to a marker ref" (the teleport behind the script
+// MoveTo). __cdecl(refToMove, targetMarker, 0, 0, 0). FNV 1.4.0.525.
+typedef void (__cdecl *MoveToMarker_t)(TESObjectREFR*, TESObjectREFR*, void*, void*, void*);
+static const MoveToMarker_t EngineMoveToMarker = (MoveToMarker_t)0x5CCB20;
 
 static void logf(const char* fmt, ...) {
     char buf[256]; va_list ap; va_start(ap, fmt);
@@ -153,6 +159,7 @@ struct MapMarkerInfo {
 static void rebuildHotspots(PlayerCharacter* p) {
     std::string hot;
     int n = 0;
+    g_markerById.clear();
     auto* list = (tList<MapMarkerInfo>*)((char*)p + 0x7C8);
     for (auto it = list->Begin(); !it.End(); ++it) {
         MapMarkerInfo* mi = it.Get();
@@ -166,6 +173,7 @@ static void rebuildHotspots(PlayerCharacter* p) {
         if (!name || !*name) name = mi->markerRef->GetTheName();
         if (!name) name = "";
         TESObjectREFR* r = mi->markerRef;
+        g_markerById[r->refID] = r; // for fast-travel lookup
         char b[320];
         std::snprintf(b, sizeof(b),
             "%s{\"type\":\"%s\",\"typeId\":%u,\"refId\":\"0x%08X\",\"name\":\"%s\","
@@ -328,13 +336,23 @@ static void ReadGameState() {
     // would otherwise consume multiple aid items.
     static std::unordered_map<uint64_t, int> cmdCooldown;
     for (const PluginCmd& c : cmd_drain()) {
-        auto found = g_formById.find(c.formId);
-        if (found == g_formById.end() || !found->second) continue;
+        // Per-(target,action) debounce — the app fires bursts per tap.
         const uint64_t key = ((uint64_t)c.formId << 8) | (uint8_t)(c.type.empty() ? 0 : c.type[0]);
         auto cd = cmdCooldown.find(key);
         if (cd != cmdCooldown.end() && (g_frame - cd->second) < 30) continue;
         cmdCooldown[key] = g_frame;
 
+        // Fast-travel: teleport the player to the discovered map marker.
+        if (c.type == "fast_travel") {
+            auto mit = g_markerById.find(c.formId);
+            if (mit != g_markerById.end() && mit->second)
+                EngineMoveToMarker((TESObjectREFR*)p, mit->second, nullptr, nullptr, nullptr);
+            continue;
+        }
+
+        // Inventory actions need the form looked up in the inventory map.
+        auto found = g_formById.find(c.formId);
+        if (found == g_formById.end() || !found->second) continue;
         TESForm* f = found->second;
         if (c.type == "equip" || c.type == "use")      p->EquipItem(f, 1, nullptr, 1, false, 1);
         else if (c.type == "unequip")                  p->UnequipItem(f, 1, nullptr, 1, false, 1);
