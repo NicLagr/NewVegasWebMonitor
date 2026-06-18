@@ -51,6 +51,33 @@
       :icon-symbol-id="playerIconSymbolId"
     />
 
+    <!-- User-placed custom marker (long-press to drop, tap to remove). -->
+    <g
+      v-if="customMarkerImg"
+      class="custom-marker"
+      :transform="`translate(${customMarkerImg.x} ${customMarkerImg.y})`"
+    >
+      <circle
+        :r="markerSize * 0.34"
+        fill="none"
+        :stroke-width="markerSize * 0.09"
+      />
+      <line
+        :x1="-markerSize * 0.5"
+        y1="0"
+        :x2="markerSize * 0.5"
+        y2="0"
+        :stroke-width="markerSize * 0.09"
+      />
+      <line
+        x1="0"
+        :y1="-markerSize * 0.5"
+        x2="0"
+        :y2="markerSize * 0.5"
+        :stroke-width="markerSize * 0.09"
+      />
+    </g>
+
     <selected-marker-label
       v-if="selectedMarker"
       :marker="selectedMarker"
@@ -97,6 +124,7 @@ import {
 } from './types';
 import { useMapHotspotsStore } from '@/stores/map/useMapHotspotsStore';
 import { useMapPlayerStore } from '@/stores/map/useMapPlayerStore';
+import { useCustomMarkerStore } from '@/stores/map/useCustomMarkerStore';
 import { useWebSocketStore } from '@/stores/use-websocket-store/useWebsocketStore';
 import { useModal } from '@/shared/lib/composables/useModal';
 
@@ -126,7 +154,16 @@ const hotspotsStore = useMapHotspotsStore();
 const { hotspots, questMarkers } = storeToRefs(hotspotsStore);
 const playerStore = useMapPlayerStore();
 const { displayPosition: playerDisplayPosition } = storeToRefs(playerStore);
+const customMarkerStore = useCustomMarkerStore();
+const { marker: customMarker } = storeToRefs(customMarkerStore);
 const { projectWorldToImage } = useMapProjection();
+
+/** Custom marker projected into image-pixel coords (null when none placed). */
+const customMarkerImg = computed(() => {
+  const m = customMarker.value;
+  if (!m) return null;
+  return projectWorldToImage(m);
+});
 const { locationMarkers, questObjectiveMarkers, markers } = useProjectedMapMarkers({
   projectWorldToImage,
   hotspots,
@@ -220,6 +257,16 @@ function clearSelection(): void {
  */
 function handleClickAt(imgX: number, imgY: number): boolean {
   if (markerMaxSize.value <= 0) return false;
+
+  // A tap on the custom marker removes it.
+  const cm = customMarkerImg.value;
+  if (cm) {
+    const half = markerSize.value * 0.5;
+    if (Math.abs(imgX - cm.x) <= half && Math.abs(imgY - cm.y) <= half) {
+      customMarkerStore.clearMarker();
+      return true;
+    }
+  }
 
   // Markers are drawn anchored at (m.x, m.y) with the icon tip at the
   // anchor and the body extending up by `markerMaxSize`. Iterate from the
@@ -347,6 +394,17 @@ function clamp(v: number, lo: number, hi: number): number {
   :deep(*) {
     pointer-events: none;
     touch-action: none;
+  }
+}
+
+/* User-placed custom marker: an amber crosshair, distinct from the green
+   player dot and the location icons. */
+.custom-marker {
+  circle,
+  line {
+    stroke: #ffc23a;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.7));
   }
 }
 </style>

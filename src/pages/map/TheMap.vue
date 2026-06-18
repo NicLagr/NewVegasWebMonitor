@@ -45,6 +45,7 @@ import MapMarkers from './MapMarkers.vue';
 import { BaseIcon } from '@/shared/ui';
 import { useMapProjection } from './composables/useMapProjection';
 import { useMapPlayerStore } from '@/stores/map/useMapPlayerStore';
+import { useCustomMarkerStore } from '@/stores/map/useCustomMarkerStore';
 
 // =============================================================
 // Map view configuration
@@ -122,7 +123,8 @@ const isFollowPlayerMode = ref(false);
 
 const playerStore = useMapPlayerStore();
 const { displayPosition } = storeToRefs(playerStore);
-const { projectWorldToImage } = useMapProjection();
+const { projectWorldToImage, projectImageToWorld } = useMapProjection();
+const customMarkerStore = useCustomMarkerStore();
 
 const overlayStyle = computed<StyleValue>(() => ({
   width: `${imgNaturalW.value}px`,
@@ -146,6 +148,16 @@ const coverScale = computed(() => {
 // =============================================================
 
 let viewer: OpenSeadragon.Viewer | null = null;
+
+/** Hold duration (ms) that turns a press into a custom-marker drop. */
+const LONG_PRESS_MS = 550;
+let longPressTimer: number | null = null;
+function cancelLongPress(): void {
+  if (longPressTimer !== null) {
+    clearTimeout(longPressTimer);
+    longPressTimer = null;
+  }
+}
 
 type OsdTileSource = NonNullable<OpenSeadragon.Options['tileSources']>;
 
@@ -369,6 +381,25 @@ function setupViewer(): void {
   viewer.addHandler('canvas-scroll', stopFollowPlayerByUser);
   viewer.addHandler('canvas-pinch', stopFollowPlayerByUser);
 
+  // Long-press (hold ~0.55s without dragging) drops a custom marker at that
+  // spot. A quick tap or any drag cancels it, so it never fights panning.
+  viewer.addHandler('canvas-press', (event) => {
+    cancelLongPress();
+    const pos = event.position;
+    longPressTimer = window.setTimeout(() => {
+      longPressTimer = null;
+      if (!viewer) return;
+      const item = viewer.world.getItemAt(0);
+      if (!item) return;
+      const vp = viewer.viewport.pointFromPixel(pos);
+      const img = item.viewportToImageCoordinates(vp);
+      const world = projectImageToWorld(img.x, img.y);
+      if (world) customMarkerStore.setMarker(world);
+    }, LONG_PRESS_MS);
+  });
+  viewer.addHandler('canvas-drag', cancelLongPress);
+  viewer.addHandler('canvas-release', cancelLongPress);
+
   viewer.addHandler('canvas-click', (event) => {
     if (!viewer) return;
     if (!event.quick) return;
@@ -399,6 +430,7 @@ watch(displayPosition, () => {
 });
 
 onBeforeUnmount(() => {
+  cancelLongPress();
   if (viewer) {
     viewer.destroy();
     viewer = null;

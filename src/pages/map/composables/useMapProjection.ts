@@ -36,6 +36,7 @@ export type MapProjectionFn = (point: Point) => ProjectedPoint | null;
 
 export interface UseMapProjection {
   projectWorldToImage: MapProjectionFn;
+  projectImageToWorld: (imgX: number, imgY: number) => Point | null;
   imageWidth: number;
   imageHeight: number;
   isReady: ComputedRef<boolean>;
@@ -84,9 +85,29 @@ export function projectWorldToImage(point: Point): ProjectedPoint | null {
   };
 }
 
+/**
+ * Inverse of {@link projectWorldToImage}: map an image-pixel coordinate back to
+ * game-world coordinates. Used to place a custom marker by tapping the map.
+ * Returns `null` before calibration or if the affine transform is degenerate.
+ */
+export function projectImageToWorld(imgX: number, imgY: number): Point | null {
+  if (!MATRIX) return null;
+  if (!Number.isFinite(imgX) || !Number.isFinite(imgY)) return null;
+  const { a, b, c, d, e, f } = MATRIX;
+  const det = a * d - b * c;
+  if (!det || !Number.isFinite(det)) return null;
+  const px = imgX - e;
+  const py = imgY - f;
+  const x = (d * px - c * py) / det;
+  const y = (-b * px + a * py) / det;
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+  return { x, y };
+}
+
 export function useMapProjection(): UseMapProjection {
   return {
     projectWorldToImage,
+    projectImageToWorld,
     imageWidth: MOJAVE_MAP_IMAGE_WIDTH,
     imageHeight: MOJAVE_MAP_IMAGE_HEIGHT,
     isReady: computed(() => MATRIX !== null),
