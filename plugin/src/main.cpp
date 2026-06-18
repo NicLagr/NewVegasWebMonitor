@@ -55,6 +55,13 @@ static const ClearCustomMarker_t EngineClearCustomMarker = (ClearCustomMarker_t)
 // when placing a custom marker (the web map is always the Mojave world map).
 static TESWorldSpace* g_lastWorldSpace = nullptr;
 
+static std::unordered_map<UInt32, TESQuest*> g_questById; // quest refID -> quest, for quest_set_active
+
+// Engine "rebuild a quest's tracked targets" (refreshes the compass/HUD after
+// changing the active quest). thiscall(quest, &questTargetList, &questObjectiveList).
+typedef void (__thiscall *UpdateQuestTargets_t)(TESQuest*, void*, void*);
+static const UpdateQuestTargets_t EngineUpdateQuestTargets = (UpdateQuestTargets_t)0x60F110;
+
 static void logf(const char* fmt, ...) {
     char buf[256]; va_list ap; va_start(ap, fmt);
     std::vsnprintf(buf, sizeof(buf), fmt, ap); va_end(ap);
@@ -208,13 +215,16 @@ static void rebuildQuests(PlayerCharacter* p) {
     TESQuest* activeQ = *(TESQuest**)((char*)p + 0x6B8);
     auto* objList = (tList<BGSQuestObjective>*)((char*)p + 0x6BC);
 
+    g_questById.clear();
     // Unique parent quests, in first-seen order.
     std::vector<TESQuest*> quests;
     for (auto it = objList->Begin(); !it.End(); ++it) {
         BGSQuestObjective* o = it.Get();
         if (!o || !o->quest) continue;
-        if (std::find(quests.begin(), quests.end(), o->quest) == quests.end())
+        if (std::find(quests.begin(), quests.end(), o->quest) == quests.end()) {
             quests.push_back(o->quest);
+            g_questById[o->quest->refID] = o->quest;
+        }
     }
 
     std::string arr; int nq = 0;
@@ -436,6 +446,22 @@ static void ReadGameState() {
             continue;
         }
         if (c.type == "player_marker_clear") { EngineClearCustomMarker(p); continue; }
+
+        // Track/untrack a quest (the Pip-Boy "active" quest driving the compass).
+        if (c.type == "quest_set_active") {
+            auto qit = g_questById.find(c.formId);
+            if (qit != g_questById.end() && qit->second) {
+                TESQuest* q = qit->second;
+                TESQuest** activeQ = (TESQuest**)((char*)p + 0x6B8);
+                if (c.count) { // track
+                    *activeQ = q;
+                    EngineUpdateQuestTargets(q, (char*)p + 0x6C4, (char*)p + 0x6BC);
+                } else if (*activeQ == q) { // untrack
+                    *activeQ = nullptr;
+                }
+            }
+            continue;
+        }
 
         // Inventory actions need the form looked up in the inventory map.
         auto found = g_formById.find(c.formId);

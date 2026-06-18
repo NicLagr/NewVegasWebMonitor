@@ -295,6 +295,10 @@ void handle_client(SOCKET client) {
                 } else if (cmd == "player_marker_clear") {
                     cmd_push_marker(cmd, 0.f, 0.f, 0.f);
                     log_fmt("[ws] command player_marker_clear");
+                } else if (cmd == "quest_set_active") {
+                    const bool active = payload.find("\"active\":true") != std::string::npos;
+                    if (formId) cmd_push(cmd, formId, active ? 1 : 0);
+                    log_fmt("[ws] command quest_set_active form=0x%08X active=%d", formId, (int)active);
                 } else if (!cmd.empty() && formId) {
                     cmd_push(cmd, formId, (int)count); // executed on the main thread
                     log_fmt("[ws] command %s form=0x%08X", cmd.c_str(), formId);
