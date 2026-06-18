@@ -289,16 +289,23 @@ struct ExtraRadioDataMin { char _hdr[0x0C]; float radius; UInt32 rangeType; floa
 // player can currently pick up (worldspace broadcasts always; local ones only
 // in range). Mirrors how the game/JIP scans (DataHandler::cellArray for
 // kExtraData_RadioData). Heavy-ish -> run on a slower cadence than the rest.
-static std::string g_radioStations = ""; // cached {"refId","name"} array body
+// Radio broadcast range type (ExtraRadioData.rangeType), per the GECK:
+//   0 = Radius (local), 1 = Everywhere, 2 = World Space (+ linked interiors),
+//   3 = Linked Interiors. "Receivable now" = what the Pip-Boy would list.
+static std::string g_radioStations = ""; // cached station array body w/ "receivable" flag
 static void rebuildRadioStations(PlayerCharacter* p) {
     DataHandler* dh = DataHandler::Get();
     if (!dh) return;
-    (void)p;
+    TESObjectCELL* pcell = p->parentCell;
+    const bool playerInterior  = pcell && pcell->IsInterior();
+    TESWorldSpace* playerWS = (pcell && !playerInterior) ? pcell->worldSpace : nullptr;
+    const float px = p->posX, py = p->posY;
+
     std::string arr; int n = 0;
     std::unordered_set<std::string> seen;
     auto& cells = dh->cellArray;
     const int count = cells.firstFreeEntry;
-    for (int i = 0; i < count && n < 40; i++) {
+    for (int i = 0; i < count && n < 60; i++) {
         TESObjectCELL* c = cells.data[i];
         if (!c) continue;
         for (auto it = c->objectList.Begin(); !it.End(); ++it) {
@@ -306,24 +313,41 @@ static void rebuildRadioStations(PlayerCharacter* p) {
             if (!r) continue;
             BSExtraData* xd = r->extraDataList.GetByType(kExtraData_RadioData);
             if (!xd) continue;
+            if (r->flags & 0x800) continue; // disabled (inactive station) — not real yet
             ExtraRadioDataMin* rd = (ExtraRadioDataMin*)xd;
             const char* nm = r->GetTheName();
-            // DEBUG: log every radio ref found once, so the filter can be tuned.
+            // DEBUG: log every radio ref once so the filter stays verifiable.
             static std::unordered_set<UInt32> dbgRadio;
             if (dbgRadio.insert(r->refID).second)
                 logf("[dbg] RADIO %s rangeType=%u radius=%.0f flags=0x%08X",
                      nm ? nm : "?", rd->rangeType, rd->radius, r->flags);
-            // Pip-Boy stations are broadcast (rangeType != 0); rangeType 0 is local
-            // positional audio (casino lounges, launch music) — not tunable. Skip
-            // disabled emitters (inactive quest stations like NCR Emergency Radio).
-            if (rd->rangeType == 0) continue;
-            if (r->flags & 0x800) continue; // disabled reference
             if (!nm || !*nm) continue;
+
+            // "receivable" = the Pip-Boy would currently list it (its default
+            // visibility). The rest are still sent so the UI can offer them under
+            // "show hidden", except out-of-range local props (pure clutter).
+            bool receivable;
+            switch (rd->rangeType) {
+                case 1: receivable = true; break;                              // Everywhere
+                case 2: receivable = (c->worldSpace && c->worldSpace == playerWS); break; // World Space
+                case 3: receivable = playerInterior; break;                    // Linked Interiors
+                case 0: {                                                      // Radius (local)
+                    TESObjectREFR* o = rd->positionRef ? rd->positionRef : r;
+                    const float dx = px - o->posX, dy = py - o->posY;
+                    receivable = (rd->radius > 0.0f) && (dx * dx + dy * dy) <= (rd->radius * rd->radius);
+                    break;
+                }
+                default: receivable = true; break;
+            }
+            // Radius props out of range = every radio object in the world -> skip
+            // (would flood "show hidden"). Broadcast types are always listed.
+            if (rd->rangeType == 0 && !receivable) continue;
             if (!seen.insert(nm).second) continue; // dedupe by name
-            char b[256];
-            std::snprintf(b, sizeof(b), "%s{\"refId\":\"0x%08X\",\"name\":\"%s\"}",
-                          n ? "," : "", r->refID, jsonEscape(nm).c_str());
-            arr += b; if (++n >= 40) break;
+
+            char b[280];
+            std::snprintf(b, sizeof(b), "%s{\"refId\":\"0x%08X\",\"name\":\"%s\",\"receivable\":%s}",
+                          n ? "," : "", r->refID, jsonEscape(nm).c_str(), receivable ? "true" : "false");
+            arr += b; if (++n >= 60) break;
         }
     }
     g_radioStations = arr;

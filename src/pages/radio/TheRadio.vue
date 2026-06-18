@@ -25,7 +25,7 @@
           type="button"
           class="radio-station__action"
           :title="$t('pages.radio.status.hide')"
-          @click.stop="hiddenStore.hide(s.name)"
+          @click.stop="prefs.hide(s.name)"
         >✕</button>
       </li>
     </ul>
@@ -69,7 +69,7 @@
           type="button"
           class="radio-station__action"
           :title="$t('pages.radio.status.unhide')"
-          @click.stop="hiddenStore.unhide(s.name)"
+          @click.stop="prefs.show(s.name)"
         >↺</button>
       </li>
     </ul>
@@ -80,19 +80,25 @@
 import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRadioStore } from '@/stores/radio/useRadioStore';
-import { useHiddenStationsStore } from '@/stores/radio/useHiddenStationsStore';
+import { useStationPrefsStore } from '@/stores/radio/useStationPrefsStore';
 import { useWebSocketStore } from '@/stores/use-websocket-store/useWebsocketStore';
 
 const radioStore = useRadioStore();
 const { on, currentRefId, stations } = storeToRefs(radioStore);
-const hiddenStore = useHiddenStationsStore();
-const { hidden } = storeToRefs(hiddenStore);
+const prefs = useStationPrefsStore();
+const { overrides } = storeToRefs(prefs);
 const wsStore = useWebSocketStore();
 
 const showHidden = ref(false);
 
-const visibleStations = computed(() => stations.value.filter((s) => !hidden.value.has(s.name)));
-const hiddenStations = computed(() => stations.value.filter((s) => hidden.value.has(s.name)));
+// Default visibility follows the plugin's `receivable` flag; a user override wins.
+// `overrides` is referenced so the lists recompute when prefs change.
+function stationVisible(s: { name: string; receivable?: boolean }): boolean {
+  void overrides.value;
+  return prefs.isVisible(s.name, s.receivable !== false);
+}
+const visibleStations = computed(() => stations.value.filter(stationVisible));
+const hiddenStations = computed(() => stations.value.filter((s) => !stationVisible(s)));
 
 const currentName = computed(
   () => stations.value.find((s) => s.refId === currentRefId.value)?.name ?? null

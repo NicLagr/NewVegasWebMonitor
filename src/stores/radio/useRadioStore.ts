@@ -4,6 +4,8 @@ import { ref } from 'vue';
 export interface RadioStation {
   refId: string;
   name: string;
+  /** Whether the Pip-Boy would currently list it (default visibility). */
+  receivable?: boolean;
 }
 
 /** `radio.status` payload — the Pip-Boy radio's current state + receivable stations. */
