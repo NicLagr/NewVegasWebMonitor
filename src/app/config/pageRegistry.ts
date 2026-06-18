@@ -213,6 +213,20 @@ export const pagesRegistry: PagesRegistry = {
         },
       ],
     },
+    misc: {
+      component: TheBooks,
+      subscriptions: [
+        {
+          id: 'inventory.books',
+          fields: {
+            items: 'Inventory::Items::Books',
+          },
+          settings: {
+            frequency: INVENTORY_FREQUENCY,
+          },
+        },
+      ],
+    },
     radio: {
       component: TheRadio,
       subscriptions: [

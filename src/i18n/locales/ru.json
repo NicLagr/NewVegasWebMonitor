@@ -25,7 +25,9 @@
       "quests": {
         "label": "ДАННЫЕ",
         "subtabs": {
-          "questsList": "Задания"
+          "questsList": "Задания",
+          "misc": "Разное",
+          "radio": "Радио"
         }
       },
       "map": {

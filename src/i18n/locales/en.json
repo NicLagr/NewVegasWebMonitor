@@ -25,7 +25,9 @@
       "quests": {
         "label": "DATA",
         "subtabs": {
-          "questsList": "Quests"
+          "questsList": "Quests",
+          "misc": "Misc",
+          "radio": "Radio"
         }
       },
       "map": {

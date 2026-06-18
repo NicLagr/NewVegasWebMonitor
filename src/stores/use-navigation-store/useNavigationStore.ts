@@ -42,6 +42,9 @@ export const useNavigationStore = defineStore('navigation', () => {
             label: t('app.tabs.quests.label'),
             subTabs: [
               ...(systemStore.isFeatureProvided('player.quests') ? subTabsMap.value.quests : []),
+              ...(systemStore.isFeatureProvided('inventory')
+                ? [{ id: 'misc', label: t('app.tabs.quests.subtabs.misc') }]
+                : []),
               ...(systemStore.isFeatureProvided('game.radio')
                 ? [{ id: 'radio', label: t('pages.radio.status.tab') }]
                 : []),
