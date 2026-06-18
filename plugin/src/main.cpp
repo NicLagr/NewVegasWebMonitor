@@ -102,10 +102,12 @@ static void rebuildInventory(PlayerCharacter* p) {
             if (f->refID == 0x0000000F) { caps = (float)count; continue; } // Caps
 
             // Condition % + equipped state from per-stack extra data (weapons/armor only).
-            int  condPct  = 100;
-            bool equipped = false;
+            int    condPct = 100;
+            bool   equipped = false;
+            UInt32 dbgMaxH = 0;
+            float  dbgCur  = -1.0f;
             if (f->typeID == kFormType_TESObjectWEAP || f->typeID == kFormType_TESObjectARMO) {
-                const UInt32 maxH = (f->typeID == kFormType_TESObjectWEAP)
+                dbgMaxH = (f->typeID == kFormType_TESObjectWEAP)
                     ? ((TESObjectWEAP*)f)->health.health
                     : ((TESObjectARMO*)f)->health.health;
                 bool gotHealth = false;
@@ -117,12 +119,29 @@ static void rebuildInventory(PlayerCharacter* p) {
                             equipped = true;
                         if (!gotHealth) {
                             ExtraHealth* h = (ExtraHealth*)xdl->GetByType(kExtraData_Health);
-                            if (h && maxH > 0) {
-                                int p = (int)((h->health / (float)maxH) * 100.0f);
-                                condPct = p < 0 ? 0 : (p > 100 ? 100 : p);
+                            if (h) {
+                                dbgCur = h->health;
+                                if (dbgMaxH > 0) {
+                                    int pc = (int)((h->health / (float)dbgMaxH) * 100.0f);
+                                    condPct = pc < 0 ? 0 : (pc > 100 ? 100 : pc);
+                                }
                                 gotHealth = true;
                             }
                         }
+                    }
+                }
+                // DEBUG: log equipped weapon/armor so we can verify the value/damage/DT math.
+                if (equipped) {
+                    const char* nm = f->GetTheName(); if (!nm) nm = "?";
+                    if (f->typeID == kFormType_TESObjectWEAP) {
+                        TESObjectWEAP* w = (TESObjectWEAP*)f;
+                        logf("[dbg] WEAP %s baseDmg=%u maxH=%u cur=%.0f cond=%d skillAV=%u skill=%.0f baseVal=%.0f",
+                             nm, w->attackDmg.damage, dbgMaxH, dbgCur, condPct,
+                             w->weaponSkill, p->avOwner.Fn_03(w->weaponSkill), itemValue(f));
+                    } else {
+                        TESObjectARMO* a = (TESObjectARMO*)f;
+                        logf("[dbg] ARMO %s DT=%.1f AR=%u maxH=%u cur=%.0f cond=%d baseVal=%.0f",
+                             nm, a->damageThreshold, a->armorRating, dbgMaxH, dbgCur, condPct, itemValue(f));
                     }
                 }
             }
@@ -156,10 +175,10 @@ static void rebuildInventory(PlayerCharacter* p) {
                     const char* cls = (a->armorFlags & 1) ? "Heavy" : "Light";
                     std::string o = "{"; appendBase(o, f, count, effValue);
                     char b[220];
-                    std::snprintf(b, sizeof(b), ",\"categoryType\":\"Apparel\",\"damageThreshold\":%u,"
+                    std::snprintf(b, sizeof(b), ",\"categoryType\":\"Apparel\",\"damageThreshold\":%.0f,"
                         "\"condition\":%d,\"armorType\":\"%s\",\"bodySlots\":[\"Body\"],"
                         "\"isEquipped\":%s,\"equipSlots\":[],\"enchantment\":null}",
-                        a->armorRating, condPct, cls, equipped ? "true" : "false");
+                        a->damageThreshold, condPct, cls, equipped ? "true" : "false");
                     o += b;
                     if (nApp++) apparel += ","; apparel += o; break;
                 }
