@@ -32,7 +32,42 @@
       "Read(//private/tmp/**)",
       "Bash(awk '/struct EntryData|class EntryData/{f=1} f{print NR\": \"$0} f&&/};/{c++; if\\(c>=1\\) exit}' nvse/nvse/GameExtraData.h)",
       "Bash(git commit -q -m 'plugin: weapon DAM from engine'\\\\''s own routine \\(exact Pip-Boy match\\) *)",
-      "Bash(git commit -q -m 'ui: stackable items show per-unit weight/value + stack total in parens *)"
+      "Bash(git commit -q -m 'ui: stackable items show per-unit weight/value + stack total in parens *)",
+      "Bash(git commit -q -m 'plugin: remove one-shot weapon debug log \\(engine DAM verified accurate\\) *)",
+      "Bash(rm -rf /tmp/xnvse-probe /tmp/JohnnyGuitarNVSE /tmp/JIP-LN-NVSE-Library; echo cleaned)",
+      "Bash(sed -n '570,612p' nvse/GameExtraData.h)",
+      "Bash(sed -n '3600,3645p' nvse/GameForms.h)",
+      "Bash(sed -n '1222,1245p' nvse/GameObjects.cpp)",
+      "Bash(sed -n '805,835p' nvse/GameObjects.h)",
+      "Bash(sed -n '950,962p' nvse/GameObjects.h)",
+      "Bash(sed -n '835,875p' nvse/nvse/GameExtraData.h)",
+      "Bash(sed -n '102,160p' nvse/nvse/GameTypes.h)",
+      "Bash(git commit -q -m 'plugin: enumerate discovered map markers -> map.hotspots \\(read-only\\) *)",
+      "Bash(git commit -q -m 'plugin: execute fast_travel command \\(teleport player to map marker\\) *)",
+      "Bash(npx vue-tsc *)",
+      "Bash(git commit -q -m 'map: custom marker via long-press \\(place\\) + tap \\(remove\\) *)",
+      "Bash(cd /Users/nicolo.lagravinese/SkyrimWebMonitor; gh run watch 27733028555 -R NicLagr/NewVegasWebMonitor --exit-status >/dev/null 2>&1; gh run view 27733028555 -R NicLagr/NewVegasWebMonitor --json status,conclusion --jq '.status + \" / \" + .conclusion'; rm -rf /tmp/JIP-LN-NVSE-Library /tmp/JohnnyGuitarNVSE /tmp/xnvse-probe; echo cleaned)",
+      "Bash(git commit -q -m 'map: push custom marker to the in-game Pip-Boy world map *)",
+      "Bash(echo \"plugin: $\\(gh run view 27733501282 -R NicLagr/NewVegasWebMonitor --json conclusion --jq .conclusion\\)\")",
+      "Bash(echo \"pages: $\\(gh run view 27733501287 -R NicLagr/NewVegasWebMonitor --json conclusion --jq .conclusion\\)\")",
+      "Bash(rm -rf /tmp/JIP-LN-NVSE-Library /tmp/JohnnyGuitarNVSE)",
+      "Bash(xargs cat)",
+      "Bash(sed -n '3753,3800p' nvse/nvse/GameForms.h)",
+      "Bash(sed -n '1493,1545p' nvse/nvse/GameForms.h)",
+      "Bash(git commit -q -m 'plugin: implement quest_set_active \\(track/untrack quest\\) *)",
+      "Bash(sed -n '185,205p' JIP-LN-NVSE-Library/nvse/GameForms.cpp)",
+      "Bash(sed -n '/class BGSNote/,/^};/p' JIP-LN-NVSE-Library/nvse/GameForms.h)",
+      "Bash(echo \"A2: $\\(gh run view 27734338071 -R NicLagr/NewVegasWebMonitor --json conclusion --jq .conclusion\\)\")",
+      "Bash(sed -n '1,60p' src/pages/inventory/TheBooks.vue)",
+      "Bash(git commit -q -m 'notes: read + display text-note bodies *)",
+      "Bash(rm -rf /tmp/JIP-LN-NVSE-Library /tmp/JohnnyGuitarNVSE /tmp/NVSE; echo cleaned)",
+      "Bash(sed -n '38,48p' nvse/nvse/PluginAPI.h)",
+      "Bash(sed -n '/NVSEPlugin_Load/,/^}/p' /Users/nicolo.lagravinese/SkyrimWebMonitor/plugin/src/main.cpp)"
+    ],
+    "additionalDirectories": [
+      "/private/tmp/xnvse-probe",
+      "/private/tmp/JIP-LN-NVSE-Library",
+      "/private/tmp/JohnnyGuitarNVSE"
     ]
   }
 }

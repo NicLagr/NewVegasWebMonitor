@@ -17,10 +17,6 @@ export type CommandType =
   | 'unequip'
   | 'use'
   | 'drop'
-  | 'favorite'
-  | 'hotkey_set'
-  | 'hotkey_clear'
-  | 'hotkey_trigger'
   | 'quest_set_active'
   | 'player_marker_set'
   | 'player_marker_clear'
@@ -28,7 +24,6 @@ export type CommandType =
   | 'radio_off'
   | 'radio_tune'
 export type EquipHand = EquippedHand
-export type HotkeySlot = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
 
 /**
  * Command Details:
@@ -37,10 +32,6 @@ export type HotkeySlot = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
  * - unequip: Removes the equipped item. For weapons, hand specifies which hand to unequip from.
  * - use: Consumes/activates the item (applies chem/aid effect, plays a holotape/note).
  * - drop: Drops count items from inventory onto the ground. Use count parameter to specify quantity.
- * - favorite: Toggles the item's favorite status on/off.
- * - hotkey_set: Binds a formId to a hotkey slot (1..8). Requires formId and slot.
- * - hotkey_clear: Removes the binding on a slot (1..8). Requires slot.
- * - hotkey_trigger: Fires the action bound to a slot (1..8). Requires slot.
  * - quest_set_active: Sets quest tracking state. Requires formId and active.
  * - player_marker_set: Places/moves the player's custom map marker. Requires x, y; z optional.
  * - player_marker_clear: Hides the player's custom map marker. Takes no parameters.
@@ -89,14 +80,12 @@ export interface CommandMessage extends BaseMessage {
   type: 'command'
   id: string // unique request identifier
   command: CommandType
-  /** Hex form ID. Required by equip/unequip/use/drop/favorite/*_spell, hotkey_set, fast_travel. */
+  /** Hex form ID. Required by equip/unequip/use/drop/quest_set_active/fast_travel. */
   formId?: string
-  /** Equip/unequip hand: "right" or "left" (weapons & spells only, default: "right"). */
+  /** Equip/unequip hand: "right" or "left" (weapons only, default: "right"). */
   hand?: EquipHand
   /** Drop count (default: 1, only used by `drop`). */
   count?: number
-  /** Hotkey slot 1..8 (required for hotkey_set / hotkey_clear / hotkey_trigger). */
-  slot?: HotkeySlot
   /** Quest tracking state (required for `quest_set_active`). */
   active?: boolean
   /** World X coordinate (required for `player_marker_set`). */
@@ -110,15 +99,13 @@ export interface CommandMessage extends BaseMessage {
 /**
  * Options accepted by `sendCommand` / `wsClient.command`.
  * Use this object form instead of positional parameters so calls like
- *   sendCommand({ command: 'hotkey_clear', slot: 1 })
+ *   sendCommand({ command: 'drop', formId, count: 1 })
  * stay readable without trailing `undefined` arguments.
  *
  * Per-command required fields:
  *   - equip / unequip:                formId (+ optional hand)
- *   - use / favorite:                  formId
+ *   - use:                             formId
  *   - drop:                            formId (+ optional count)
- *   - hotkey_set:                      formId, slot
- *   - hotkey_clear / hotkey_trigger:  slot
  *   - quest_set_active:                formId, active
  *   - player_marker_set:               x, y (+ optional z)
  *   - player_marker_clear:             (no fields)
@@ -130,7 +117,6 @@ export interface SendCommandOptions {
   active?: boolean
   hand?: EquipHand
   count?: number
-  slot?: HotkeySlot
   x?: number
   y?: number
   z?: number

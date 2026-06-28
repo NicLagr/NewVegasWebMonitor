@@ -17,7 +17,6 @@ export {
   type CommandResultMessage,
   type CommandType,
   type EquipHand,
-  type HotkeySlot,
   type SendCommandOptions,
 } from './protocol';
 export {

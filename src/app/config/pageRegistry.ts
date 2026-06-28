@@ -7,7 +7,6 @@ import type {
 } from './types';
 import {
   TheStats,
-  TheHotkeys,
   TheWeapons,
   TheApparel,
   TheMisc,
@@ -47,20 +46,6 @@ export const pagesRegistry: PagesRegistry = {
             carryWeight: 'Player::CarryWeight',
             caps: 'Inventory::Caps',
             karma: 'Player::Karma',
-          },
-        },
-      ],
-    },
-    hotkeys: {
-      component: TheHotkeys,
-      subscriptions: [
-        {
-          id: 'hotkeys.items',
-          fields: {
-            items: 'Hotkey::Items',
-          },
-          settings: {
-            frequency: INVENTORY_FREQUENCY,
           },
         },
       ],

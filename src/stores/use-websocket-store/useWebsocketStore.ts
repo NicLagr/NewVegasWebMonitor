@@ -132,8 +132,8 @@ export const useWebSocketStore = defineStore('websocket', () => {
       console.warn('WebSocket is not connected, cannot send command');
       return;
     }
-    const { command, formId, slot } = options;
-    const commandId = `cmd-${command}-${formId ?? 'noform'}-${slot ?? 'noslot'}-${Date.now()}`;
+    const { command, formId } = options;
+    const commandId = `cmd-${command}-${formId ?? 'noform'}-${Date.now()}`;
     wsClient.command(commandId, options);
   };
 

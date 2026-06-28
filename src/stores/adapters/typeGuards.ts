@@ -24,7 +24,6 @@ import type {
 import { CATEGORY_TYPES } from '@/stores/inventory/types';
 import type { CategoriesData } from '@/shared/lib/types/types';
 import type { QuestsState, QuestJournalEntry, QuestListSection } from '@/stores/quests/types';
-import type { HotkeyItemsState } from '@/stores/hotkeys/types';
 import type { RadioState } from '@/stores/radio/useRadioStore';
 import type { GameStatusData } from '@/stores/game/types';
 import type {
@@ -201,15 +200,6 @@ export function isGem(item: unknown): item is GemItem {
   );
 }
 
-export function isHotkeyItemsData(data: unknown, id: string): data is HotkeyItemsState {
-  return (
-    id === 'hotkeys.items' &&
-    typeof data === 'object' &&
-    data !== null &&
-    'items' in data &&
-    Array.isArray((data as HotkeyItemsState).items)
-  );
-}
 
 export function isQuestsData(data: unknown, id: string): data is QuestsState {
   return (
