@@ -1,6 +1,6 @@
 <template>
-  <div class="d-flex flex-col flex-1 justify-between">
-    <div class="list">
+  <div class="stats-page">
+    <section class="stats-attrs">
       <attribute-row
         :label="$t('pages.character.stats.level')"
         :value="displayLevel"
@@ -21,8 +21,9 @@
         :label="$t('pages.character.stats.karma')"
         :value="displayKarma"
       />
-    </div>
-    <div class="d-flex flex-col gap-md">
+    </section>
+
+    <section class="stats-bars">
       <stat-bar
         :label="$t('pages.character.stats.hp')"
         :value="healthPercentage"
@@ -41,7 +42,7 @@
         :max="100"
         color="rads"
       />
-    </div>
+    </section>
   </div>
 </template>
 
@@ -61,4 +62,40 @@ const {
 } = useCharacterStatsDisplay();
 </script>
 
-<!-- All layout via utility classes; no scoped styles required. -->
+<style scoped lang="scss">
+/* Adaptive layout: fits the whole STATUS screen without cropping, scaling
+   spacing/type to the viewport (e.g. the AYN Thor's 1080×1240 bottom screen).
+   Attributes in a 2-column grid up top; vital bars anchored at the bottom. */
+.stats-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  padding: clamp(var(--spacing-sm), 2.5vh, var(--spacing-lg));
+  gap: clamp(var(--spacing-sm), 2.5vh, var(--spacing-lg));
+}
+
+.stats-attrs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: var(--spacing-lg);
+  row-gap: clamp(0.1rem, 1vh, var(--spacing-sm));
+  align-content: start;
+
+  :deep(.attribute-row) {
+    font-size: clamp(var(--font-size-sm), 2.2vh, var(--font-size-lg));
+  }
+
+  /* The fixed 120px label width overflows narrow grid columns. */
+  :deep(.attr-label) {
+    min-width: 0;
+  }
+}
+
+.stats-bars {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--spacing-xs), 2vh, var(--spacing-md));
+  margin-top: auto;
+}
+</style>
