@@ -119,6 +119,10 @@
     },
     "map": {
       "alt": "World map",
+      "placeMarker": "Place marker",
+      "placeHint": "Pan the map under the crosshair",
+      "place": "Place",
+      "cancel": "Cancel",
       "world": {
         "tab": "World",
         "placeholder": "World map to be implemented"

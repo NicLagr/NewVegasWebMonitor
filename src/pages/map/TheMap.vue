@@ -15,23 +15,78 @@
         :cover-scale="coverScale"
         :overlay-style="overlayStyle"
       />
-      <button
-        type="button"
-        class="map-follow-player-btn"
-        :class="{ 'is-active': isFollowPlayerMode }"
-        :aria-pressed="isFollowPlayerMode"
-        @click="toggleFollowPlayerMode"
-      >
-        <base-icon
-          icon-path="map/player.svg"
-          :background-color="isFollowPlayerMode ? 'var(--skyrim-accent-gold-light)' : 'var(--skyrim-text-dim)' "
-        />
-      </button>
+      <!-- Pip-Boy terminal frame: corner brackets around the map viewport. -->
       <div
-        v-if="tapReadout"
-        class="map-calib-readout"
+        class="map-brackets"
+        aria-hidden="true"
       >
-        {{ tapReadout }}
+        <span class="b tl" />
+        <span class="b tr" />
+        <span class="b bl" />
+        <span class="b br" />
+      </div>
+
+      <!-- Custom-marker placement: fixed center reticle to aim under. -->
+      <div
+        v-if="placementMode"
+        class="map-reticle"
+        aria-hidden="true"
+      >
+        <span class="map-reticle__h" />
+        <span class="map-reticle__v" />
+        <span class="map-reticle__dot" />
+      </div>
+
+      <!-- Bottom-right control stack. -->
+      <div class="map-controls">
+        <button
+          v-if="!placementMode"
+          type="button"
+          class="map-btn"
+          :title="$t('pages.map.placeMarker')"
+          @click="enterPlacement"
+        >
+          <base-icon
+            icon-path="map/location.svg"
+            background-color="var(--skyrim-text-secondary)"
+          />
+        </button>
+        <button
+          type="button"
+          class="map-btn map-follow-player-btn"
+          :class="{ 'is-active': isFollowPlayerMode }"
+          :aria-pressed="isFollowPlayerMode"
+          @click="toggleFollowPlayerMode"
+        >
+          <base-icon
+            icon-path="map/player.svg"
+            :background-color="isFollowPlayerMode ? 'var(--skyrim-accent-gold-light)' : 'var(--skyrim-text-dim)' "
+          />
+        </button>
+      </div>
+
+      <!-- Placement confirm bar. -->
+      <div
+        v-if="placementMode"
+        class="map-place-bar"
+      >
+        <span class="map-place-hint">{{ $t('pages.map.placeHint') }}</span>
+        <div class="map-place-actions">
+          <button
+            type="button"
+            class="map-place-btn"
+            @click="confirmPlacement"
+          >
+            {{ $t('pages.map.place') }}
+          </button>
+          <button
+            type="button"
+            class="map-place-btn map-place-btn--ghost"
+            @click="cancelPlacement"
+          >
+            {{ $t('pages.map.cancel') }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -75,30 +130,6 @@ const MAP_CROP_Y_TOP = 0;
 /** Pixels to hide on the BOTTOM edge of the map image. */
 const MAP_CROP_Y_BOTTOM = 0;
 
-// =============================================================
-// Torn-paper edge effect (unchanged)
-// =============================================================
-
-const TEAR_VIEWBOX = 400;
-const TEAR_INSET = 5;
-const TEAR_BASE_FREQUENCY = 0.045;
-const TEAR_OCTAVES = 2;
-const TEAR_DISPLACEMENT = 32;
-const TEAR_SEED = 4;
-const TEAR_SHADOW = '0 4px 14px rgba(0, 0, 0, 0.55)';
-
-const TEAR_MASK_URL = (() => {
-  const inner = TEAR_VIEWBOX - 2 * TEAR_INSET;
-  const svg =
-    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${TEAR_VIEWBOX} ${TEAR_VIEWBOX}' preserveAspectRatio='none'>` +
-    `<filter id='t' x='-20%' y='-20%' width='140%' height='140%'>` +
-    `<feTurbulence type='fractalNoise' baseFrequency='${TEAR_BASE_FREQUENCY}' numOctaves='${TEAR_OCTAVES}' seed='${TEAR_SEED}' result='n'/>` +
-    `<feDisplacementMap in='SourceGraphic' in2='n' scale='${TEAR_DISPLACEMENT}'/>` +
-    `</filter>` +
-    `<rect x='${TEAR_INSET}' y='${TEAR_INSET}' width='${inner}' height='${inner}' fill='white' filter='url(#t)'/>` +
-    `</svg>`;
-  return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;
-})();
 
 // =============================================================
 // State
@@ -151,14 +182,34 @@ const coverScale = computed(() => {
 
 let viewer: OpenSeadragon.Viewer | null = null;
 
-/** Hold duration (ms) that turns a press into a custom-marker drop. */
-const LONG_PRESS_MS = 550;
-let longPressTimer: number | null = null;
-function cancelLongPress(): void {
-  if (longPressTimer !== null) {
-    clearTimeout(longPressTimer);
-    longPressTimer = null;
-  }
+// Custom-marker placement: a fixed reticle stays at the screen center while the
+// user pans/zooms the map under it, then confirms. This avoids fighting the
+// map's pan gesture (the old long-press did).
+const placementMode = ref(false);
+
+function enterPlacement(): void {
+  isFollowPlayerMode.value = false; // free panning while aiming the reticle
+  placementMode.value = true;
+}
+
+function cancelPlacement(): void {
+  placementMode.value = false;
+}
+
+function confirmPlacement(): void {
+  placementMode.value = false;
+  if (!viewer || !imgNaturalW.value) return;
+  const item = viewer.world.getItemAt(0);
+  if (!item) return;
+  // The reticle sits at the viewport center, so its map location is the
+  // image-coordinate of the current viewport center.
+  const center = viewer.viewport.getCenter(true);
+  const img = item.viewportToImageCoordinates(center);
+  const world = projectImageToWorld(img.x, img.y);
+  if (!world) return;
+  customMarkerStore.setMarker(world);
+  // Mirror onto the in-game Pip-Boy world map (custom destination marker).
+  wsStore.sendCommand({ command: 'player_marker_set', x: world.x, y: world.y });
 }
 
 type OsdTileSource = NonNullable<OpenSeadragon.Options['tileSources']>;
@@ -206,18 +257,6 @@ function syncContainerSize(): void {
   if (containerHeight.value !== h) {
     containerHeight.value = h;
   }
-}
-
-/** Last tapped image-pixel coordinate, shown on-screen for map calibration. */
-const tapReadout = ref('');
-
-function logImagePxAt(imgX: number, imgY: number): void {
-  console.log(`[map] image px: { x: ${imgX.toFixed(2)}, y: ${imgY.toFixed(2)} }`);
-  // Pair the tapped pixel with the live in-game position, so calibration is just
-  // "stand somewhere, tap where you are, read this line".
-  const dp = displayPosition.value;
-  const world = dp ? `world ${dp.x.toFixed(0)}, ${dp.y.toFixed(0)}  →  ` : '';
-  tapReadout.value = `${world}px ${imgX.toFixed(0)}, ${imgY.toFixed(0)}`;
 }
 
 function centerOnPlayer(immediately = true): void {
@@ -383,43 +422,21 @@ function setupViewer(): void {
   viewer.addHandler('canvas-scroll', stopFollowPlayerByUser);
   viewer.addHandler('canvas-pinch', stopFollowPlayerByUser);
 
-  // Long-press (hold ~0.55s without dragging) drops a custom marker at that
-  // spot. A quick tap or any drag cancels it, so it never fights panning.
-  viewer.addHandler('canvas-press', (event) => {
-    cancelLongPress();
-    const pos = event.position;
-    longPressTimer = window.setTimeout(() => {
-      longPressTimer = null;
-      if (!viewer) return;
-      const item = viewer.world.getItemAt(0);
-      if (!item) return;
-      const vp = viewer.viewport.pointFromPixel(pos);
-      const img = item.viewportToImageCoordinates(vp);
-      const world = projectImageToWorld(img.x, img.y);
-      if (world) {
-        customMarkerStore.setMarker(world);
-        // Mirror onto the in-game Pip-Boy world map (custom destination marker).
-        wsStore.sendCommand({ command: 'player_marker_set', x: world.x, y: world.y });
-      }
-    }, LONG_PRESS_MS);
-  });
-  viewer.addHandler('canvas-drag', cancelLongPress);
-  viewer.addHandler('canvas-release', cancelLongPress);
-
   viewer.addHandler('canvas-click', (event) => {
     if (!viewer) return;
     if (!event.quick) return;
+    // While aiming the placement reticle, taps shouldn't select markers.
+    if (placementMode.value) return;
     const item = viewer.world.getItemAt(0);
     if (!item) return;
     const viewportPoint = viewer.viewport.pointFromPixel(event.position);
     const imgPoint = item.viewportToImageCoordinates(viewportPoint);
-    // First let the marker overlay try to handle the tap (selection /
-    // fast-travel). Only deselect when the tap landed on empty map area.
+    // Let the marker overlay try to handle the tap (selection / fast-travel).
+    // Only deselect when the tap landed on empty map area.
     const hit = markersRef.value?.handleClickAt(imgPoint.x, imgPoint.y) ?? false;
     if (!hit) {
       markersRef.value?.clearSelection();
     }
-    logImagePxAt(imgPoint.x, imgPoint.y);
   });
 }
 
@@ -436,7 +453,6 @@ watch(displayPosition, () => {
 });
 
 onBeforeUnmount(() => {
-  cancelLongPress();
   if (viewer) {
     viewer.destroy();
     viewer = null;
@@ -448,47 +464,27 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
-/*
-  .map-outer hosts the torn-paper shadow on a static ::before, so the
-  animated OSD canvas underneath stays on its own GPU layer.
-*/
 .map-outer {
   position: relative;
   flex: 1 1 auto;
   width: 100%;
   height: 100%;
   min-height: 0;
-  background-color: v-bind(BACKGROUND_COLOR);
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-color: v-bind(BACKGROUND_COLOR);
-    -webkit-mask-image: v-bind(TEAR_MASK_URL);
-    mask-image: v-bind(TEAR_MASK_URL);
-    -webkit-mask-size: 100% 100%;
-    mask-size: 100% 100%;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    filter: drop-shadow(v-bind(TEAR_SHADOW));
-  }
+  padding: var(--spacing-sm);
+  background-color: var(--skyrim-bg-dark);
 }
 
+/* Pip-Boy terminal screen: themed bezel + inner CRT vignette + faint glow. */
 .map-page {
   position: absolute;
-  inset: 0;
+  inset: var(--spacing-sm);
   overflow: hidden;
   background-color: v-bind(BACKGROUND_COLOR);
-
-  -webkit-mask-image: v-bind(TEAR_MASK_URL);
-  mask-image: v-bind(TEAR_MASK_URL);
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-
+  border: var(--border-normal) solid var(--skyrim-border-medium);
+  border-radius: var(--radius-sm);
+  box-shadow:
+    inset 0 0 40px rgb(0 0 0 / 45%),
+    0 0 12px var(--skyrim-border-glow);
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
@@ -506,49 +502,131 @@ onBeforeUnmount(() => {
   pointer-events: none;
 }
 
-.map-calib-readout {
+/* Terminal corner brackets framing the screen. */
+.map-brackets {
   position: absolute;
-  left: calc(var(--spacing-md) + env(safe-area-inset-left));
-  bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
-  z-index: 6;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background-color: var(--skyrim-bg-dark);
-  border: var(--border-thin) solid var(--skyrim-border-accent);
-  border-radius: var(--radius-sm);
-  color: var(--skyrim-text-accent);
-  font-family: var(--font-heading);
-  font-size: var(--font-size-sm);
-  font-variant-numeric: tabular-nums;
+  inset: 0;
   pointer-events: none;
-  user-select: text;
+  z-index: 5;
+
+  .b {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: var(--border-thick) solid var(--skyrim-border-accent);
+    opacity: 0.8;
+  }
+
+  .tl { top: 4px; left: 4px; border-right: none; border-bottom: none; }
+  .tr { top: 4px; right: 4px; border-left: none; border-bottom: none; }
+  .bl { bottom: 4px; left: 4px; border-right: none; border-top: none; }
+  .br { bottom: 4px; right: 4px; border-left: none; border-top: none; }
 }
 
-.map-follow-player-btn {
+/* Center placement reticle. */
+.map-reticle {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__h,
+  &__v {
+    position: absolute;
+    background-color: var(--skyrim-accent-gold);
+    box-shadow: 0 0 4px var(--skyrim-border-glow);
+  }
+
+  &__h { width: 42px; height: 2px; }
+  &__v { width: 2px; height: 42px; }
+
+  &__dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border: var(--border-thick) solid var(--skyrim-accent-gold);
+    border-radius: 999px;
+  }
+}
+
+/* Bottom-right control stack. */
+.map-controls {
   position: absolute;
   right: calc(var(--spacing-md) + env(safe-area-inset-right));
   bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
-  z-index: 4;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.map-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: 2.25rem;
+  height: 2.25rem;
   padding: 0;
   border: var(--border-thin) solid var(--skyrim-border-medium);
   border-radius: 999px;
   background-color: var(--skyrim-bg-medium);
   box-shadow: var(--shadow-medium);
-  color: var(--skyrim-text-secondary);
   cursor: pointer;
-  transform: rotate(45deg);
   transition:
     background-color var(--transition-fast),
-    border-color var(--transition-fast),
-    color var(--transition-fast),
-    transform var(--transition-fast);
+    border-color var(--transition-fast);
 
-  &:active {
-    transform: scale(0.96);
+  &:active { transform: scale(0.96); }
+  &.is-active { border-color: var(--skyrim-border-accent); }
+}
+
+/* Placement confirm bar, bottom-center. */
+.map-place-bar {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.map-place-hint {
+  padding: 2px var(--spacing-sm);
+  background-color: var(--skyrim-bg-dark);
+  border: var(--border-thin) solid var(--skyrim-border-dark);
+  border-radius: var(--radius-sm);
+  color: var(--skyrim-text-secondary);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-sm);
+}
+
+.map-place-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.map-place-btn {
+  padding: var(--spacing-xs) var(--spacing-lg);
+  border: var(--border-thin) solid var(--skyrim-border-accent);
+  border-radius: var(--radius-sm);
+  background-color: var(--skyrim-bg-medium);
+  color: var(--skyrim-text-accent);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-base);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+
+  &:active { transform: scale(0.97); }
+
+  &--ghost {
+    border-color: var(--skyrim-border-medium);
+    color: var(--skyrim-text-secondary);
   }
 }
 
