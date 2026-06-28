@@ -143,19 +143,24 @@ static __declspec(naked) float __fastcall EngineWeaponDamage(
     }
 }
 
-// Inventory icon DDS path for an item form (stored in each type's `icon`
-// component, relative to Textures/). nullptr if the type has no icon.
+// Inventory icon DDS path for an item form. xNVSE doesn't expose the icon
+// member uniformly (armor nests it in bipedModel, misc/key don't declare it),
+// so read the TESIcon's ddsPath by raw offset. A TESIcon is BaseFormComponent
+// (vtbl @ 0) + String ddsPath @ +4, and String.m_data (char*) is its first
+// field, so ddsPath.m_data = *(char**)(form + iconOffset + 4). FNV 1.4.0.525.
 static const char* iconDdsPath(TESForm* f) {
+    UInt32 iconOff;
     switch (f->typeID) {
-        case kFormType_TESObjectWEAP: return ((TESObjectWEAP*)f)->icon.ddsPath.m_data;
-        case kFormType_TESObjectARMO: return ((TESObjectARMO*)f)->icon.ddsPath.m_data;
-        case kFormType_AlchemyItem:   return ((AlchemyItem*)f)->icon.ddsPath.m_data;
-        case kFormType_TESObjectMISC: return ((TESObjectMISC*)f)->icon.ddsPath.m_data;
-        case kFormType_TESAmmo:       return ((TESAmmo*)f)->icon.ddsPath.m_data;
-        case kFormType_BGSNote:       return ((BGSNote*)f)->icon.ddsPath.m_data;
-        case kFormType_TESKey:        return ((TESKey*)f)->icon.ddsPath.m_data;
+        case kFormType_TESObjectWEAP: iconOff = 0x5C; break;
+        case kFormType_AlchemyItem:   iconOff = 0x6C; break;
+        case kFormType_TESObjectMISC: iconOff = 0x5C; break;
+        case kFormType_TESAmmo:       iconOff = 0x5C; break;
+        case kFormType_BGSNote:       iconOff = 0x54; break;
+        case kFormType_TESKey:        iconOff = 0x5C; break;          // : TESObjectMISC
+        case kFormType_TESObjectARMO: iconOff = 0x70 + 0x8C; break;   // bipedModel.icon[0] (male)
         default: return nullptr;
     }
+    return *(const char* const*)((const char*)f + iconOff + 4);
 }
 
 // Normalize the DDS icon path to the app's web path: lowercase, forward
