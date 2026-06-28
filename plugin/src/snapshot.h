@@ -16,6 +16,10 @@ struct GameSnapshot {
     float karma    = 0;
     float caps     = 0;
 
+    // SPECIAL (Strength..Luck) and limb condition % (head, torso, L/R arm, L/R leg).
+    float special[7] = {0,0,0,0,0,0,0};
+    float limb[6]    = {100,100,100,100,100,100};
+
     // Player position (for map; logged until calibrated to real coords).
     float posX = 0, posY = 0, posZ = 0, angle = 0;
     bool  isInterior = true;

@@ -192,17 +192,24 @@ std::string fields_for(const std::string& id) {
         // threshold for the next level (current level L) is 100*(L+1)*L.
         const long L = s.level > 0 ? s.level : 1;
         const long xpNext = 100L * (L + 1) * L;
-        char buf[768];
+        char buf[1024];
         std::snprintf(buf, sizeof(buf),
             "{\"level\":%d,\"xp\":%.0f,\"xpNext\":%ld,\"caps\":%.0f,"
             "\"health\":%.0f,\"healthBase\":%.0f,\"ap\":%.0f,\"apBase\":%.0f,"
             "\"rads\":%.0f,\"radsMax\":%.0f,\"carryWeight\":%.0f,"
-            "\"inventoryWeight\":%.1f,\"karma\":%.0f}",
+            "\"inventoryWeight\":%.1f,\"karma\":%.0f,"
+            "\"special\":{\"strength\":%.0f,\"perception\":%.0f,\"endurance\":%.0f,"
+            "\"charisma\":%.0f,\"intelligence\":%.0f,\"agility\":%.0f,\"luck\":%.0f},"
+            "\"limbs\":{\"head\":%.0f,\"torso\":%.0f,\"leftArm\":%.0f,"
+            "\"rightArm\":%.0f,\"leftLeg\":%.0f,\"rightLeg\":%.0f}}",
             s.level, s.xp, xpNext, s.caps,
             s.health, s.healthMax, s.ap, s.apMax, s.rads, s.radsMax,
             // Pip-Boy floors the displayed inventory weight (210.6 -> 210), so
             // floor here too rather than letting the frontend round up to 211.
-            s.carryWeight, std::floor(s.invWeight), s.karma);
+            s.carryWeight, std::floor(s.invWeight), s.karma,
+            s.special[0], s.special[1], s.special[2], s.special[3],
+            s.special[4], s.special[5], s.special[6],
+            s.limb[0], s.limb[1], s.limb[2], s.limb[3], s.limb[4], s.limb[5]);
         return buf;
     }
 
