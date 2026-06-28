@@ -8,7 +8,6 @@
     :preview-item-icon-path="activeItemData?.iconPath"
     preview-icon-path="delapouite/medicine-pills.svg"
     @favorite="toggleFavorite"
-    @hotkey="openHotkeyPicker"
     @drop="startDrop"
     @item-double-click="useItem"
   />
@@ -34,7 +33,6 @@ const {
   activeItem,
   activeItemData,
   toggleFavorite,
-  openHotkeyPicker,
   startDrop,
 } = useInventoryItemActions(() => potionsList.value);
 

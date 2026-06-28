@@ -6,7 +6,6 @@
     :active-item-stats="previewStats"
     preview-icon-path="skoll/pestle-mortar.svg"
     @favorite="toggleFavorite"
-    @hotkey="openHotkeyPicker"
     @drop="startDrop"
     @item-double-click="useItem"
   >
@@ -40,7 +39,6 @@ const {
   activeItem,
   activeItemData,
   toggleFavorite,
-  openHotkeyPicker,
   startDrop,
 } = useInventoryItemActions(() => ingredientsList.value);
 

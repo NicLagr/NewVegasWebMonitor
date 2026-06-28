@@ -77,13 +77,14 @@
 
     <div class="attribution">
       <p>
-        {{ $t('shared.ui.connectionStatus.mapFrom') }}
-        <strong>Immersive Paper Map (3rd Edition)</strong>
+        {{ $t('shared.ui.connectionStatus.basedOn') }}
+        <strong>SkyrimWebMonitor</strong> — andreyvelsk
       </p>
       <p>
         {{ $t('shared.ui.connectionStatus.iconsBy') }}
-        <strong>game-icons.net</strong>
+        <strong>game-icons.net</strong> · Consistent Pip-Boy Icons — ItsMeJesusHChrist · Vault Boy — fluffgar
       </p>
+      <p>{{ $t('shared.ui.connectionStatus.fanProject') }}</p>
     </div>
 
     <display-controls />

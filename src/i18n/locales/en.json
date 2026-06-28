@@ -161,8 +161,9 @@
         "saveEndpoint": "Save",
         "invalidEndpoint": "Enter a valid WebSocket address",
         "reconnect": "Reconnect",
-        "iconsBy": "Icons by",
-        "mapFrom": "Map from"
+        "iconsBy": "Icons:",
+        "basedOn": "Based on",
+        "fanProject": "Fallout: New Vegas © Bethesda Softworks / Obsidian Entertainment — unofficial fan project."
       },
       "magicItem": {
         "ready": "Ready",

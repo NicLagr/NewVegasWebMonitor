@@ -4,11 +4,10 @@
     :items="weaponsList"
     :empty-message="$t('pages.inventory.weapons.waitingForData')"
     @favorite="toggleFavorite"
-    @hotkey="openHotkeyPicker"
     @drop="startDrop"
     @item-double-click="equipItem"
   >
-    <template #default="{ item, active, onSelect }">
+    <template #default="{ item, active, isFavorite, onSelect }">
       <weapon-item
         v-if="isWeaponItem(item)"
         :name="item.name || $t('pages.inventory.weapons.unknown')"
@@ -16,7 +15,7 @@
         :icon-path="item.iconPath"
         :is-equipped="item.isEquipped || false"
         :equipped-hand="item.equippedHand"
-        :is-favorite="item.isFavorite || false"
+        :is-favorite="isFavorite"
         :active="active"
         :quantity="item.count"
         @click="onSelect"
@@ -26,7 +25,7 @@
         :name="item.name || $t('pages.inventory.weapons.unknown')"
         :icon-path="item.iconPath"
         :is-equipped="item.isEquipped || false"
-        :is-favorite="item.isFavorite || false"
+        :is-favorite="isFavorite"
         :active="active"
         :quantity="item.count"
         template
@@ -69,7 +68,6 @@ const {
   activeItem,
   activeItemData,
   toggleFavorite,
-  openHotkeyPicker,
   startDrop,
 } = useInventoryItemActions(() => weaponsList.value);
 

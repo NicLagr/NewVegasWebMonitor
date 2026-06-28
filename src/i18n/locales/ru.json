@@ -162,8 +162,9 @@
         "saveEndpoint": "Сохранить",
         "invalidEndpoint": "Введите корректный адрес WebSocket",
         "reconnect": "Переподключиться",
-        "iconsBy": "Иконки от",
-        "mapFrom": "Карта от"
+        "iconsBy": "Иконки:",
+        "basedOn": "На основе",
+        "fanProject": "Fallout: New Vegas © Bethesda Softworks / Obsidian Entertainment — неофициальный фанатский проект."
       },
       "magicItem": {
         "ready": "Готово",

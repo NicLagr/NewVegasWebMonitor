@@ -3,18 +3,19 @@
     <div class="list-wrapper">
       <div class="list">
         <!-- Items list -->
-        <template v-if="items && items.length > 0">
+        <template v-if="displayItems.length > 0">
           <slot
-            v-for="(item, index) in items"
+            v-for="(item, index) in displayItems"
             :key="item.formId || index"
             :item="item"
             :active="modelValue === item.formId"
+            :is-favorite="favorites.has(item.formId)"
             :on-select="() => handleItemClick(item.formId)"
           >
             <inventory-item
-              v-if="'name' in item && 'isFavorite' in item"
+              v-if="'name' in item"
               :name="item.name || $t('shared.ui.inventoryItem.unknown')"
-              :is-favorite="item.isFavorite"
+              :is-favorite="favorites.has(item.formId)"
               :active="modelValue === item.formId"
               :quantity="'count' in item ? item.count : 0"
               @click="handleItemClick(item.formId)"
@@ -106,11 +107,11 @@
           <template #icon>
             <pipboy-icon
               :icon-path="previewItemIconPath"
-              :size="48"
+              :size="84"
             >
               <base-icon
                 :icon-path="previewIconPath"
-                :size="48"
+                :size="84"
               />
             </pipboy-icon>
           </template>
@@ -125,6 +126,7 @@ import { computed } from 'vue';
 import { BaseIcon, PipboyIcon } from '@/shared/ui';
 import { InventoryItem } from '@/shared/ui/items';
 import { BasePreview } from '@/shared/ui/items';
+import { useFavoritesStore } from '@/stores/favorites/useFavoritesStore';
 import type { ItemEnchantmentEffect } from '@/shared/lib/types/common';
 import type { PreviewStats } from '@/shared/ui/items/types/types';
 import type { ListItem } from '@/shared/lib/types/types';
@@ -164,16 +166,7 @@ const props = withDefaults(defineProps<Props>(), {
   modelValue: null,
   emptyMessage: () => '...',
   actions: () => [
-    {
-      group: [
-        {
-          id: 'favorite',
-          event: 'favorite',
-          icon: 'delapouite/round-star.svg',
-        },
-        { id: 'hotkey', event: 'hotkey', icon: 'delapouite/keyboard.svg' },
-      ],
-    },
+    { id: 'favorite', event: 'favorite', icon: 'delapouite/round-star.svg' },
     { id: 'drop', event: 'drop', icon: 'delapouite/trash-can.svg' },
   ],
   activeItem: null,
@@ -188,20 +181,21 @@ const emit = defineEmits<{
   'update:modelValue': [value: string | null];
   favorite: [];
   drop: [];
-  hotkey: [];
   'item-double-click': [formId: string];
 }>();
 
-const activeItemData = computed(() => {
-  if (!props.modelValue) return null;
-  return props.items?.find((item) => item.formId === props.modelValue) || null;
-});
+const favorites = useFavoritesStore();
 
-const isActiveItemFavorite = computed(() => {
-  if (activeItemData.value && 'isFavorite' in activeItemData.value) {
-    return activeItemData.value.isFavorite || false;
-  }
-  return false;
+const isActiveItemFavorite = computed(() =>
+  props.modelValue ? favorites.has(props.modelValue) : false
+);
+
+// Favorited items sort to the top (app-local; FNV has no in-game favorites).
+const displayItems = computed(() => {
+  const items = props.items ?? [];
+  const fav = items.filter((i) => favorites.has(i.formId));
+  const rest = items.filter((i) => !favorites.has(i.formId));
+  return [...fav, ...rest];
 });
 
 const enabledActions = computed((): ToolbarActionItem[] => {

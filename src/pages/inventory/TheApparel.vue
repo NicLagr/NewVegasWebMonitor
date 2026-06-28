@@ -4,11 +4,10 @@
     :items="apparelList"
     :empty-message="$t('pages.inventory.apparel.waitingForData')"
     @favorite="toggleFavorite"
-    @hotkey="openHotkeyPicker"
     @drop="startDrop"
     @item-double-click="equipItem"
   >
-    <template #default="{ item, active, onSelect }">
+    <template #default="{ item, active, isFavorite, onSelect }">
       <apparel-item
         v-if="isApparelItem(item)"
         :name="item.name || $t('pages.inventory.apparel.unknown')"
@@ -16,7 +15,7 @@
         :body-slots="item.bodySlots"
         :icon-path="item.iconPath"
         :is-equipped="item.isEquipped || false"
-        :is-favorite="item.isFavorite || false"
+        :is-favorite="isFavorite"
         :active="active"
         :quantity="item.count"
         @click="onSelect"
@@ -49,7 +48,6 @@ const {
   activeItem,
   activeItemData,
   toggleFavorite,
-  openHotkeyPicker,
   startDrop,
 } = useInventoryItemActions(() => apparelList.value);
 

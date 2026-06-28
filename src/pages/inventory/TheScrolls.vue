@@ -7,7 +7,6 @@
     :preview-effects="previewEffects"
     preview-icon-path="lorc/tied-scroll.svg"
     @favorite="toggleFavorite"
-    @hotkey="openHotkeyPicker"
     @drop="startDrop"
     @item-double-click="useItem"
   />
@@ -33,7 +32,6 @@ const {
   activeItem,
   activeItemData,
   toggleFavorite,
-  openHotkeyPicker,
   startDrop,
 } = useInventoryItemActions(() => scrollsList.value);
 

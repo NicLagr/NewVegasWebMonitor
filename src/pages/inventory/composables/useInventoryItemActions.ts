@@ -1,15 +1,13 @@
 import { ref, computed, watch } from 'vue';
 import { useWebSocketStore } from '@/stores/use-websocket-store/useWebsocketStore';
 import { useModal } from '@/shared/lib/composables/useModal';
-import { useHotkeysStore } from '@/stores/hotkeys/useHotkeysStore';
-import { DataRouter } from '@/stores/adapters/dataRouter';
-import { DropItemsModal, HotkeyPickerModal } from '@/shared/ui';
+import { useFavoritesStore } from '@/stores/favorites/useFavoritesStore';
+import { DropItemsModal } from '@/shared/ui';
 import type { InventoryItem } from '@/stores/inventory/types';
-import type { HotkeySlot } from '@/api/websocket';
 
 export function useInventoryItemActions(itemsList: () => InventoryItem[]) {
   const wsStore = useWebSocketStore();
-  const hotkeysStore = useHotkeysStore();
+  const favorites = useFavoritesStore();
   const { closeModal, openModal } = useModal();
 
   const activeItem = ref<string | null>(null);
@@ -21,38 +19,8 @@ export function useInventoryItemActions(itemsList: () => InventoryItem[]) {
 
   function toggleFavorite() {
     if (!activeItem.value) return;
-    wsStore.sendCommand({ command: 'favorite', formId: activeItem.value });
-  }
-
-  function openHotkeyPicker() {
-    if (!activeItem.value || !activeItemData.value) return;
-    const formId = activeItem.value;
-    const itemName = activeItemData.value.name;
-
-    wsStore.sendQuery('hotkeys.items', { items: 'Hotkey::Items' }, (fields) => {
-      DataRouter.routeDataById('hotkeys.items', fields);
-      const currentSlot = hotkeysStore.getSlotForFormId(formId);
-
-      openModal({
-        component: HotkeyPickerModal,
-        props: {
-          currentSlot,
-          itemName,
-        },
-        on: {
-          select: (slot: HotkeySlot) => {
-            const existing = hotkeysStore.getSlotForFormId(formId);
-            if (existing === slot) {
-              // Toggle off: clear the binding
-              wsStore.sendCommand({ command: 'hotkey_clear', slot });
-            } else {
-              wsStore.sendCommand({ command: 'hotkey_set', formId, slot });
-            }
-            closeModal();
-          },
-        },
-      });
-    });
+    // App-local favorite (pins to top); FNV has no in-game favorite state.
+    favorites.toggle(activeItem.value);
   }
 
   function startDrop() {
@@ -126,7 +94,6 @@ export function useInventoryItemActions(itemsList: () => InventoryItem[]) {
     activeItem,
     activeItemData,
     toggleFavorite,
-    openHotkeyPicker,
     startDrop,
   };
 }

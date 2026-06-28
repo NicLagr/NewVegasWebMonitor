@@ -7,7 +7,6 @@
     :preview-item-icon-path="activeItemData?.iconPath"
     preview-icon-path="lorc/key.svg"
     @favorite="toggleFavorite"
-    @hotkey="openHotkeyPicker"
     @drop="startDrop"
     @item-double-click="useItem"
   />
@@ -32,7 +31,6 @@ const {
   activeItem,
   activeItemData,
   toggleFavorite,
-  openHotkeyPicker,
   startDrop,
 } = useInventoryItemActions(() => keysList.value);
 

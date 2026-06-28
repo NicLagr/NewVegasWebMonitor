@@ -8,7 +8,6 @@
     preview-icon-path="lorc/shiny-apple.svg"
     :preview-effects="previewEffects"
     @favorite="toggleFavorite"
-    @hotkey="openHotkeyPicker"
     @drop="startDrop"
     @item-double-click="useItem"
   />
@@ -34,7 +33,6 @@ const {
   activeItem,
   activeItemData,
   toggleFavorite,
-  openHotkeyPicker,
   startDrop,
 } = useInventoryItemActions(() => foodList.value);
 
