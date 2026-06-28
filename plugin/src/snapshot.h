@@ -19,6 +19,8 @@ struct GameSnapshot {
     // SPECIAL (Strength..Luck) and limb condition % (head, torso, L/R arm, L/R leg).
     float special[7] = {0,0,0,0,0,0,0};
     float limb[6]    = {100,100,100,100,100,100};
+    // Active effects (EFF) as a ready-to-send JSON array of names, e.g. ["Buffout"].
+    std::string effects = "[]";
 
     // Player position (for map; logged until calibrated to real coords).
     float posX = 0, posY = 0, posZ = 0, angle = 0;

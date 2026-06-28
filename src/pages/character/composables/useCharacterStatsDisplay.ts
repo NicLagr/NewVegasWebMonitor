@@ -103,6 +103,9 @@ export function useCharacterStatsDisplay(): CharacterStatsDisplay {
   /** Limb condition percentages (empty until reported). */
   const limbs = computed(() => stats.value.limbs ?? {});
 
+  /** Active-effect names (empty until reported). */
+  const effects = computed(() => stats.value.effects ?? []);
+
   return {
     displayLevel,
     displayExperience,
@@ -116,5 +119,6 @@ export function useCharacterStatsDisplay(): CharacterStatsDisplay {
     radsPercentage,
     special,
     limbs,
+    effects,
   };
 }

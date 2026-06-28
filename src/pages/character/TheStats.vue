@@ -28,6 +28,9 @@
         <div class="side-row">
           <span class="side-k">RAD</span><span class="side-v">{{ Math.round(radsPercentage) }}%</span>
         </div>
+        <div class="side-row">
+          <span class="side-k">EFF</span><span class="side-v">{{ effects.length }}</span>
+        </div>
       </div>
 
       <div class="stats-figure">
@@ -51,6 +54,18 @@
     </div>
 
     <div class="stats-level">{{ $t('pages.character.stats.level') }} {{ displayLevel }}</div>
+
+    <!-- Active effects (EFF). -->
+    <div
+      v-if="effects.length"
+      class="stats-effects"
+    >
+      <span
+        v-for="e in effects"
+        :key="e"
+        class="eff-chip"
+      >{{ e }}</span>
+    </div>
 
     <!-- S.P.E.C.I.A.L. readout. -->
     <div class="stats-special">
@@ -78,6 +93,7 @@ const {
   radsPercentage,
   special,
   limbs,
+  effects,
 } = useCharacterStatsDisplay();
 
 const vaultboySrc = `${import.meta.env.BASE_URL}icons/pipboy/ui/vaultboy.svg`;
@@ -274,6 +290,28 @@ const specialList = computed(() => {
   font-family: var(--font-heading);
   font-size: clamp(var(--font-size-sm), 2vh, var(--font-size-lg));
   letter-spacing: 0.08em;
+}
+
+/* Active effects (EFF). */
+.stats-effects {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  max-height: 18%;
+  overflow-y: auto;
+}
+
+.eff-chip {
+  padding: 1px var(--spacing-sm);
+  border: var(--border-thin) solid var(--skyrim-border-medium);
+  border-radius: var(--radius-sm);
+  background-color: rgb(var(--accent-rgb) / 8%);
+  color: var(--skyrim-text-secondary);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
 }
 
 /* S.P.E.C.I.A.L. */

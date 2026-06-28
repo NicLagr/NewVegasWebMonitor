@@ -201,7 +201,7 @@ std::string fields_for(const std::string& id) {
             "\"special\":{\"strength\":%.0f,\"perception\":%.0f,\"endurance\":%.0f,"
             "\"charisma\":%.0f,\"intelligence\":%.0f,\"agility\":%.0f,\"luck\":%.0f},"
             "\"limbs\":{\"head\":%.0f,\"torso\":%.0f,\"leftArm\":%.0f,"
-            "\"rightArm\":%.0f,\"leftLeg\":%.0f,\"rightLeg\":%.0f}}",
+            "\"rightArm\":%.0f,\"leftLeg\":%.0f,\"rightLeg\":%.0f}",
             s.level, s.xp, xpNext, s.caps,
             s.health, s.healthMax, s.ap, s.apMax, s.rads, s.radsMax,
             // Pip-Boy floors the displayed inventory weight (210.6 -> 210), so
@@ -210,7 +210,12 @@ std::string fields_for(const std::string& id) {
             s.special[0], s.special[1], s.special[2], s.special[3],
             s.special[4], s.special[5], s.special[6],
             s.limb[0], s.limb[1], s.limb[2], s.limb[3], s.limb[4], s.limb[5]);
-        return buf;
+        // effects is variable-length, so append it (+ closing brace) as a string.
+        std::string out = buf;
+        out += ",\"effects\":";
+        out += s.effects;
+        out += "}";
+        return out;
     }
 
     // inventory.* / map.* — Phase 2b/2c.

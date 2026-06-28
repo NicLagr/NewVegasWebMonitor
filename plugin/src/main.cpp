@@ -8,6 +8,7 @@
 #include "nvse/GameAPI.h"
 #include "nvse/GameObjects.h"
 #include "nvse/GameForms.h"
+#include "nvse/GameEffects.h"
 #include "nvse/GameExtraData.h"
 #include "nvse/GameRTTI.h"
 #include "nvse/GameData.h"
@@ -655,6 +656,32 @@ static void ReadGameState() {
         const UInt32 code = (UInt32)eActorVal_Head + i;
         const float cur = av.Fn_03(code), max = av.Fn_08(code);
         s.limb[i] = (max > 0.0f) ? (cur / max * 100.0f) : 0.0f;
+    }
+
+    // Active effects (EFF) — deduped names of the player's non-terminated
+    // active effects, from Actor::magicTarget (@0x94) -> GetEffectList().
+    {
+        std::string eff = "[";
+        int n = 0;
+        MagicTarget* mt = (MagicTarget*)((char*)p + 0x94);
+        EffectNode* fx = mt->GetEffectList();
+        if (fx) {
+            std::unordered_set<std::string> seen;
+            for (auto it = fx->Begin(); !it.End(); ++it) {
+                ActiveEffect* ae = it.Get();
+                if (!ae || ae->bTerminated) continue;
+                MagicItem* mi = ae->magicItem;
+                const char* nm = mi ? mi->name.m_data : nullptr;
+                if (!nm || !*nm) continue;
+                if (!seen.insert(nm).second) continue;     // dedupe by name
+                eff += n ? ",\"" : "\"";
+                eff += jsonEscape(nm);
+                eff += "\"";
+                if (++n >= 24) break;
+            }
+        }
+        eff += "]";
+        s.effects = eff;
     }
 
     // Position + worldspace (for map; logged so we can calibrate to real coords).

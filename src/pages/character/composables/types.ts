@@ -14,4 +14,5 @@ export interface CharacterStatsDisplay {
   radsPercentage: ComputedRef<number>;
   special: ComputedRef<SpecialStats>;
   limbs: ComputedRef<LimbCondition>;
+  effects: ComputedRef<string[]>;
 }

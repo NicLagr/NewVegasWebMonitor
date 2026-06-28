@@ -35,4 +35,6 @@ export interface CharacterStats {
   karma?: number | null;
   special?: SpecialStats | null;
   limbs?: LimbCondition | null;
+  /** Active-effect names (EFF), e.g. ["Buffout", "Stimpak"]. */
+  effects?: string[] | null;
 }
