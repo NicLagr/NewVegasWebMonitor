@@ -648,11 +648,11 @@ static void ReadGameState() {
     s.karma       = av.Fn_03(eActorVal_Karma);
 
     // SPECIAL (permanent base) — AVs 5..11.
-    for (int i = 0; i < 7; i++)
-        s.special[i] = av.Fn_08((eActorVal)(eActorVal_Strength + i));
+    for (UInt32 i = 0; i < 7; i++)
+        s.special[i] = av.Fn_08((UInt32)eActorVal_Strength + i);
     // Limb condition % (Head, Torso, LeftArm, RightArm, LeftLeg, RightLeg) — AVs 25..30.
-    for (int i = 0; i < 6; i++) {
-        const eActorVal code = (eActorVal)(eActorVal_Head + i);
+    for (UInt32 i = 0; i < 6; i++) {
+        const UInt32 code = (UInt32)eActorVal_Head + i;
         const float cur = av.Fn_03(code), max = av.Fn_08(code);
         s.limb[i] = (max > 0.0f) ? (cur / max * 100.0f) : 0.0f;
     }
