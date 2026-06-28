@@ -274,6 +274,15 @@ static void rebuildHotspots(PlayerCharacter* p) {
         if (!name) name = "";
         TESObjectREFR* r = mi->markerRef;
         g_markerById[r->refID] = r; // for fast-travel lookup
+        // DEBUG: log each marker's position + worldspace once, to diagnose the
+        // misplacement (child worldspaces like Freeside/Strip carry local coords).
+        static std::unordered_set<UInt32> dbgMk;
+        if (dbgMk.insert(r->refID).second) {
+            TESObjectCELL* mc = r->parentCell;
+            const char* wsid = (mc && mc->worldSpace) ? mc->worldSpace->GetName() : "(none)";
+            logf("[dbg] MARKER %s pos=(%.0f,%.0f) ws=%s",
+                 name, r->posX, r->posY, wsid ? wsid : "(null)");
+        }
         char b[320];
         std::snprintf(b, sizeof(b),
             "%s{\"type\":\"%s\",\"typeId\":%u,\"refId\":\"0x%08X\",\"name\":\"%s\","
