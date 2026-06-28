@@ -5,6 +5,17 @@
     :is-favorite="isFavorite"
     :active="active"
   >
+    <template #icon>
+      <pipboy-icon
+        :icon-path="iconPath"
+        :size="28"
+      >
+        <weapon-icon
+          :weapon-type="weaponType"
+          :size="28"
+        />
+      </pipboy-icon>
+    </template>
     <template #status>
       <equipped-hand-icon
         v-if="isEquipped"
@@ -16,6 +27,8 @@
 
 <script setup lang="ts">
 import { InventoryItem } from '@/shared/ui/items';
+import { PipboyIcon } from '@/shared/ui';
+import { WeaponIcon } from '@/entities/ui';
 import { EquippedHandIcon } from '@/features/ui';
 import type { WeaponType } from '@/stores/inventory/types';
 import type { EquippedHand } from '@/shared/lib/types/common';
@@ -23,6 +36,7 @@ import type { EquippedHand } from '@/shared/lib/types/common';
 defineProps<{
   name: string;
   weaponType: WeaponType;
+  iconPath?: string;
   quantity?: number;
   isFavorite?: boolean;
   isEquipped?: boolean;

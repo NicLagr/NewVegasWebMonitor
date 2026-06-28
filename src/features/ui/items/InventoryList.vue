@@ -18,7 +18,19 @@
               :active="modelValue === item.formId"
               :quantity="'count' in item ? item.count : 0"
               @click="handleItemClick(item.formId)"
-            />
+            >
+              <template #icon>
+                <pipboy-icon
+                  :icon-path="(item as { iconPath?: string }).iconPath"
+                  :size="28"
+                >
+                  <base-icon
+                    :icon-path="previewIconPath"
+                    :size="28"
+                  />
+                </pipboy-icon>
+              </template>
+            </inventory-item>
           </slot>
         </template>
 

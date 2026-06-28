@@ -3,6 +3,14 @@
     class="inv-item"
     :class="{ 'inv-item--favorite': isFavorite, 'inv-item--active': active }"
   >
+    <!-- Optional leading icon (per-item Pip-Boy icon w/ type fallback) -->
+    <div
+      v-if="$slots.icon"
+      class="inv-icon"
+    >
+      <slot name="icon" />
+    </div>
+
     <!-- Main content -->
     <div class="inv-info">
       <div class="inv-row">
@@ -58,6 +66,21 @@ defineProps<{
       color: var(--skyrim-text-primary);
     }
   }
+}
+
+.inv-icon {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-left: var(--spacing-sm);
+}
+
+/* Tighten the text inset when a leading icon is present. */
+.inv-item:has(.inv-icon) .inv-info {
+  padding-left: var(--spacing-sm);
 }
 
 .inv-status {

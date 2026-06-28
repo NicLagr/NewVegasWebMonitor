@@ -13,6 +13,7 @@
         v-if="isWeaponItem(item)"
         :name="item.name || $t('pages.inventory.weapons.unknown')"
         :weapon-type="item.weaponType"
+        :icon-path="item.iconPath"
         :is-equipped="item.isEquipped || false"
         :equipped-hand="item.equippedHand"
         :is-favorite="item.isFavorite || false"
@@ -23,6 +24,7 @@
       <ammo-item
         v-else-if="isAmmoItem(item)"
         :name="item.name || $t('pages.inventory.weapons.unknown')"
+        :icon-path="item.iconPath"
         :is-equipped="item.isEquipped || false"
         :is-favorite="item.isFavorite || false"
         :active="active"

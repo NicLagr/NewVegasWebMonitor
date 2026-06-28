@@ -13,6 +13,8 @@
         v-if="isApparelItem(item)"
         :name="item.name || $t('pages.inventory.apparel.unknown')"
         :armor-type="item.armorType"
+        :body-slots="item.bodySlots"
+        :icon-path="item.iconPath"
         :is-equipped="item.isEquipped || false"
         :is-favorite="item.isFavorite || false"
         :active="active"
