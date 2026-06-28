@@ -194,6 +194,38 @@ static void appendBase(std::string& o, TESForm* f, int count, float value) {
     o += "\"isFavorite\":false,\"isStolen\":false";
 }
 
+// Build the JSON array (without the [] brackets) of an aid item's effects:
+// each magic effect's name + magnitude + duration, with a readable description
+// the app renders. AlchemyItem::effects is a BSSimpleList whose `.list` is a
+// tList<EffectItem>; each EffectItem -> EffectSetting (MGEF, named via fullName).
+static std::string aidEffectsJson(AlchemyItem* a) {
+    std::string arr;
+    int n = 0;
+    for (auto it = a->effects.list.Begin(); !it.End(); ++it) {
+        EffectItem* ei = it.Get();
+        if (!ei) continue;
+        EffectSetting* mg = ei->setting;
+        const char* enm = (mg && mg->fullName.name.m_data) ? mg->fullName.name.m_data : nullptr;
+        if (!enm || !*enm) continue;
+        const int mag = (int)(*(float*)&ei->magnitude);
+        const unsigned dur = ei->duration;
+        char desc[200];
+        if (dur > 0 && mag != 0)      std::snprintf(desc, sizeof(desc), "%s %d (%us)", enm, mag, dur);
+        else if (mag != 0)            std::snprintf(desc, sizeof(desc), "%s %d", enm, mag);
+        else if (dur > 0)             std::snprintf(desc, sizeof(desc), "%s (%us)", enm, dur);
+        else                          std::snprintf(desc, sizeof(desc), "%s", enm);
+        const std::string e = jsonEscape(enm), d = jsonEscape(desc);
+        char b[360];
+        std::snprintf(b, sizeof(b),
+            "%s{\"name\":\"%s\",\"magnitude\":%d,\"duration\":%u,"
+            "\"description\":\"%s\",\"descriptionTemplate\":\"%s\"}",
+            n ? "," : "", e.c_str(), mag, dur, d.c_str(), d.c_str());
+        arr += b;
+        if (++n >= 8) break;
+    }
+    return arr;
+}
+
 // FNV ExtraMapMarker type (0-14) -> frontend KnownMapHotspotType icon key.
 static const char* mapMarkerTypeStr(unsigned t) {
     switch (t) {
@@ -502,7 +534,9 @@ static void rebuildInventory(PlayerCharacter* p) {
                 }
                 case kFormType_AlchemyItem: {
                     std::string o = "{"; appendBase(o, f, count, effValue);
-                    o += ",\"categoryType\":\"Potion\",\"effects\":[]}";
+                    o += ",\"categoryType\":\"Potion\",\"effects\":[";
+                    o += aidEffectsJson((AlchemyItem*)f);
+                    o += "]}";
                     if (nAid++) aid += ","; aid += o; break;
                 }
                 case kFormType_BGSNote:

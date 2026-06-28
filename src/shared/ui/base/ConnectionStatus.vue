@@ -306,11 +306,18 @@ function handleReconnect(): void {
 }
 
 .attribution {
-  align-self: flex-start;
-  margin: 0;
-  font-size: var(--font-size-base, 0.75rem);
-  color: var(--skyrim-text-dim);
+  align-self: stretch;
   margin: calc(-1 * var(--spacing-md));
+  /* Reserve the bottom-right gutter so credits never run under the fixed
+     zoom/fullscreen controls on a compressed screen (e.g. AYN Thor). */
+  padding-right: 9.5rem;
+  font-size: var(--font-size-xs);
+  line-height: 1.35;
+  color: var(--skyrim-text-dim);
+
+  p {
+    margin: 0;
+  }
 }
 
 @media (max-width: 520px) {
