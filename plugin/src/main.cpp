@@ -274,15 +274,6 @@ static void rebuildHotspots(PlayerCharacter* p) {
         if (!name) name = "";
         TESObjectREFR* r = mi->markerRef;
         g_markerById[r->refID] = r; // for fast-travel lookup
-        // DEBUG: log each marker's position + worldspace once, to diagnose the
-        // misplacement (child worldspaces like Freeside/Strip carry local coords).
-        static std::unordered_set<UInt32> dbgMk;
-        if (dbgMk.insert(r->refID).second) {
-            TESObjectCELL* mc = r->parentCell;
-            const char* wsid = (mc && mc->worldSpace) ? mc->worldSpace->GetName() : "(none)";
-            logf("[dbg] MARKER %s pos=(%.0f,%.0f) ws=%s",
-                 name, r->posX, r->posY, wsid ? wsid : "(null)");
-        }
         char b[320];
         std::snprintf(b, sizeof(b),
             "%s{\"type\":\"%s\",\"typeId\":%u,\"refId\":\"0x%08X\",\"name\":\"%s\","
@@ -729,16 +720,12 @@ static void ReadGameState() {
                 const char* nm = mi ? mi->name.m_data : nullptr;
                 if (!nm || !*nm) continue;
                 if (!seen.insert(nm).second) continue;     // dedupe by name
-                // Hidden = effects the in-game Pip-Boy EFF page omits: ability-type
-                // effects (traits like Four Eyes, perk passives) and permanent
-                // effects with no timer (crippled-limb effects e.g. Concussion).
-                // Temporary effects (chems/food) have duration > 0 and stay shown.
-                const bool hidden = (ae->spellType == SpellItem::kType_Ability)
-                                    || (ae->duration <= 0.0f);
-                static std::unordered_set<std::string> dbgEff;
-                if (dbgEff.insert(nm).second)
-                    logf("[dbg] EFF %s spellType=%d dur=%.1f hidden=%d",
-                         nm, ae->spellType, ae->duration, hidden ? 1 : 0);
+                // Hidden = permanent passives the in-game Pip-Boy EFF page omits:
+                // traits (Four Eyes, duration 0) and crippled-limb effects
+                // (Concussion uses a ~10-year "permanent" sentinel duration).
+                // Temporary effects (chems/food) last seconds-to-minutes -> shown.
+                const float dur = ae->duration;
+                const bool hidden = (dur <= 0.0f) || (dur >= 86400.0f);
                 eff += n ? ",{\"name\":\"" : "{\"name\":\"";
                 eff += jsonEscape(nm);
                 eff += "\",\"hidden\":";
@@ -756,9 +743,22 @@ static void ReadGameState() {
     TESObjectCELL* cell = p->parentCell;
     s.isInterior = cell->IsInterior();
     if (!s.isInterior && cell->worldSpace) {
-        const char* eid = cell->worldSpace->GetName();
+        TESWorldSpace* ws = cell->worldSpace;
+        const char* eid = ws->GetName();
         if (eid) s.worldspace = eid;
-        g_lastWorldSpace = cell->worldSpace; // remember for custom-marker placement
+        g_lastWorldSpace = ws; // remember for custom-marker placement
+        // One-shot: the worldspace's map bounds (what the Pip-Boy uses to place
+        // markers) so the app's world->image transform can be derived exactly.
+        static std::unordered_set<std::string> dbgWM;
+        if (eid && dbgWM.insert(eid).second) {
+            logf("[dbg] WORLDMAP ws=%s usable=(%d,%d) cellNW=(%d,%d) cellSE=(%d,%d) "
+                 "min=(%.0f,%.0f) max=(%.0f,%.0f) scale=%.4f cellOff=(%.1f,%.1f)",
+                 eid, ws->mapData.usableDimensions.X, ws->mapData.usableDimensions.Y,
+                 ws->mapData.cellNWCoordinates.X, ws->mapData.cellNWCoordinates.Y,
+                 ws->mapData.cellSECoordinates.X, ws->mapData.cellSECoordinates.Y,
+                 ws->min.X, ws->min.Y, ws->max.X, ws->max.Y,
+                 ws->worldMapScale, ws->worldMapCellX, ws->worldMapCellY);
+        }
     }
 
     // Inventory + map markers + quests + radio: rebuild ~once per second (heavy).
