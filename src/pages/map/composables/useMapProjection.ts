@@ -24,7 +24,7 @@ import { computed, type ComputedRef } from 'vue';
 /** Image px per world unit (uniform). */
 const MAP_SCALE = 0.0103;
 /** Image x for world x = 0. */
-const MAP_OFFSET_X = 1850;
+const MAP_OFFSET_X = 1925;
 /** Image y for world y = 0. */
 const MAP_OFFSET_Y = 1900;
 
