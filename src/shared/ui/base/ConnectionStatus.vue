@@ -307,7 +307,9 @@ function handleReconnect(): void {
 
 .attribution {
   align-self: stretch;
-  margin: calc(-1 * var(--spacing-md));
+  /* Positive top margin keeps a gap below the Reconnect button; sides/bottom
+     bleed to the screen edges. */
+  margin: var(--spacing-lg) calc(-1 * var(--spacing-md)) calc(-1 * var(--spacing-md));
   /* Reserve the bottom-right gutter so credits never run under the fixed
      zoom/fullscreen controls on a compressed screen (e.g. AYN Thor). */
   padding-right: 9.5rem;
