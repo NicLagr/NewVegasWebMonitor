@@ -19,6 +19,20 @@
       </button>
     </nav>
 
+    <button
+      type="button"
+      class="settings-btn"
+      :title="$t('settings.title')"
+      :aria-label="$t('settings.title')"
+      @click="openSettings"
+    >
+      <base-icon
+        icon-path="lorc/cog.svg"
+        :size="18"
+        background-color="var(--skyrim-text-dim)"
+      />
+    </button>
+
     <nav
       v-if="visibleSubTabs.length > 0"
       ref="subtabsRef"
@@ -48,10 +62,22 @@
 <script setup lang="ts">
 import { computed, ref, watch, nextTick } from 'vue';
 import { useNavigationStore } from '@/stores/use-navigation-store/useNavigationStore';
+import { useModal } from '@/shared/lib/composables/useModal';
+import { BaseIcon } from '@/shared/ui';
+import SettingsModal from './SettingsModal.vue';
 
 const tabsRef = ref<HTMLElement | null>(null);
 const subtabsRef = ref<HTMLElement | null>(null);
 const nav = useNavigationStore();
+
+const { openModal, closeModal } = useModal();
+function openSettings() {
+  openModal({
+    component: SettingsModal,
+    ghostClickGuardMs: 300,
+    on: { close: closeModal },
+  });
+}
 
 const visibleSubTabs = computed(() => nav.getVisibleSubTabs());
 
@@ -107,6 +133,28 @@ watch(
   background-color: var(--skyrim-bg-medium);
   position: relative;
   z-index: var(--z-sticky);
+}
+
+.settings-btn {
+  position: absolute;
+  top: var(--spacing-xs);
+  right: var(--spacing-sm);
+  z-index: var(--z-raised);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity var(--transition-fast);
+
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .tab-bar {

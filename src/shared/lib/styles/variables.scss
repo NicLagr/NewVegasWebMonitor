@@ -6,32 +6,37 @@
  * ============================================ */
 
 :root {
+  /* THEME ACCENT (R G B triple) — drives every translucent accent below.
+   * Overridden per palette in the [data-theme="…"] blocks at the bottom.
+   * Default is AMBER (classic Fallout: New Vegas Pip-Boy). */
+  --accent-rgb: 255 182 66;
+
   /* PRIMARY COLORS - Main interface colors */
   --skyrim-bg-dark: #0a0a0a;
-  --skyrim-bg-medium: #0d140d;
-  --skyrim-bg-light: #14211a;
+  --skyrim-bg-medium: #14100a;
+  --skyrim-bg-light: #221a0f;
 
   /* TEXT COLORS - Typography hierarchy */
-  --skyrim-text-primary: #00ff41;
-  --skyrim-text-secondary: #1aa83b;
-  --skyrim-text-accent: #6dff8c;
-  --skyrim-text-dim: #0a5a22;
+  --skyrim-text-primary: #ffb642;
+  --skyrim-text-secondary: #c8881f;
+  --skyrim-text-accent: #ffd98a;
+  --skyrim-text-dim: #6e4a14;
 
   /* ACCENT COLORS - Interactive elements */
-  --skyrim-accent-gold: #00ff41;
-  --skyrim-accent-gold-light: #6dff8c;
-  --skyrim-accent-gold-dim: #0a9c30;
+  --skyrim-accent-gold: #ffb642;
+  --skyrim-accent-gold-light: #ffd98a;
+  --skyrim-accent-gold-dim: #b3781f;
 
   /* BORDER & DIVIDER COLORS */
-  --skyrim-border-dark: #103018;
-  --skyrim-border-medium: #1d5a2e;
-  --skyrim-border-accent: #00ff41;
-  --skyrim-border-glow: rgb(0 255 65 / 30%);
+  --skyrim-border-dark: #3a2a10;
+  --skyrim-border-medium: #6e521d;
+  --skyrim-border-accent: #ffb642;
+  --skyrim-border-glow: rgb(var(--accent-rgb) / 30%);
 
   /* TAB SPECIFIC COLORS */
   --tab-bg-inactive: transparent;
-  --tab-bg-hover: rgb(0 255 65 / 8%);
-  --tab-bg-active: rgb(0 255 65 / 15%);
+  --tab-bg-hover: rgb(var(--accent-rgb) / 8%);
+  --tab-bg-active: rgb(var(--accent-rgb) / 15%);
   --tab-text-inactive: var(--skyrim-text-secondary);
   --tab-text-hover: var(--skyrim-text-primary);
   --tab-text-active: var(--skyrim-accent-gold);
@@ -39,8 +44,8 @@
 
   /* SUB-TAB SPECIFIC COLORS */
   --subtab-bg-inactive: transparent;
-  --subtab-bg-hover: rgb(0 255 65 / 5%);
-  --subtab-bg-active: rgb(0 255 65 / 10%);
+  --subtab-bg-hover: rgb(var(--accent-rgb) / 5%);
+  --subtab-bg-active: rgb(var(--accent-rgb) / 10%);
   --subtab-text-inactive: var(--skyrim-text-dim);
   --subtab-text-hover: var(--skyrim-text-secondary);
   --subtab-text-active: var(--skyrim-text-primary);
@@ -48,7 +53,7 @@
 
   /* ORNAMENT & DECORATION */
   --ornament-color: var(--skyrim-text-accent);
-  --ornament-glow: rgb(0 255 65 / 20%);
+  --ornament-glow: rgb(var(--accent-rgb) / 20%);
 
   /* SHADOW & EFFECTS */
   --shadow-soft: 0 2px 8px rgb(0 0 0 / 40%);
@@ -125,11 +130,49 @@
   --color-danger-dim: #7a2a2a;
   --color-danger-light: #d08a8a;
 
-  /* INTERACTIVE STATE BACKGROUNDS (green accent transparency steps) */
-  --bg-accent-faint: rgb(0 255 65 / 4%);
-  --bg-accent-soft: rgb(0 255 65 / 8%);
-  --bg-accent-medium: rgb(0 255 65 / 12%);
-  --bg-accent-strong: rgb(0 255 65 / 20%);
+  /* INTERACTIVE STATE BACKGROUNDS (accent transparency steps) */
+  --bg-accent-faint: rgb(var(--accent-rgb) / 4%);
+  --bg-accent-soft: rgb(var(--accent-rgb) / 8%);
+  --bg-accent-medium: rgb(var(--accent-rgb) / 12%);
+  --bg-accent-strong: rgb(var(--accent-rgb) / 20%);
   --bg-overlay: rgb(0 0 0 / 75%);
   --bg-inset-dark: inset 0 0 60px rgb(0 0 0 / 30%);
+}
+
+/* ============================================
+ * PIP-BOY COLOR THEMES — switch via data-theme on <html>.
+ * Amber is the :root default; these override the palette.
+ * Derived translucent vars (tab/subtab/bg-accent/glow) follow --accent-rgb
+ * automatically, so only the base colors are restated here.
+ * ============================================ */
+[data-theme='green'] {
+  --accent-rgb: 0 255 65;
+  --skyrim-bg-medium: #0d140d;
+  --skyrim-bg-light: #14211a;
+  --skyrim-text-primary: #00ff41;
+  --skyrim-text-secondary: #1aa83b;
+  --skyrim-text-accent: #6dff8c;
+  --skyrim-text-dim: #0a5a22;
+  --skyrim-accent-gold: #00ff41;
+  --skyrim-accent-gold-light: #6dff8c;
+  --skyrim-accent-gold-dim: #0a9c30;
+  --skyrim-border-dark: #103018;
+  --skyrim-border-medium: #1d5a2e;
+  --skyrim-border-accent: #00ff41;
+}
+
+[data-theme='blue'] {
+  --accent-rgb: 74 200 255;
+  --skyrim-bg-medium: #0a1014;
+  --skyrim-bg-light: #0f1a22;
+  --skyrim-text-primary: #4ac8ff;
+  --skyrim-text-secondary: #2a90c8;
+  --skyrim-text-accent: #a6e3ff;
+  --skyrim-text-dim: #14506e;
+  --skyrim-accent-gold: #4ac8ff;
+  --skyrim-accent-gold-light: #a6e3ff;
+  --skyrim-accent-gold-dim: #1f86c8;
+  --skyrim-border-dark: #102a3a;
+  --skyrim-border-medium: #1d4a6e;
+  --skyrim-border-accent: #4ac8ff;
 }

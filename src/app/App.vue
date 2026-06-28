@@ -34,8 +34,12 @@ import {
 } from '@/shared/ui';
 import { useNavigationStore } from '@/stores/use-navigation-store/useNavigationStore';
 import { useWebSocketStore } from '@/stores/use-websocket-store/useWebsocketStore';
+import { useSettingsStore } from '@/stores/settings/useSettingsStore';
 import { useAppLoader } from '@/shared/lib/composables/useAppLoader';
 import { useBackGuard } from '@/shared/lib/composables/useBackGuard';
+
+// Apply the saved Pip-Boy color theme (amber/green/blue) on startup.
+useSettingsStore();
 
 const navigationStore = useNavigationStore();
 const { activeTab, activeSubTab } = storeToRefs(navigationStore);

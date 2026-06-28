@@ -198,6 +198,18 @@
     "weight": "Weight",
     "value": "Value"
   },
+  "settings": {
+    "title": "Settings",
+    "theme": "Pip-Boy Color",
+    "themes": {
+      "amber": "Amber",
+      "green": "Green",
+      "blue": "Blue"
+    },
+    "credits": "Credits",
+    "iconsBy": "Item icons:",
+    "close": "Close"
+  },
   "entities": {
     "spell": {
       "level": "Required level",
