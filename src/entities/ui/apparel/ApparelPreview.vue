@@ -5,11 +5,16 @@
     :effects="data?.enchantment?.effects"
   >
     <template #icon>
-      <apparel-icon
+      <pipboy-icon
         v-if="data"
-        :body-slots="data.bodySlots"
+        :icon-path="data.iconPath"
         :size="48"
-      />
+      >
+        <apparel-icon
+          :body-slots="data.bodySlots"
+          :size="48"
+        />
+      </pipboy-icon>
     </template>
   </base-preview>
 </template>
@@ -18,6 +23,7 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { BasePreview } from '@/shared/ui/items';
+import { PipboyIcon } from '@/shared/ui';
 import { ApparelIcon } from '@/entities/ui';
 import { getRoundValue, getStackWeight, getStackValue } from '@/shared/lib/utils/getDescriptionValues';
 import type { ApparelItem } from '@/stores/inventory/types';

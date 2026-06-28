@@ -5,6 +5,7 @@
     :active-item="activeItemData"
     :active-item-stats="previewStats"
     :preview-effects="previewEffects"
+    :preview-item-icon-path="activeItemData?.iconPath"
     preview-icon-path="delapouite/medicine-pills.svg"
     @favorite="toggleFavorite"
     @hotkey="openHotkeyPicker"

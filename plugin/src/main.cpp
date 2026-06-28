@@ -143,6 +143,39 @@ static __declspec(naked) float __fastcall EngineWeaponDamage(
     }
 }
 
+// Inventory icon DDS path for an item form (stored in each type's `icon`
+// component, relative to Textures/). nullptr if the type has no icon.
+static const char* iconDdsPath(TESForm* f) {
+    switch (f->typeID) {
+        case kFormType_TESObjectWEAP: return ((TESObjectWEAP*)f)->icon.ddsPath.m_data;
+        case kFormType_TESObjectARMO: return ((TESObjectARMO*)f)->icon.ddsPath.m_data;
+        case kFormType_AlchemyItem:   return ((AlchemyItem*)f)->icon.ddsPath.m_data;
+        case kFormType_TESObjectMISC: return ((TESObjectMISC*)f)->icon.ddsPath.m_data;
+        case kFormType_TESAmmo:       return ((TESAmmo*)f)->icon.ddsPath.m_data;
+        case kFormType_BGSNote:       return ((BGSNote*)f)->icon.ddsPath.m_data;
+        case kFormType_TESKey:        return ((TESKey*)f)->icon.ddsPath.m_data;
+        default: return nullptr;
+    }
+}
+
+// Normalize the DDS icon path to the app's web path: lowercase, forward
+// slashes, no leading "textures/", no ".dds". The app loads the matching
+// public/icons/pipboy/<path>.webp. "" when the form has no icon.
+static std::string iconWebPath(TESForm* f) {
+    const char* p = iconDdsPath(f);
+    if (!p || !*p) return "";
+    std::string s;
+    for (; *p; ++p) {
+        char c = *p;
+        if (c == '\\') c = '/';
+        else if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
+        s.push_back(c);
+    }
+    if (s.rfind("textures/", 0) == 0) s.erase(0, 9);
+    if (s.size() > 4 && s.compare(s.size() - 4, 4, ".dds") == 0) s.erase(s.size() - 4);
+    return s;
+}
+
 // Append the BaseItem fields shared by every category. Caller opens the `{`.
 // `value` is the (condition-adjusted) value to display.
 static void appendBase(std::string& o, TESForm* f, int count, float value) {
@@ -151,6 +184,7 @@ static void appendBase(std::string& o, TESForm* f, int count, float value) {
                   f->refID, count, value, itemWeight(f));
     o += buf;
     o += "\"name\":\""; o += jsonEscape(f->GetTheName()); o += "\",";
+    o += "\"iconPath\":\""; o += jsonEscape(iconWebPath(f).c_str()); o += "\",";
     o += "\"isFavorite\":false,\"isStolen\":false";
 }
 

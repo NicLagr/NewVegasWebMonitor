@@ -4,6 +4,7 @@
     :items="foodList"
     :active-item="activeItemData"
     :active-item-stats="previewStats"
+    :preview-item-icon-path="activeItemData?.iconPath"
     preview-icon-path="lorc/shiny-apple.svg"
     :preview-effects="previewEffects"
     @favorite="toggleFavorite"

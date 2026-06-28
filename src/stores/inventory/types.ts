@@ -112,6 +112,9 @@ export interface BaseItem {
   name: string;
   value: number;
   weight: number;
+  /** In-game icon path (no ext) for the per-item Pip-Boy icon, e.g.
+   *  "interface/icons/pipboyimages/weapons/weapons_katana". Empty if none. */
+  iconPath?: string;
 }
 
 export interface WeaponItem extends BaseItem {

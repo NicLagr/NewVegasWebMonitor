@@ -4,6 +4,7 @@
     :items="keysList"
     :active-item="activeItemData"
     :active-item-stats="previewStats"
+    :preview-item-icon-path="activeItemData?.iconPath"
     preview-icon-path="lorc/key.svg"
     @favorite="toggleFavorite"
     @hotkey="openHotkeyPicker"

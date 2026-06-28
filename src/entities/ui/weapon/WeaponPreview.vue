@@ -5,11 +5,16 @@
     :effects="data?.enchantment?.effects"
   >
     <template #icon>
-      <weapon-icon
+      <pipboy-icon
         v-if="data"
-        :weapon-type="data.weaponType"
+        :icon-path="data.iconPath"
         :size="48"
-      />
+      >
+        <weapon-icon
+          :weapon-type="data.weaponType"
+          :size="48"
+        />
+      </pipboy-icon>
     </template>
   </base-preview>
 </template>
@@ -18,6 +23,7 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { BasePreview } from '@/shared/ui/items';
+import { PipboyIcon } from '@/shared/ui';
 import { WeaponIcon } from '@/entities/ui';
 import { getRoundValue, getStackWeight, getStackValue } from '@/shared/lib/utils/getDescriptionValues';
 import type { WeaponItem } from '@/stores/inventory/types';

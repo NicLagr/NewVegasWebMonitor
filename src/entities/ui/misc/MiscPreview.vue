@@ -4,10 +4,15 @@
     :stats="stats"
   >
     <template #icon>
-      <base-icon
-        icon-path="lorc/swap-bag.svg"
+      <pipboy-icon
+        :icon-path="data?.iconPath"
         :size="48"
-      />
+      >
+        <base-icon
+          icon-path="lorc/swap-bag.svg"
+          :size="48"
+        />
+      </pipboy-icon>
     </template>
   </base-preview>
 </template>
@@ -16,7 +21,7 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { BasePreview } from '@/shared/ui/items';
-import { BaseIcon } from '@/shared/ui';
+import { BaseIcon, PipboyIcon } from '@/shared/ui';
 import { getStackWeight, getStackValue } from '@/shared/lib/utils/getDescriptionValues';
 import type { MiscItem } from '@/stores/inventory/types';
 

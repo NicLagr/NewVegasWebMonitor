@@ -45,19 +45,30 @@ const transitionName = computed(() => {
 });
 
 const touchStartX = ref<number | null>(null);
-const THRESHOLD = 50;
+const touchStartY = ref<number | null>(null);
+// Horizontal travel needed to count as a page swipe...
+const THRESHOLD = 75;
+// ...and it must dominate vertical travel by this ratio, so scrolling (which
+// often drifts sideways) never triggers an accidental page change.
+const HORIZONTAL_DOMINANCE = 1.5;
 
 const onTouchStart = (e: TouchEvent) => {
   touchStartX.value = e.touches?.[0]?.clientX ?? null;
+  touchStartY.value = e.touches?.[0]?.clientY ?? null;
 };
 
 const onTouchEnd = (e: TouchEvent) => {
-  if (touchStartX.value === null) return;
+  if (touchStartX.value === null || touchStartY.value === null) return;
   const endX = e.changedTouches?.[0]?.clientX ?? 0;
-  const delta = endX - touchStartX.value;
+  const endY = e.changedTouches?.[0]?.clientY ?? 0;
+  const dx = endX - touchStartX.value;
+  const dy = endY - touchStartY.value;
   touchStartX.value = null;
-  if (Math.abs(delta) < THRESHOLD) return;
-  if (delta < 0) {
+  touchStartY.value = null;
+  // Only a deliberate, mostly-horizontal swipe flips the page.
+  if (Math.abs(dx) < THRESHOLD) return;
+  if (Math.abs(dx) < Math.abs(dy) * HORIZONTAL_DOMINANCE) return;
+  if (dx < 0) {
     nav.nextSubTab();
   } else {
     nav.prevSubTab();
@@ -66,6 +77,7 @@ const onTouchEnd = (e: TouchEvent) => {
 
 const onTouchCancel = () => {
   touchStartX.value = null;
+  touchStartY.value = null;
 };
 
 const currentComponent = computed(() => {

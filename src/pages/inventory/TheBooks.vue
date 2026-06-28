@@ -5,6 +5,7 @@
     :active-item="activeItemData"
     :active-item-stats="previewStats"
     :preview-description="bookDescription"
+    :preview-item-icon-path="activeItemData?.iconPath"
     preview-icon-path="delapouite/audio-cassette.svg"
     @favorite="toggleFavorite"
     @hotkey="openHotkeyPicker"

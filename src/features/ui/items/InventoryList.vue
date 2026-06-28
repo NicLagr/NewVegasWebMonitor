@@ -92,10 +92,15 @@
           :description="previewDescription"
         >
           <template #icon>
-            <base-icon
-              :icon-path="previewIconPath"
+            <pipboy-icon
+              :icon-path="previewItemIconPath"
               :size="48"
-            />
+            >
+              <base-icon
+                :icon-path="previewIconPath"
+                :size="48"
+              />
+            </pipboy-icon>
           </template>
         </base-preview>
       </slot>
@@ -105,7 +110,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BaseIcon } from '@/shared/ui';
+import { BaseIcon, PipboyIcon } from '@/shared/ui';
 import { InventoryItem } from '@/shared/ui/items';
 import { BasePreview } from '@/shared/ui/items';
 import type { ItemEnchantmentEffect } from '@/shared/lib/types/common';
@@ -138,6 +143,8 @@ interface Props {
   activeItemStats?: PreviewStats[];
   previewEffects?: ItemEnchantmentEffect[];
   previewIconPath?: string;
+  /** Per-item Pip-Boy icon path (no ext); falls back to previewIconPath. */
+  previewItemIconPath?: string;
   previewDescription?: string;
 }
 
@@ -161,6 +168,7 @@ const props = withDefaults(defineProps<Props>(), {
   activeItemStats: () => [],
   previewEffects: () => [],
   previewIconPath: 'lorc/cog.svg',
+  previewItemIconPath: '',
   previewDescription: '',
 });
 

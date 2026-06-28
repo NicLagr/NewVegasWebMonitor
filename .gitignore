@@ -49,3 +49,6 @@ public/map.jpg
 
 # xNVSE source (cloned by CI for plugin headers)
 plugin/extern/
+
+# Raw modder icon source (DDS) — not redistributed; only converted icons we use are committed
+icon-src/
