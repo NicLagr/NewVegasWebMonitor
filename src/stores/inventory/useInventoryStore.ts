@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import type { WeaponsState, ApparelState, FoodState, BookState, KeysState, ScrollsState, IngredientsState, PotionsState, MiscState, WeaponInventoryItem, MiscInventoryItem } from './types';
+import type { WeaponsState, ApparelState, FoodState, BookState, KeysState, PotionsState, MiscState, WeaponInventoryItem, MiscInventoryItem } from './types';
 
 export const useInventoryStore = defineStore('inventory', () => {
   // State for inventory/weapons page
@@ -24,18 +24,8 @@ export const useInventoryStore = defineStore('inventory', () => {
     items: undefined,
   });
 
-  // State for inventory/ingredients page
-  const ingredients = ref<IngredientsState>({
-    items: undefined,
-  });
-
   // State for inventory/books page
   const books = ref<BookState>({
-    items: undefined,
-  });
-
-  // State for inventory/scrolls page
-  const scrolls = ref<ScrollsState>({
     items: undefined,
   });
 
@@ -61,9 +51,7 @@ export const useInventoryStore = defineStore('inventory', () => {
 
   const foodList = computed(() => (food.value.items || []).sort((a, b) => a.name.localeCompare(b.name)));
   const potionsList = computed(() => (potions.value.items || []).sort((a, b) => a.name.localeCompare(b.name)));
-  const ingredientsList = computed(() => (ingredients.value.items || []).sort((a, b) => a.name.localeCompare(b.name)));
   const booksList = computed(() => (books.value.items || []).sort((a, b) => a.name.localeCompare(b.name)));
-  const scrollsList = computed(() => (scrolls.value.items || []).sort((a, b) => a.name.localeCompare(b.name)));
   const keysList = computed(() => (keys.value.items || []).sort((a, b) => a.name.localeCompare(b.name)));
   const miscList = computed(() => {
     const combined: MiscInventoryItem[] = [];
@@ -93,16 +81,8 @@ export const useInventoryStore = defineStore('inventory', () => {
     potions.value = newPotions;
   };
 
-  const setIngredients = (newIngredients: IngredientsState) => {
-    ingredients.value = newIngredients;
-  };
-
   const setBooks = (newBooks: BookState) => {
     books.value = newBooks;
-  };
-
-  const setScrolls = (newScrolls: ScrollsState) => {
-    scrolls.value = newScrolls;
   };
 
   const setKeys = (newKeys: KeysState) => {
@@ -124,27 +104,21 @@ export const useInventoryStore = defineStore('inventory', () => {
     misc,
     potions,
     food,
-    ingredients,
     keys,
     books,
-    scrolls,
     weaponsList,
     apparelList,
     miscList,
     potionsList,
     foodList,
-    ingredientsList,
     keysList,
     booksList,
-    scrollsList,
     setWeapons,
     setApparel,
     setMisc,
     setPotions,
     setFood,
-    setIngredients,
     setKeys,
     setBooks,
-    setScrolls,
   };
 });

@@ -12,8 +12,6 @@ import {
   TheMisc,
   ThePotions,
   TheFood,
-  TheIngredients,
-  TheScrolls,
   TheKeys,
   TheBooks,
   TheQuests,
@@ -103,34 +101,6 @@ export const pagesRegistry: PagesRegistry = {
           id: 'inventory.potions',
           fields: {
             items: 'Inventory::Items::Potions',
-          },
-          settings: {
-            frequency: INVENTORY_FREQUENCY,
-          },
-        },
-      ],
-    },
-    ingredients: {
-      component: TheIngredients,
-      subscriptions: [
-        {
-          id: 'inventory.ingredients',
-          fields: {
-            items: 'Inventory::Items::Ingredients',
-          },
-          settings: {
-            frequency: INVENTORY_FREQUENCY,
-          },
-        },
-      ],
-    },
-    scrolls: {
-      component: TheScrolls,
-      subscriptions: [
-        {
-          id: 'inventory.scrolls',
-          fields: {
-            items: 'Inventory::Items::Scrolls',
           },
           settings: {
             frequency: INVENTORY_FREQUENCY,

@@ -8,8 +8,7 @@
       "character": {
         "label": "STATUS",
         "subtabs": {
-          "stats": "Status",
-          "skills": "Skills"
+          "stats": "Status"
         }
       },
       "inventory": {
@@ -50,14 +49,6 @@
         "hp": "HP",
         "ap": "AP",
         "rads": "RADS"
-      },
-      "hotkeys": {
-        "tab": "Skills",
-        "emptySlot": "Empty",
-        "slot": "Slot {n}"
-      },
-      "skills": {
-        "tab": "Skills"
       }
     },
     "inventory": {
@@ -238,10 +229,6 @@
     }
   },
   "modals": {
-    "hotkeys": {
-      "title": "Assign hotkey",
-      "hint": "Tap a slot to bind; tap the highlighted slot again to clear."
-    },
     "dropItems": "Drop Items",
     "available": "Available",
     "quantity": "Quantity",

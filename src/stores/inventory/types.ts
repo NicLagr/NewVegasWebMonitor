@@ -53,12 +53,10 @@ export const CATEGORY_TYPES = {
   BOOK: "Book",
   POTION: "Potion",
   FOOD: "Food",
-  INGREDIENT: "Ingredient",
   MISC: "Misc",
   AMMO: "Ammo",
   KEY: "Key",
   SOUL_GEM: "SoulGem",
-  SCROLL: "Scroll",
 } as const;
 
 export type CategoryType = (typeof CATEGORY_TYPES)[keyof typeof CATEGORY_TYPES];
@@ -94,12 +92,6 @@ export const SOUL_GEM_CAPACITIES = {
 } as const;
 
 export type SoulGemCapacity = (typeof SOUL_GEM_CAPACITIES)[keyof typeof SOUL_GEM_CAPACITIES];
-
-// Ingredient-specific effect shape
-export interface IngredientEffect {
-  name: string;
-  known: boolean;
-}
 
 // ItemEnchantment types moved to shared/common
  
@@ -198,24 +190,6 @@ export interface BookState {
   items?: BookItem[] | null;
 }
 
-export interface ScrollItem extends BaseItem {
-  categoryType: (typeof CATEGORY_TYPES)['SCROLL'];
-  effects: ItemEnchantmentEffect[];
-}
-
-export interface ScrollsState {
-  items?: ScrollItem[] | null;
-}
-
-export interface IngredientItem extends BaseItem {
-  categoryType: (typeof CATEGORY_TYPES)['INGREDIENT'];
-  effects: IngredientEffect[];
-}
-
-export interface IngredientsState {
-  items?: IngredientItem[] | null;
-}
-
 export interface GemItem extends BaseItem {
   categoryType: (typeof CATEGORY_TYPES)['SOUL_GEM'];
   capacity: SoulGemCapacity;
@@ -235,4 +209,4 @@ export type WeaponInventoryItem = WeaponItem | AmmoItem;
 
 export type MiscInventoryItem = MiscItem | GemItem;
 
-export type InventoryItem = WeaponInventoryItem | ApparelItem | FoodItem | PotionItem | IngredientItem | BookItem | KeyItem | ScrollItem | MiscInventoryItem;
+export type InventoryItem = WeaponInventoryItem | ApparelItem | FoodItem | PotionItem | BookItem | KeyItem | MiscInventoryItem;

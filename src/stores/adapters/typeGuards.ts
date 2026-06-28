@@ -4,19 +4,15 @@ import type {
   ApparelState, 
   FoodState, 
   BookState, 
-  KeysState, 
-  IngredientsState, 
-  PotionsState, 
-  WeaponItem, 
-  ApparelItem, 
-  FoodItem, 
-  PotionItem, 
-  IngredientItem, 
-  BookItem, 
+  KeysState,
+  PotionsState,
+  WeaponItem,
+  ApparelItem,
+  FoodItem,
+  PotionItem,
+  BookItem,
   KeyItem,
-  ScrollsState, 
-  ScrollItem, 
-  MiscState, 
+  MiscState,
   MiscItem,
   GemItem,
   AmmoItem,
@@ -50,14 +46,6 @@ export function isFoodData(data: unknown, id: string): data is FoodState {
 
 export function isPotionsData(data: unknown, id: string): data is PotionsState {
   return id === 'inventory.potions' && typeof data === 'object' && data !== null;
-}
-
-export function isIngredientsData(data: unknown, id: string): data is IngredientsState {
-  return id === 'inventory.ingredients' && typeof data === 'object' && data !== null;
-}
-
-export function isScrollsData(data: unknown, id: string): data is ScrollsState {
-  return id === 'inventory.scrolls' && typeof data === 'object' && data !== null;
 }
 
 export function isBooksData(data: unknown, id: string): data is BookState {
@@ -132,28 +120,6 @@ export function isPotionItem(item: unknown): item is PotionItem {
     typeof potion.name === 'string' &&
     Array.isArray(potion.effects) &&
     potion.categoryType === CATEGORY_TYPES.POTION
-  );
-}
-
-export function isIngredientItem(item: unknown): item is IngredientItem {
-  if (typeof item !== 'object' || item === null) return false;
-  const ing = item as Record<string, unknown>;
-  return (
-    typeof ing.formId === 'string' &&
-    typeof ing.name === 'string' &&
-    Array.isArray(ing.effects) &&
-    ing.categoryType === CATEGORY_TYPES.INGREDIENT
-  );
-}
-
-export function isScrollItem(item: unknown): item is ScrollItem {
-  if (typeof item !== 'object' || item === null) return false;
-  const scroll = item as Record<string, unknown>;
-  return (
-    typeof scroll.formId === 'string' &&
-    typeof scroll.name === 'string' &&
-    Array.isArray(scroll.effects) &&
-    scroll.categoryType === CATEGORY_TYPES.SCROLL
   );
 }
 
