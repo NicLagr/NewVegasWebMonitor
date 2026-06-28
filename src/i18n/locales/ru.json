@@ -207,6 +207,8 @@
       "green": "Зелёный",
       "blue": "Синий"
     },
+    "status": "Статус",
+    "showHiddenEffects": "Показывать скрытые эффекты",
     "credits": "Благодарности",
     "iconsBy": "Иконки предметов:",
     "figureBy": "Фигура Vault Boy:",

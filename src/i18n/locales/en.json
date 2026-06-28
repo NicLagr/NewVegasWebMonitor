@@ -206,6 +206,8 @@
       "green": "Green",
       "blue": "Blue"
     },
+    "status": "Status",
+    "showHiddenEffects": "Show hidden effects",
     "credits": "Credits",
     "iconsBy": "Item icons:",
     "figureBy": "Vault Boy figure:",

@@ -35,6 +35,12 @@ export interface CharacterStats {
   karma?: number | null;
   special?: SpecialStats | null;
   limbs?: LimbCondition | null;
-  /** Active-effect names (EFF), e.g. ["Buffout", "Stimpak"]. */
-  effects?: string[] | null;
+  /** Active effects (EFF). `hidden` marks ability/passive effects (traits,
+   *  crippled-limb effects) the in-game Pip-Boy doesn't display. */
+  effects?: ActiveEffectInfo[] | null;
+}
+
+export interface ActiveEffectInfo {
+  name: string;
+  hidden: boolean;
 }

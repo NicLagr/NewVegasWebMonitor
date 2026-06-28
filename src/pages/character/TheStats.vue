@@ -29,7 +29,7 @@
           <span class="side-k">RAD</span><span class="side-v">{{ Math.round(radsPercentage) }}%</span>
         </div>
         <div class="side-row">
-          <span class="side-k">EFF</span><span class="side-v">{{ effects.length }}</span>
+          <span class="side-k">EFF</span><span class="side-v">{{ visibleEffects.length }}</span>
         </div>
       </div>
 
@@ -57,14 +57,15 @@
 
     <!-- Active effects (EFF). -->
     <div
-      v-if="effects.length"
+      v-if="visibleEffects.length"
       class="stats-effects"
     >
       <span
-        v-for="e in effects"
-        :key="e"
+        v-for="e in visibleEffects"
+        :key="e.name"
         class="eff-chip"
-      >{{ e }}</span>
+        :class="{ 'eff-chip--hidden': e.hidden }"
+      >{{ e.name }}</span>
     </div>
 
     <!-- S.P.E.C.I.A.L. readout. -->
@@ -83,7 +84,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useCharacterStatsDisplay } from './composables/useCharacterStatsDisplay';
+import { useSettingsStore } from '@/stores/settings/useSettingsStore';
 
 const {
   displayLevel,
@@ -95,6 +98,14 @@ const {
   limbs,
   effects,
 } = useCharacterStatsDisplay();
+
+const { showHiddenEffects } = storeToRefs(useSettingsStore());
+
+// Match the in-game Pip-Boy EFF page by default (hides ability/passive effects);
+// reveal everything when "Show hidden effects" is on.
+const visibleEffects = computed(() =>
+  effects.value.filter((e) => showHiddenEffects.value || !e.hidden)
+);
 
 const vaultboySrc = `${import.meta.env.BASE_URL}icons/pipboy/ui/vaultboy.svg`;
 
@@ -312,6 +323,13 @@ const specialList = computed(() => {
   font-family: var(--font-heading);
   font-size: var(--font-size-xs);
   white-space: nowrap;
+}
+
+/* Normally-hidden ability/passive effects (shown only via the setting). */
+.eff-chip--hidden {
+  border-style: dashed;
+  background-color: transparent;
+  color: var(--skyrim-text-dim);
 }
 
 /* S.P.E.C.I.A.L. */

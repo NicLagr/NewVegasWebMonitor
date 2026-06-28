@@ -658,8 +658,11 @@ static void ReadGameState() {
         s.limb[i] = (max > 0.0f) ? (cur / max * 100.0f) : 0.0f;
     }
 
-    // Active effects (EFF) — deduped names of the player's non-terminated
-    // active effects, from Actor::magicTarget (@0x94) -> GetEffectList().
+    // Active effects (EFF) — the player's non-terminated active effects, from
+    // Actor::magicTarget (@0x94) -> GetEffectList(). Each is tagged hidden when
+    // it's an ability-type effect (traits like Four Eyes, crippled-limb effects,
+    // perk passives) — the in-game Pip-Boy EFF page hides those; the app shows
+    // them only when "Show hidden effects" is enabled.
     {
         std::string eff = "[";
         int n = 0;
@@ -674,10 +677,13 @@ static void ReadGameState() {
                 const char* nm = mi ? mi->name.m_data : nullptr;
                 if (!nm || !*nm) continue;
                 if (!seen.insert(nm).second) continue;     // dedupe by name
-                eff += n ? ",\"" : "\"";
+                const bool hidden = (ae->spellType == SpellItem::kType_Ability);
+                eff += n ? ",{\"name\":\"" : "{\"name\":\"";
                 eff += jsonEscape(nm);
-                eff += "\"";
-                if (++n >= 24) break;
+                eff += "\",\"hidden\":";
+                eff += hidden ? "true" : "false";
+                eff += "}";
+                if (++n >= 32) break;
             }
         }
         eff += "]";

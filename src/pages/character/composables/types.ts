@@ -1,5 +1,9 @@
 import type { ComputedRef } from 'vue';
-import type { SpecialStats, LimbCondition } from '@/stores/character/types';
+import type {
+  SpecialStats,
+  LimbCondition,
+  ActiveEffectInfo,
+} from '@/stores/character/types';
 
 export interface CharacterStatsDisplay {
   displayLevel: ComputedRef<string>;
@@ -14,5 +18,5 @@ export interface CharacterStatsDisplay {
   radsPercentage: ComputedRef<number>;
   special: ComputedRef<SpecialStats>;
   limbs: ComputedRef<LimbCondition>;
-  effects: ComputedRef<string[]>;
+  effects: ComputedRef<ActiveEffectInfo[]>;
 }

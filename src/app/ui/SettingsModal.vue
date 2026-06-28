@@ -25,6 +25,20 @@
     </div>
 
     <div class="settings-section">
+      <p class="settings-label">{{ $t('settings.status') }}</p>
+      <button
+        type="button"
+        class="toggle-row"
+        :class="{ on: showHiddenEffects }"
+        :aria-pressed="showHiddenEffects"
+        @click="settings.setShowHiddenEffects(!showHiddenEffects)"
+      >
+        <span class="toggle-text">{{ $t('settings.showHiddenEffects') }}</span>
+        <span class="toggle-switch"><span class="toggle-knob" /></span>
+      </button>
+    </div>
+
+    <div class="settings-section">
       <p class="settings-label">{{ $t('settings.credits') }}</p>
       <p class="credit-line">
         {{ $t('settings.iconsBy') }}
@@ -56,7 +70,7 @@ import { storeToRefs } from 'pinia';
 import { useSettingsStore } from '@/stores/settings/useSettingsStore';
 
 const settings = useSettingsStore();
-const { theme } = storeToRefs(settings);
+const { theme, showHiddenEffects } = storeToRefs(settings);
 const themes = settings.themes;
 
 const emit = defineEmits<{ close: [] }>();
@@ -125,6 +139,60 @@ const emit = defineEmits<{ close: [] }>();
 
 .theme-name {
   font-size: var(--font-size-sm);
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background-color: var(--skyrim-bg-dark);
+  border: var(--border-thin) solid var(--skyrim-border-dark);
+  border-radius: var(--radius-sm);
+  color: var(--skyrim-text-secondary);
+  font-family: var(--font-heading);
+  cursor: pointer;
+
+  &.on {
+    color: var(--skyrim-text-accent);
+    border-color: var(--skyrim-border-accent);
+  }
+}
+
+.toggle-text {
+  font-size: var(--font-size-sm);
+}
+
+.toggle-switch {
+  flex: 0 0 auto;
+  position: relative;
+  width: 2.25rem;
+  height: 1.1rem;
+  border: var(--border-thin) solid var(--skyrim-border-medium);
+  border-radius: 999px;
+  transition: border-color var(--transition-fast);
+
+  .on & {
+    border-color: var(--skyrim-border-accent);
+  }
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: calc(1.1rem - 4px);
+  height: calc(1.1rem - 4px);
+  border-radius: 999px;
+  background-color: var(--skyrim-text-dim);
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+
+  .on & {
+    background-color: var(--skyrim-accent-gold);
+    transform: translateX(1.15rem);
+  }
 }
 
 .credit-line {
