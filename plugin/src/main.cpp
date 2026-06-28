@@ -632,7 +632,16 @@ static void ReadGameState() {
         TESForm* f = found->second;
         if (c.type == "equip" || c.type == "use")      p->EquipItem(f, 1, nullptr, 1, false, 1);
         else if (c.type == "unequip")                  p->UnequipItem(f, 1, nullptr, 1, false, 1);
-        // "drop" — TODO (RemoveItem); acked already.
+        else if (c.type == "drop") {
+            // Drop into the world via the vanilla console Drop function (removes
+            // from the player's inventory and spawns a pickup ref at the player).
+            if (g_console) {
+                char line[64];
+                const int qty = c.count > 0 ? c.count : 1;
+                std::snprintf(line, sizeof(line), "player.Drop %X %d", f->refID, qty);
+                g_console->RunScriptLine2(line, nullptr, true);
+            }
+        }
     }
 
     ActorValueOwner& av = p->avOwner;
