@@ -83,12 +83,28 @@ export function useCharacterStatsDisplay(): CharacterStatsDisplay {
    */
   const radsPercentage = computed(() => statsPercentage.value.rads);
 
+  /** HP current / max, e.g. "180 / 200" (for the STATS header readout). */
+  const displayHealth = computed(() => {
+    const h = stats.value.health;
+    const m = stats.value.healthBase;
+    return h != null && m != null ? `${Math.round(h)} / ${Math.round(m)}` : '-';
+  });
+
+  /** AP current / max, e.g. "65 / 77". */
+  const displayAp = computed(() => {
+    const a = stats.value.ap;
+    const m = stats.value.apBase;
+    return a != null && m != null ? `${Math.round(a)} / ${Math.round(m)}` : '-';
+  });
+
   return {
     displayLevel,
     displayExperience,
     displayCarryWeight,
     displayCaps,
     displayKarma,
+    displayHealth,
+    displayAp,
     healthPercentage,
     apPercentage,
     radsPercentage,

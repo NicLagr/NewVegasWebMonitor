@@ -6,6 +6,8 @@ export interface CharacterStatsDisplay {
   displayCarryWeight: ComputedRef<string>;
   displayCaps: ComputedRef<string>;
   displayKarma: ComputedRef<string>;
+  displayHealth: ComputedRef<string>;
+  displayAp: ComputedRef<string>;
   healthPercentage: ComputedRef<number>;
   apPercentage: ComputedRef<number>;
   radsPercentage: ComputedRef<number>;
