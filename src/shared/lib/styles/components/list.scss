@@ -24,7 +24,7 @@
   justify-content: space-between;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) 0;
-  border-bottom: 1px solid var(--skyrim-border-dark);
+  border-bottom: 1px solid var(--pip-border-dark);
 
   &:last-child {
     border-bottom: 0;
@@ -36,12 +36,12 @@
   align-items: center;
   justify-content: center;
   min-height: 200px;
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
 }
 
 .no-data {
   padding: var(--spacing-md);
   text-align: center;
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
   font-size: var(--font-size-sm);
 }

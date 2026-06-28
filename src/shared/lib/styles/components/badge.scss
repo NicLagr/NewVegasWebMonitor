@@ -2,7 +2,7 @@
  * BADGE COMPONENT
  * ============================================
  *   .badge          — base inline label
- *   .badge--gold    — gold accent (Skyrim primary)
+ *   .badge--gold    — gold accent (primary accent)
  *   .badge--dim     — gold-dim variant
  *   .badge--danger  — destructive
  *   .badge--corner  — absolutely positioned in top-right corner
@@ -13,8 +13,8 @@
   align-items: center;
   justify-content: center;
   padding: 2px 6px;
-  background-color: var(--skyrim-accent-gold);
-  color: var(--skyrim-bg-dark);
+  background-color: var(--pip-accent-gold);
+  color: var(--pip-bg-dark);
   font-family: var(--font-heading);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
@@ -23,16 +23,16 @@
 }
 
 .badge--gold {
-  background-color: var(--skyrim-accent-gold);
+  background-color: var(--pip-accent-gold);
 }
 
 .badge--dim {
-  background-color: var(--skyrim-accent-gold-dim);
+  background-color: var(--pip-accent-gold-dim);
 }
 
 .badge--danger {
   background-color: var(--color-danger);
-  color: var(--skyrim-bg-dark);
+  color: var(--pip-bg-dark);
 }
 
 .badge--corner {

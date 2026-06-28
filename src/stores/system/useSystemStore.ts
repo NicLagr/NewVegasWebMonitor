@@ -18,13 +18,11 @@ export const useSystemStore = defineStore('system', () => {
     if (gameLang) {
       language.value = gameLang;
       i18n.global.locale.value = mapGameLanguage(gameLang);
-      console.log(`[SystemStore] Game language: ${gameLang} → locale: ${i18n.global.locale.value}`);
     }
 
     const rawFeatures = fields.features;
     if (Array.isArray(rawFeatures)) {
       features.value = rawFeatures;
-      console.log('[SystemStore] Features:', features.value);
     }
   }
 

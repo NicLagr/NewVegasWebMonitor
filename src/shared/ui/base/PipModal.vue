@@ -6,7 +6,7 @@
     >
       <div
         v-if="isOpen"
-        class="skyrim-backdrop skyrim-backdrop--fixed skyrim-backdrop--overlay skyrim-backdrop--blocking"
+        class="pip-backdrop pip-backdrop--fixed pip-backdrop--overlay pip-backdrop--blocking"
         role="dialog"
         aria-modal="true"
         @click.capture="onModalRootClickCapture"
@@ -62,7 +62,7 @@ function onModalRootClickCapture(event: MouseEvent): void {
 /*
  * Layout & frame styles come from the design system:
  *   .modal-panel, .modal-body (components/modal.scss)
- * The full-viewport overlay is provided by shared .skyrim-backdrop classes.
+ * The full-viewport overlay is provided by shared .pip-backdrop classes.
  * Only the transitions are component-specific and live here.
  */
 

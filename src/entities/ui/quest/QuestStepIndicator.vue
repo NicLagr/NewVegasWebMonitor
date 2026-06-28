@@ -33,12 +33,12 @@ const dotClass = computed(() => {
 }
 
 .step-dot--completed {
-  background-color: var(--skyrim-text-accent);
+  background-color: var(--pip-text-accent);
   box-shadow: inset 0 0 2px rgb(0 0 0 / 50%);
 }
 
 .step-dot--pending {
-  border: 1px solid var(--skyrim-text-accent);
+  border: 1px solid var(--pip-text-accent);
 }
 
 .step-dot--failed {

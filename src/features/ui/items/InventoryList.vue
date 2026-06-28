@@ -262,22 +262,22 @@ function handleActionClick(actionEvent: string) {
 }
 
 .toolbar-btn {
-  --skyrim-text-accent: var(--skyrim-text-secondary);
+  --pip-text-accent: var(--pip-text-secondary);
 
   @media (hover: hover) {
     &:hover:not(:disabled) {
-      --skyrim-text-accent: var(--skyrim-text-primary);
+      --pip-text-accent: var(--pip-text-primary);
     }
 
     &.favorite:hover:not(:disabled),
     &.hotkey-bound:hover:not(:disabled) {
-      --skyrim-text-accent: var(--skyrim-accent-gold);
+      --pip-text-accent: var(--pip-accent-gold);
     }
   }
 
   &.favorite,
   &.hotkey-bound {
-    --skyrim-text-accent: var(--skyrim-accent-gold);
+    --pip-text-accent: var(--pip-accent-gold);
   }
 }
 </style>

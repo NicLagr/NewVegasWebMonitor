@@ -100,7 +100,7 @@ export interface MapQuestMarkersState {
  * `Player::Position` payload from the game server. Updated at high frequency
  * (multiple times per second) — keep handlers cheap.
  *
- * Coordinate system note: every Skyrim worldspace has its own local `(x, y)`.
+ * Coordinate system note: every game worldspace has its own local `(x, y)`.
  * Only when `worldspace === "Tamriel"` (and `isInterior === false`) can the
  * coordinates be plotted directly on the global Tamriel map. For interiors
  * and Tamriel city sub-worlds (`WhiterunWorld`, `RiftenWorld`, …), use

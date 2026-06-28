@@ -12,8 +12,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
-  background-color: var(--skyrim-bg-medium);
-  border: 1px solid var(--skyrim-border-dark);
+  background-color: var(--pip-bg-medium);
+  border: 1px solid var(--pip-border-dark);
   padding: var(--spacing-md);
 }
 
@@ -22,7 +22,7 @@
 }
 
 .panel--accent {
-  border-color: var(--skyrim-accent-gold-dim);
+  border-color: var(--pip-accent-gold-dim);
 }
 
 .panel--danger {
@@ -30,8 +30,8 @@
 }
 
 .card {
-  background-color: var(--skyrim-bg-light);
-  border: 1px solid var(--skyrim-border-dark);
+  background-color: var(--pip-bg-light);
+  border: 1px solid var(--pip-border-dark);
   padding: var(--spacing-md);
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -39,13 +39,13 @@
   @media (hover: hover) {
     &:hover:not(:disabled) {
       background-color: var(--bg-accent-soft);
-      border-color: var(--skyrim-accent-gold-dim);
+      border-color: var(--pip-accent-gold-dim);
     }
   }
 
   &.active {
     background-color: var(--bg-accent-strong);
-    border-color: var(--skyrim-accent-gold-dim);
+    border-color: var(--pip-accent-gold-dim);
   }
 
   &:disabled {

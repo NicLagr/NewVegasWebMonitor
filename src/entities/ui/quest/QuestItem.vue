@@ -33,12 +33,12 @@ defineEmits<{
 
 <style scoped lang="scss">
 :global(.quest-item--inactive.inv-item--active) {
-  background-color: var(--skyrim-bg-light);
-  border-color: var(--skyrim-border-dark);
+  background-color: var(--pip-bg-light);
+  border-color: var(--pip-border-dark);
 }
 
 :global(.quest-item--inactive .inv-name) {
-  color: var(--skyrim-text-muted);
+  color: var(--pip-text-muted);
   opacity: 0.2;
 }
 </style>

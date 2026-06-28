@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 
-export const MAP_DZI_URL = `${import.meta.env.BASE_URL}map-dzi/skyrim.dzi`;
+export const MAP_DZI_URL = `${import.meta.env.BASE_URL}map-dzi/pip.dzi`;
 const MAP_TILES_MANIFEST_URL = `${import.meta.env.BASE_URL}map-tiles/manifest.json`;
 const MAP_DZI_INFO_STORAGE_KEY = 'map-dzi-info-v1';
 const MAP_TILE_CACHE_NAME = 'map-dzi-tiles';

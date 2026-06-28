@@ -121,11 +121,11 @@ const isStolen = computed(() => {
     }
 
     .stat {
-      color: var(--skyrim-text-secondary);
+      color: var(--pip-text-secondary);
       font-size: var(--font-size-lg);
 
       strong {
-        color: var(--skyrim-text-primary);
+        color: var(--pip-text-primary);
       }
     }
   }
@@ -135,7 +135,7 @@ const isStolen = computed(() => {
     min-height: 0;
     overflow-y: auto;
     white-space: pre-wrap;
-    color: var(--skyrim-text-secondary);
+    color: var(--pip-text-secondary);
     font-size: var(--font-size-base);
     line-height: 1.4;
   }
@@ -158,11 +158,11 @@ const isStolen = computed(() => {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
-    color: var(--skyrim-text-secondary);
+    color: var(--pip-text-secondary);
     font-size: var(--font-size-base);
 
     :deep(strong) {
-      color: var(--skyrim-text-primary);
+      color: var(--pip-text-primary);
     }
   }
 }

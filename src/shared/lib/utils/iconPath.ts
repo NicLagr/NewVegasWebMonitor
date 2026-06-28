@@ -1,6 +1,6 @@
 /**
  * Получить базовый путь для иконок на основе конфига Vite
- * Использует import.meta.env.BASE_URL, которая берется из vite.config.js (base: '/SkyrimWebMonitor/')
+ * Использует import.meta.env.BASE_URL, которая берется из vite.config.js (base: '/NewVegasWebMonitor/')
  */
 declare const __USED_ICON_DATA_URLS__: Record<string, string>;
 

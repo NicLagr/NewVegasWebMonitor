@@ -6,8 +6,8 @@
     >
       <div
         v-if="showBackdrop"
-        class="skyrim-backdrop skyrim-backdrop--fixed skyrim-backdrop--overlay skyrim-backdrop--blocking game-status-backdrop"
-        style="--skyrim-backdrop-z: calc(var(--z-modal-backdrop) - 50); --skyrim-backdrop-blur: 3px"
+        class="pip-backdrop pip-backdrop--fixed pip-backdrop--overlay pip-backdrop--blocking game-status-backdrop"
+        style="--pip-backdrop-z: calc(var(--z-modal-backdrop) - 50); --pip-backdrop-blur: 3px"
         role="alertdialog"
         aria-modal="true"
         @contextmenu.prevent
@@ -44,10 +44,10 @@ const showBackdrop = computed(() => isConnected.value && !canAct.value);
 
 <style scoped lang="scss">
 .game-status-backdrop__icon {
-  // BaseIcon paints itself with --skyrim-text-accent via mask-image.
+  // BaseIcon paints itself with --pip-text-accent via mask-image.
   // No extra color override here — keeps the icon consistent with the rest
   // of the project (WeaponIcon, EquippedHandIcon, etc.).
-  filter: drop-shadow(0 0 12px var(--skyrim-border-glow));
+  filter: drop-shadow(0 0 12px var(--pip-border-glow));
 }
 
 /* Backdrop transition */

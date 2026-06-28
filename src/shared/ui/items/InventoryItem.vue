@@ -48,22 +48,22 @@ defineProps<{
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  background-color: var(--skyrim-bg-light);
-  border: 1px solid var(--skyrim-border-dark);
+  background-color: var(--pip-bg-light);
+  border: 1px solid var(--pip-border-dark);
   cursor: pointer;
   transition: all var(--transition-fast);
   padding: 0;
 
   &.inv-item--favorite {
-    box-shadow: inset 3px 0 0 0 var(--skyrim-accent-gold);
+    box-shadow: inset 3px 0 0 0 var(--pip-accent-gold);
   }
 
   &.inv-item--active {
     background-color: var(--tab-bg-active);
-    border-color: var(--skyrim-accent-gold-dim);
+    border-color: var(--pip-accent-gold-dim);
 
     .inv-name {
-      color: var(--skyrim-text-primary);
+      color: var(--pip-text-primary);
     }
   }
 }
@@ -112,7 +112,7 @@ defineProps<{
 .inv-name {
   font-family: var(--font-heading);
   font-size: var(--font-size-base);
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
   word-break: break-word;
   min-width: 0;
   overflow: hidden;
@@ -133,7 +133,7 @@ defineProps<{
   font-family: var(--font-heading);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
-  color: var(--skyrim-text-accent);
+  color: var(--pip-text-accent);
   padding-right: var(--spacing-sm);
   flex-shrink: 0;
   min-width: 2rem;
@@ -146,7 +146,7 @@ defineProps<{
   top: 2px;
   width: 4px;
   height: 4px;
-  background-color: var(--skyrim-accent-gold);
+  background-color: var(--pip-accent-gold);
   border-radius: 1px;
 }
 </style>

@@ -1,13 +1,13 @@
 <template>
   <div class="handheld-device">
     <template v-if="isConnected || useFixtures">
-      <skyrim-navigation
+      <pip-navigation
         :active-tab="activeTab"
         :active-sub-tab="activeSubTab"
       />
 
       <main class="content-area d-flex flex-col flex-1 min-h-0">
-        <skyrim-content
+        <pip-content
           :tab="activeTab"
           :sub-tab="activeSubTab"
         />
@@ -15,7 +15,7 @@
     </template>
 
     <connection-status v-else />
-    <skyrim-modal />
+    <pip-modal />
     <game-status-backdrop />
     <combat-indicator />
     <exit-toast :visible="showToast" />
@@ -24,10 +24,10 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { SkyrimNavigation, SkyrimContent } from '@/app/ui';
+import { PipNavigation, PipContent } from '@/app/ui';
 import {
   ConnectionStatus,
-  SkyrimModal,
+  PipModal,
   ExitToast,
   GameStatusBackdrop,
   CombatIndicator,
@@ -64,7 +64,7 @@ const { showToast } = useBackGuard();
   height: 100vh;
   height: 100dvh;
   margin: 0 auto;
-  background-color: var(--skyrim-bg-dark);
+  background-color: var(--pip-bg-dark);
   overflow: hidden;
   display: flex;
   flex-direction: column;

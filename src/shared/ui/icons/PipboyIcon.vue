@@ -26,7 +26,7 @@ const props = withDefaults(
   {
     iconPath: null,
     size: 48,
-    color: 'var(--skyrim-text-accent)',
+    color: 'var(--pip-text-accent)',
   }
 );
 

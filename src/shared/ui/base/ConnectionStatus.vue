@@ -208,7 +208,7 @@ function handleReconnect(): void {
     width: 0.75rem;
     height: 0.75rem;
     border-radius: 50%;
-    background-color: var(--skyrim-text-dim);
+    background-color: var(--pip-text-dim);
     box-shadow: 0 0 0 4px rgb(0 0 0 / 30%);
 
     &--connected {
@@ -217,12 +217,12 @@ function handleReconnect(): void {
     }
 
     &--connecting {
-      background-color: var(--skyrim-accent-gold);
+      background-color: var(--pip-accent-gold);
       animation: status-pulse 1.2s ease-in-out infinite;
     }
 
     &--reconnecting {
-      background-color: var(--skyrim-accent-gold-light);
+      background-color: var(--pip-accent-gold-light);
       animation: status-pulse 0.8s ease-in-out infinite;
     }
 
@@ -248,7 +248,7 @@ function handleReconnect(): void {
   font-family: var(--font-heading);
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
-  color: var(--skyrim-text-accent);
+  color: var(--pip-text-accent);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -256,7 +256,7 @@ function handleReconnect(): void {
 .subtitle {
   margin: 0;
   font-size: var(--font-size-sm);
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
   min-height: var(--font-size-sm);
   max-width: min(100%, 28rem);
   text-align: center;
@@ -274,7 +274,7 @@ function handleReconnect(): void {
   font-family: var(--font-heading);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -315,7 +315,7 @@ function handleReconnect(): void {
   padding-right: 9.5rem;
   font-size: var(--font-size-xs);
   line-height: 1.35;
-  color: var(--skyrim-text-dim);
+  color: var(--pip-text-dim);
 
   p {
     margin: 0;

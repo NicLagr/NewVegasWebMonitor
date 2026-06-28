@@ -62,9 +62,9 @@ const labelMaxWidth = computed(
 
 .hotspot-label__text {
   display: inline-block;
-  background-color: var(--skyrim-bg-medium);
-  border: 1px solid var(--skyrim-border-medium);
-  color: var(--skyrim-text-primary);
+  background-color: var(--pip-bg-medium);
+  border: 1px solid var(--pip-border-medium);
+  color: var(--pip-text-primary);
   font-family: var(--font-heading);
   box-shadow: var(--shadow-strong);
   max-width: v-bind(labelMaxWidthCss);

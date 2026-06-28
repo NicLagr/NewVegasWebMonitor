@@ -44,7 +44,7 @@ const previewSteps = computed(() => {
 .quest-preview__description {
   margin: 0;
   padding: var(--spacing-md) var(--spacing-md) 0;
-  color: var(--skyrim-text-primary);
+  color: var(--pip-text-primary);
   font-size: var(--font-size-sm);
 }
 </style>

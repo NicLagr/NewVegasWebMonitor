@@ -47,19 +47,19 @@ const pct = computed(() => (props.value / props.max) * 100);
 .stat-label {
   font-family: var(--font-heading);
   font-size: var(--font-size-sm);
-  color: var(--skyrim-text-accent);
+  color: var(--pip-text-accent);
   letter-spacing: 0.05em;
 }
 
 .stat-value {
   font-size: var(--font-size-xs);
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
 }
 
 .stat-track {
   height: 1rem;
-  background-color: var(--skyrim-bg-dark);
-  border: 1px solid var(--skyrim-border-dark);
+  background-color: var(--pip-bg-dark);
+  border: 1px solid var(--pip-border-dark);
   border-radius: var(--radius-sm);
   overflow: hidden;
 }

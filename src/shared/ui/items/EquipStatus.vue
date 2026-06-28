@@ -30,7 +30,7 @@ defineProps<{
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: var(--skyrim-text-accent);
+  background-color: var(--pip-text-accent);
   box-shadow: inset 0 0 2px rgb(0 0 0 / 50%);
 }
 </style>

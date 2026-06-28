@@ -133,11 +133,11 @@ function selectStepItem(formId: string) {
 .quest-steps-preview__step-text {
   font-size: var(--quest-steps-preview-step-text-font-size);
   line-height: var(--quest-steps-preview-step-line-height);
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
   transition: color var(--transition-fast);
 }
 
 .quest-steps-preview__step--active .quest-steps-preview__step-text {
-  color: var(--skyrim-text-accent);
+  color: var(--pip-text-accent);
 }
 </style>

@@ -64,7 +64,7 @@ function increase() {
   font-family: var(--font-heading);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
-  color: var(--skyrim-text-accent);
+  color: var(--pip-text-accent);
   padding: 0 var(--spacing-xs);
 }
 </style>

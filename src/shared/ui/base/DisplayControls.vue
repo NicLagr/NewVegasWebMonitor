@@ -137,7 +137,7 @@ function getElectronAPI(): ElectronAPI {
 const ZOOM_STEP = 0.1;
 const ZOOM_MIN = 0.6;
 const ZOOM_MAX = 1.8;
-const ZOOM_KEY = 'skyrim-monitor-zoom';
+const ZOOM_KEY = 'pip-monitor-zoom';
 
 const currentZoom = ref(parseFloat(localStorage.getItem(ZOOM_KEY) ?? '1'));
 const isFullscreen = ref(false);

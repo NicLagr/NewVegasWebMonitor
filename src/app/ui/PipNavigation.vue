@@ -29,7 +29,7 @@
       <base-icon
         icon-path="lorc/cog.svg"
         :size="18"
-        background-color="var(--skyrim-text-dim)"
+        background-color="var(--pip-text-dim)"
       />
     </button>
 
@@ -130,7 +130,7 @@ watch(
 
 .navigation-header {
   flex-shrink: 0;
-  background-color: var(--skyrim-bg-medium);
+  background-color: var(--pip-bg-medium);
   position: relative;
   z-index: var(--z-sticky);
 }

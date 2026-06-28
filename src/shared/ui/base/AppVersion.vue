@@ -15,7 +15,7 @@ const version = import.meta.env.VITE_APP_VERSION;
   bottom: 2px;
   font-size: 8px;
   font-family: monospace;
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
   opacity: 0.5;
   pointer-events: none;
   user-select: none;

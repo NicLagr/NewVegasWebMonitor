@@ -69,12 +69,6 @@ static std::unordered_map<UInt32, TESQuest*> g_questById; // quest refID -> ques
 typedef void (__thiscall *UpdateQuestTargets_t)(TESQuest*, void*, void*);
 static const UpdateQuestTargets_t EngineUpdateQuestTargets = (UpdateQuestTargets_t)0x60F110;
 
-static void logf(const char* fmt, ...) {
-    char buf[256]; va_list ap; va_start(ap, fmt);
-    std::vsnprintf(buf, sizeof(buf), fmt, ap); va_end(ap);
-    if (FILE* f = std::fopen("FNVWebSocket.log", "a")) { std::fprintf(f, "%s\n", buf); std::fclose(f); }
-}
-
 static std::string jsonEscape(const char* s) {
     std::string o;
     if (!s) return o;
@@ -388,11 +382,6 @@ static void rebuildRadioStations(PlayerCharacter* p) {
             if (r->flags & 0x800) continue; // disabled (inactive station) — not real yet
             ExtraRadioDataMin* rd = (ExtraRadioDataMin*)xd;
             const char* nm = r->GetTheName();
-            // DEBUG: log every radio ref once so the filter stays verifiable.
-            static std::unordered_set<UInt32> dbgRadio;
-            if (dbgRadio.insert(r->refID).second)
-                logf("[dbg] RADIO %s rangeType=%u radius=%.0f flags=0x%08X",
-                     nm ? nm : "?", rd->rangeType, rd->radius, r->flags);
             if (!nm || !*nm) continue;
 
             // "receivable" = the Pip-Boy would currently list it (its default
@@ -747,18 +736,6 @@ static void ReadGameState() {
         const char* eid = ws->GetName();
         if (eid) s.worldspace = eid;
         g_lastWorldSpace = ws; // remember for custom-marker placement
-        // One-shot: the worldspace's map bounds (what the Pip-Boy uses to place
-        // markers) so the app's world->image transform can be derived exactly.
-        static std::unordered_set<std::string> dbgWM;
-        if (eid && dbgWM.insert(eid).second) {
-            logf("[dbg] WORLDMAP ws=%s usable=(%d,%d) cellNW=(%d,%d) cellSE=(%d,%d) "
-                 "min=(%.0f,%.0f) max=(%.0f,%.0f) scale=%.4f cellOff=(%.1f,%.1f)",
-                 eid, ws->mapData.usableDimensions.X, ws->mapData.usableDimensions.Y,
-                 ws->mapData.cellNWCoordinates.X, ws->mapData.cellNWCoordinates.Y,
-                 ws->mapData.cellSECoordinates.X, ws->mapData.cellSECoordinates.Y,
-                 ws->min.X, ws->min.Y, ws->max.X, ws->max.Y,
-                 ws->worldMapScale, ws->worldMapCellX, ws->worldMapCellY);
-        }
     }
 
     // Inventory + map markers + quests + radio: rebuild ~once per second (heavy).
@@ -772,11 +749,6 @@ static void ReadGameState() {
     s.caps = g_caps; s.cats = g_cats; s.weapons = g_weapons;
     s.apparel = g_apparel; s.aid = g_aid; s.notes = g_notes; s.misc = g_misc;
     s.hotspots = g_hotspots; s.quests = g_quests; s.radio = g_radio;
-
-    // Log position periodically so you can read real coords for map calibration.
-    if ((g_frame % 180) == 0)
-        logf("[ws] pos x=%.0f y=%.0f ws=%s interior=%d", s.posX, s.posY,
-             s.worldspace.empty() ? "?" : s.worldspace.c_str(), (int)s.isInterior);
 
     snapshot_set(s);
 }

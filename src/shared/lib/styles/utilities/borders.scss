@@ -4,7 +4,7 @@
 
 /* Border style shorthand */
 .border {
-  border: var(--border-thin) solid var(--skyrim-border-dark);
+  border: var(--border-thin) solid var(--pip-border-dark);
 }
 .border-0 {
   border: 0;
@@ -14,21 +14,21 @@
   border-style: solid;
 }
 .border-t {
-  border-top: var(--border-thin) solid var(--skyrim-border-dark);
+  border-top: var(--border-thin) solid var(--pip-border-dark);
 }
 .border-r {
-  border-right: var(--border-thin) solid var(--skyrim-border-dark);
+  border-right: var(--border-thin) solid var(--pip-border-dark);
 }
 .border-b {
-  border-bottom: var(--border-thin) solid var(--skyrim-border-dark);
+  border-bottom: var(--border-thin) solid var(--pip-border-dark);
 }
 .border-l {
-  border-left: var(--border-thin) solid var(--skyrim-border-dark);
+  border-left: var(--border-thin) solid var(--pip-border-dark);
 }
 
 /* Border-bottom thick (used for tab/subtab bars) */
 .border-b-2 {
-  border-bottom: var(--border-thick) solid var(--skyrim-border-dark);
+  border-bottom: var(--border-thick) solid var(--pip-border-dark);
 }
 
 /* Border radius */

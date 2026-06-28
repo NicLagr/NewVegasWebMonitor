@@ -33,7 +33,7 @@ const arrowPoints = computed(() => {
 <style scoped lang="scss">
 .player-marker {
   pointer-events: none;
-  fill: var(--skyrim-accent-gold);
-  stroke: var(--skyrim-bg-dark);
+  fill: var(--pip-accent-gold);
+  stroke: var(--pip-bg-dark);
 }
 </style>

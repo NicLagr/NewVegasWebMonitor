@@ -18,15 +18,15 @@
     "ayn-thor",
     "nvse"
   ],
-  "homepage": "https://andreyvelsk.github.io/SkyrimWebMonitor/",
+  "homepage": "https://niclagr.github.io/NewVegasWebMonitor/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/andreyvelsk/SkyrimWebMonitor.git"
+    "url": "git+https://github.com/NicLagr/NewVegasWebMonitor.git"
   },
   "bugs": {
-    "url": "https://github.com/andreyvelsk/SkyrimWebMonitor/issues"
+    "url": "https://github.com/NicLagr/NewVegasWebMonitor/issues"
   },
-  "author": "Andrey Velsk (https://github.com/andreyvelsk)",
+  "author": "Nicolo Lagravinese (https://github.com/NicLagr)",
   "license": "MIT",
   "scripts": {
     "dev": "vite",

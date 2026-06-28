@@ -48,7 +48,7 @@
         >
           <base-icon
             icon-path="map/location.svg"
-            background-color="var(--skyrim-text-secondary)"
+            background-color="var(--pip-text-secondary)"
           />
         </button>
         <button
@@ -60,7 +60,7 @@
         >
           <base-icon
             icon-path="map/player.svg"
-            :background-color="isFollowPlayerMode ? 'var(--skyrim-accent-gold-light)' : 'var(--skyrim-text-dim)' "
+            :background-color="isFollowPlayerMode ? 'var(--pip-accent-gold-light)' : 'var(--pip-text-dim)' "
           />
         </button>
       </div>
@@ -119,7 +119,7 @@ const INITIAL_ZOOM_FACTOR = 1;
 /** Max zoom factor relative to home zoom. */
 const MAX_ZOOM_FACTOR = 1;
 /** Background color around the map. */
-const BACKGROUND_COLOR = 'var(--skyrim-bg-medium)';
+const BACKGROUND_COLOR = 'var(--pip-bg-medium)';
 /**
  * Pixels to hide on each edge of the map image. The Mojave map is expected to
  * be pre-cropped, so these are 0; bump them if your image has dark borders.
@@ -471,7 +471,7 @@ onBeforeUnmount(() => {
   height: 100%;
   min-height: 0;
   padding: var(--spacing-sm);
-  background-color: var(--skyrim-bg-dark);
+  background-color: var(--pip-bg-dark);
 }
 
 /* Pip-Boy terminal screen: themed bezel + inner CRT vignette + faint glow. */
@@ -480,11 +480,11 @@ onBeforeUnmount(() => {
   inset: var(--spacing-sm);
   overflow: hidden;
   background-color: v-bind(BACKGROUND_COLOR);
-  border: var(--border-normal) solid var(--skyrim-border-medium);
+  border: var(--border-normal) solid var(--pip-border-medium);
   border-radius: var(--radius-sm);
   box-shadow:
     inset 0 0 40px rgb(0 0 0 / 45%),
-    0 0 12px var(--skyrim-border-glow);
+    0 0 12px var(--pip-border-glow);
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
@@ -513,7 +513,7 @@ onBeforeUnmount(() => {
     position: absolute;
     width: 14px;
     height: 14px;
-    border: var(--border-thick) solid var(--skyrim-border-accent);
+    border: var(--border-thick) solid var(--pip-border-accent);
     opacity: 0.8;
   }
 
@@ -536,8 +536,8 @@ onBeforeUnmount(() => {
   &__h,
   &__v {
     position: absolute;
-    background-color: var(--skyrim-accent-gold);
-    box-shadow: 0 0 4px var(--skyrim-border-glow);
+    background-color: var(--pip-accent-gold);
+    box-shadow: 0 0 4px var(--pip-border-glow);
   }
 
   &__h { width: 42px; height: 2px; }
@@ -547,7 +547,7 @@ onBeforeUnmount(() => {
     position: absolute;
     width: 10px;
     height: 10px;
-    border: var(--border-thick) solid var(--skyrim-accent-gold);
+    border: var(--border-thick) solid var(--pip-accent-gold);
     border-radius: 999px;
   }
 }
@@ -570,9 +570,9 @@ onBeforeUnmount(() => {
   width: 2.25rem;
   height: 2.25rem;
   padding: 0;
-  border: var(--border-thin) solid var(--skyrim-border-medium);
+  border: var(--border-thin) solid var(--pip-border-medium);
   border-radius: 999px;
-  background-color: var(--skyrim-bg-medium);
+  background-color: var(--pip-bg-medium);
   box-shadow: var(--shadow-medium);
   cursor: pointer;
   transition:
@@ -580,7 +580,7 @@ onBeforeUnmount(() => {
     border-color var(--transition-fast);
 
   &:active { transform: scale(0.96); }
-  &.is-active { border-color: var(--skyrim-border-accent); }
+  &.is-active { border-color: var(--pip-border-accent); }
 }
 
 /* Placement confirm bar, bottom-center. */
@@ -598,10 +598,10 @@ onBeforeUnmount(() => {
 
 .map-place-hint {
   padding: 2px var(--spacing-sm);
-  background-color: var(--skyrim-bg-dark);
-  border: var(--border-thin) solid var(--skyrim-border-dark);
+  background-color: var(--pip-bg-dark);
+  border: var(--border-thin) solid var(--pip-border-dark);
   border-radius: var(--radius-sm);
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
   font-family: var(--font-heading);
   font-size: var(--font-size-sm);
 }
@@ -613,10 +613,10 @@ onBeforeUnmount(() => {
 
 .map-place-btn {
   padding: var(--spacing-xs) var(--spacing-lg);
-  border: var(--border-thin) solid var(--skyrim-border-accent);
+  border: var(--border-thin) solid var(--pip-border-accent);
   border-radius: var(--radius-sm);
-  background-color: var(--skyrim-bg-medium);
-  color: var(--skyrim-text-accent);
+  background-color: var(--pip-bg-medium);
+  color: var(--pip-text-accent);
   font-family: var(--font-heading);
   font-size: var(--font-size-base);
   letter-spacing: 0.06em;
@@ -625,8 +625,8 @@ onBeforeUnmount(() => {
   &:active { transform: scale(0.97); }
 
   &--ghost {
-    border-color: var(--skyrim-border-medium);
-    color: var(--skyrim-text-secondary);
+    border-color: var(--pip-border-medium);
+    color: var(--pip-text-secondary);
   }
 }
 
@@ -651,18 +651,18 @@ onBeforeUnmount(() => {
   gap: var(--spacing-sm);
   min-width: 14rem;
   padding: var(--spacing-md) var(--spacing-lg);
-  background-color: var(--skyrim-bg-medium);
-  border: var(--border-thin) solid var(--skyrim-border-medium);
+  background-color: var(--pip-bg-medium);
+  border: var(--border-thin) solid var(--pip-border-medium);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-medium);
-  color: var(--skyrim-text-accent);
+  color: var(--pip-text-accent);
   font-family: var(--font-heading);
   font-size: var(--font-size-sm);
   letter-spacing: 0.04em;
 }
 
 .map-prefetch-backdrop__label {
-  color: var(--skyrim-text-accent);
+  color: var(--pip-text-accent);
 }
 
 .map-prefetch-backdrop__bar {
@@ -670,8 +670,8 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 6px;
   overflow: hidden;
-  background-color: var(--skyrim-bg-dark);
-  border: var(--border-thin) solid var(--skyrim-border-dark);
+  background-color: var(--pip-bg-dark);
+  border: var(--border-thin) solid var(--pip-border-dark);
   border-radius: var(--radius-sm);
 
   &::after {
@@ -681,15 +681,15 @@ onBeforeUnmount(() => {
     width: var(--p, 0%);
     background: linear-gradient(
       90deg,
-      var(--skyrim-accent-gold-dim),
-      var(--skyrim-accent-gold-light)
+      var(--pip-accent-gold-dim),
+      var(--pip-accent-gold-light)
     );
     transition: width var(--transition-fast);
   }
 }
 
 .map-prefetch-backdrop__pct {
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
   font-family: var(--font-body);
   font-variant-numeric: tabular-nums;
 }

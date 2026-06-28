@@ -71,9 +71,9 @@ function onSelectHand(hand: EquipSlot) {
   font-family: var(--font-heading);
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
-  color: var(--skyrim-text-primary);
-  background-color: var(--skyrim-bg-light);
-  border: 2px solid var(--skyrim-border-dark);
+  color: var(--pip-text-primary);
+  background-color: var(--pip-bg-light);
+  border: 2px solid var(--pip-border-dark);
   cursor: pointer;
   transition: all var(--transition-fast);
   text-transform: uppercase;
@@ -81,12 +81,12 @@ function onSelectHand(hand: EquipSlot) {
 
   &--occupied {
     background-color: var(--bg-accent-strong);
-    border-color: var(--skyrim-accent-gold-dim);
+    border-color: var(--pip-accent-gold-dim);
 
     @media (hover: hover) {
       &:hover {
-        background-color: var(--skyrim-border-glow);
-        border-color: var(--skyrim-accent-gold);
+        background-color: var(--pip-border-glow);
+        border-color: var(--pip-accent-gold);
       }
     }
   }

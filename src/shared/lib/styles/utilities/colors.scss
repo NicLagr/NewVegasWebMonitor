@@ -4,25 +4,25 @@
 
 /* Text colors */
 .text-primary {
-  color: var(--skyrim-text-primary);
+  color: var(--pip-text-primary);
 }
 .text-secondary {
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
 }
 .text-accent {
-  color: var(--skyrim-text-accent);
+  color: var(--pip-text-accent);
 }
 .text-dim {
-  color: var(--skyrim-text-dim);
+  color: var(--pip-text-dim);
 }
 .text-gold {
-  color: var(--skyrim-accent-gold);
+  color: var(--pip-accent-gold);
 }
 .text-gold-light {
-  color: var(--skyrim-accent-gold-light);
+  color: var(--pip-accent-gold-light);
 }
 .text-gold-dim {
-  color: var(--skyrim-accent-gold-dim);
+  color: var(--pip-accent-gold-dim);
 }
 .text-success {
   color: var(--color-success);
@@ -36,13 +36,13 @@
 
 /* Background colors */
 .bg-dark {
-  background-color: var(--skyrim-bg-dark);
+  background-color: var(--pip-bg-dark);
 }
 .bg-medium {
-  background-color: var(--skyrim-bg-medium);
+  background-color: var(--pip-bg-medium);
 }
 .bg-light {
-  background-color: var(--skyrim-bg-light);
+  background-color: var(--pip-bg-light);
 }
 .bg-transparent {
   background-color: transparent;
@@ -65,19 +65,19 @@
 
 /* Border colors */
 .border-dark {
-  border-color: var(--skyrim-border-dark);
+  border-color: var(--pip-border-dark);
 }
 .border-medium {
-  border-color: var(--skyrim-border-medium);
+  border-color: var(--pip-border-medium);
 }
 .border-accent {
-  border-color: var(--skyrim-border-accent);
+  border-color: var(--pip-border-accent);
 }
 .border-gold {
-  border-color: var(--skyrim-accent-gold);
+  border-color: var(--pip-accent-gold);
 }
 .border-gold-dim {
-  border-color: var(--skyrim-accent-gold-dim);
+  border-color: var(--pip-accent-gold-dim);
 }
 .border-danger {
   border-color: var(--color-danger-dim);

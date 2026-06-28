@@ -137,7 +137,7 @@ export interface WeaponsState {
 
 export interface ApparelItem extends BaseItem {
   categoryType: (typeof CATEGORY_TYPES)['APPAREL'];
-  /** Damage Threshold — FNV's flat damage reduction (replaces Skyrim armor rating). */
+  /** Damage Threshold — FNV's flat damage reduction (replaces the armor-rating model). */
   damageThreshold: number;
   /** Damage Resistance — percentage-based reduction (optional, some armor only). */
   damageResistance?: number;

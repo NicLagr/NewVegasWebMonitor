@@ -24,8 +24,8 @@ body {
 }
 
 body {
-  background-color: var(--skyrim-bg-dark);
-  color: var(--skyrim-text-primary);
+  background-color: var(--pip-bg-dark);
+  color: var(--pip-text-primary);
   font-family: var(--font-body);
   font-size: var(--font-size-base);
   line-height: 1.5;
@@ -96,7 +96,7 @@ body:not(.no-crt)::after {
 
 @media (hover: hover) {
   *:hover {
-    scrollbar-color: var(--skyrim-border-medium) transparent;
+    scrollbar-color: var(--pip-border-medium) transparent;
   }
 }
 
@@ -118,16 +118,16 @@ body:not(.no-crt)::after {
 @media (hover: hover) {
   *:hover > ::-webkit-scrollbar-thumb,
   *:hover::-webkit-scrollbar-thumb {
-    background: var(--skyrim-border-medium);
+    background: var(--pip-border-medium);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--skyrim-accent-gold-dim);
+    background: var(--pip-accent-gold-dim);
   }
 }
 
 ::-webkit-scrollbar-thumb:active {
-  background: var(--skyrim-accent-gold-dim);
+  background: var(--pip-accent-gold-dim);
 }
 
 // ============================================
@@ -141,7 +141,7 @@ a {
 
   @media (hover: hover) {
     &:hover {
-      color: var(--skyrim-text-secondary);
+      color: var(--pip-text-secondary);
     }
   }
 }

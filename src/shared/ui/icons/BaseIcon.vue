@@ -24,7 +24,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   size: 24,
   flipped: false,
-  backgroundColor: 'var(--skyrim-text-accent)',
+  backgroundColor: 'var(--pip-text-accent)',
 });
 
 const iconSrc = computed(() => buildIconPath(props.iconPath));

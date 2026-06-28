@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 /**
  * App-local favorites, persisted by item formId. Fallout: New Vegas has no
- * Skyrim-style "favorite" game state, so favoriting is purely client-side: it
+ * an in-game "favorite" game state, so favoriting is purely client-side: it
  * pins items to the top of their list. Survives reloads via localStorage.
  */
 const KEY = 'nvwm-favorites';

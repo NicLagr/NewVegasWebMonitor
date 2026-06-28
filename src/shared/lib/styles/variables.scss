@@ -12,54 +12,54 @@
   --accent-rgb: 255 182 66;
 
   /* PRIMARY COLORS - Main interface colors */
-  --skyrim-bg-dark: #0a0a0a;
-  --skyrim-bg-medium: #14100a;
-  --skyrim-bg-light: #221a0f;
+  --pip-bg-dark: #0a0a0a;
+  --pip-bg-medium: #14100a;
+  --pip-bg-light: #221a0f;
 
   /* TEXT COLORS - Typography hierarchy */
-  --skyrim-text-primary: #ffb642;
-  --skyrim-text-secondary: #c8881f;
-  --skyrim-text-accent: #ffd98a;
-  --skyrim-text-dim: #6e4a14;
+  --pip-text-primary: #ffb642;
+  --pip-text-secondary: #c8881f;
+  --pip-text-accent: #ffd98a;
+  --pip-text-dim: #6e4a14;
 
   /* ACCENT COLORS - Interactive elements */
-  --skyrim-accent-gold: #ffb642;
-  --skyrim-accent-gold-light: #ffd98a;
-  --skyrim-accent-gold-dim: #b3781f;
+  --pip-accent-gold: #ffb642;
+  --pip-accent-gold-light: #ffd98a;
+  --pip-accent-gold-dim: #b3781f;
 
   /* BORDER & DIVIDER COLORS */
-  --skyrim-border-dark: #3a2a10;
-  --skyrim-border-medium: #6e521d;
-  --skyrim-border-accent: #ffb642;
-  --skyrim-border-glow: rgb(var(--accent-rgb) / 30%);
+  --pip-border-dark: #3a2a10;
+  --pip-border-medium: #6e521d;
+  --pip-border-accent: #ffb642;
+  --pip-border-glow: rgb(var(--accent-rgb) / 30%);
 
   /* TAB SPECIFIC COLORS */
   --tab-bg-inactive: transparent;
   --tab-bg-hover: rgb(var(--accent-rgb) / 8%);
   --tab-bg-active: rgb(var(--accent-rgb) / 15%);
-  --tab-text-inactive: var(--skyrim-text-secondary);
-  --tab-text-hover: var(--skyrim-text-primary);
-  --tab-text-active: var(--skyrim-accent-gold);
-  --tab-border-active: var(--skyrim-accent-gold);
+  --tab-text-inactive: var(--pip-text-secondary);
+  --tab-text-hover: var(--pip-text-primary);
+  --tab-text-active: var(--pip-accent-gold);
+  --tab-border-active: var(--pip-accent-gold);
 
   /* SUB-TAB SPECIFIC COLORS */
   --subtab-bg-inactive: transparent;
   --subtab-bg-hover: rgb(var(--accent-rgb) / 5%);
   --subtab-bg-active: rgb(var(--accent-rgb) / 10%);
-  --subtab-text-inactive: var(--skyrim-text-dim);
-  --subtab-text-hover: var(--skyrim-text-secondary);
-  --subtab-text-active: var(--skyrim-text-primary);
-  --subtab-indicator-active: var(--skyrim-accent-gold-dim);
+  --subtab-text-inactive: var(--pip-text-dim);
+  --subtab-text-hover: var(--pip-text-secondary);
+  --subtab-text-active: var(--pip-text-primary);
+  --subtab-indicator-active: var(--pip-accent-gold-dim);
 
   /* ORNAMENT & DECORATION */
-  --ornament-color: var(--skyrim-text-accent);
+  --ornament-color: var(--pip-text-accent);
   --ornament-glow: rgb(var(--accent-rgb) / 20%);
 
   /* SHADOW & EFFECTS */
   --shadow-soft: 0 2px 8px rgb(0 0 0 / 40%);
   --shadow-medium: 0 4px 16px rgb(0 0 0 / 50%);
   --shadow-strong: 0 8px 32px rgb(0 0 0 / 60%);
-  --glow-accent: 0 0 20px var(--skyrim-border-glow);
+  --glow-accent: 0 0 20px var(--pip-border-glow);
 
   /* TYPOGRAPHY */
   --font-heading: 'Share Tech Mono', 'Courier New', monospace;
@@ -125,7 +125,7 @@
   /* SEMANTIC STATE COLORS (success / warning / danger / info) */
   --color-success: #4caf50;
   --color-success-glow: rgb(76 175 80 / 60%);
-  --color-warning: var(--skyrim-accent-gold);
+  --color-warning: var(--pip-accent-gold);
   --color-danger: #c04a4a;
   --color-danger-dim: #7a2a2a;
   --color-danger-light: #d08a8a;
@@ -147,32 +147,32 @@
  * ============================================ */
 [data-theme='green'] {
   --accent-rgb: 0 255 65;
-  --skyrim-bg-medium: #0d140d;
-  --skyrim-bg-light: #14211a;
-  --skyrim-text-primary: #00ff41;
-  --skyrim-text-secondary: #1aa83b;
-  --skyrim-text-accent: #6dff8c;
-  --skyrim-text-dim: #0a5a22;
-  --skyrim-accent-gold: #00ff41;
-  --skyrim-accent-gold-light: #6dff8c;
-  --skyrim-accent-gold-dim: #0a9c30;
-  --skyrim-border-dark: #103018;
-  --skyrim-border-medium: #1d5a2e;
-  --skyrim-border-accent: #00ff41;
+  --pip-bg-medium: #0d140d;
+  --pip-bg-light: #14211a;
+  --pip-text-primary: #00ff41;
+  --pip-text-secondary: #1aa83b;
+  --pip-text-accent: #6dff8c;
+  --pip-text-dim: #0a5a22;
+  --pip-accent-gold: #00ff41;
+  --pip-accent-gold-light: #6dff8c;
+  --pip-accent-gold-dim: #0a9c30;
+  --pip-border-dark: #103018;
+  --pip-border-medium: #1d5a2e;
+  --pip-border-accent: #00ff41;
 }
 
 [data-theme='blue'] {
   --accent-rgb: 74 200 255;
-  --skyrim-bg-medium: #0a1014;
-  --skyrim-bg-light: #0f1a22;
-  --skyrim-text-primary: #4ac8ff;
-  --skyrim-text-secondary: #2a90c8;
-  --skyrim-text-accent: #a6e3ff;
-  --skyrim-text-dim: #14506e;
-  --skyrim-accent-gold: #4ac8ff;
-  --skyrim-accent-gold-light: #a6e3ff;
-  --skyrim-accent-gold-dim: #1f86c8;
-  --skyrim-border-dark: #102a3a;
-  --skyrim-border-medium: #1d4a6e;
-  --skyrim-border-accent: #4ac8ff;
+  --pip-bg-medium: #0a1014;
+  --pip-bg-light: #0f1a22;
+  --pip-text-primary: #4ac8ff;
+  --pip-text-secondary: #2a90c8;
+  --pip-text-accent: #a6e3ff;
+  --pip-text-dim: #14506e;
+  --pip-accent-gold: #4ac8ff;
+  --pip-accent-gold-light: #a6e3ff;
+  --pip-accent-gold-dim: #1f86c8;
+  --pip-border-dark: #102a3a;
+  --pip-border-medium: #1d4a6e;
+  --pip-border-accent: #4ac8ff;
 }

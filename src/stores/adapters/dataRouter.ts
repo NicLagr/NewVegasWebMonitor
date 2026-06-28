@@ -14,49 +14,41 @@ export class DataRouter {
     const inventoryStore = useInventoryStore();
     try {
       if (isCharacterStatsData(data, subscriptionId)) {
-        console.log('[DataRouter] Routing character stats to character store');
         characterStore.setStats(data);
         return { success: true, message: 'Data routed to character store' };
       }
 
       if (isWeaponsData(data, subscriptionId)) {
-        console.log('[DataRouter] Routing weapons data to inventory store');
         inventoryStore.setWeapons(data);
         return { success: true, message: 'Data routed to inventory store (weapons)' };
       }
 
       if (isApparelData(data, subscriptionId)) {
-        console.log('[DataRouter] Routing apparel data to inventory store');
         inventoryStore.setApparel(data);
         return { success: true, message: 'Data routed to inventory store (apparel)' };
       }
 
       if (isFoodData(data, subscriptionId)) {
-        console.log('[DataRouter] Routing food data to inventory store');
         inventoryStore.setFood(data);
         return { success: true, message: 'Data routed to inventory store (food)' };
       }
 
       if (isPotionsData(data, subscriptionId)) {
-        console.log('[DataRouter] Routing potions data to inventory store');
         inventoryStore.setPotions(data);
         return { success: true, message: 'Data routed to inventory store (potions)' };
       }
 
       if (isKeysData(data, subscriptionId)) {
-        console.log('[DataRouter] Routing keys data to inventory store');
         inventoryStore.setKeys(data);
         return { success: true, message: 'Data routed to inventory store (keys)' };
       }
 
       if (isBooksData(data, subscriptionId)) {
-        console.log('[DataRouter] Routing books data to inventory store');
         inventoryStore.setBooks(data);
         return { success: true, message: 'Data routed to inventory store (books)' };
       }
 
       if (isMiscData(data, subscriptionId)) {
-        console.log('[DataRouter] Routing misc data to inventory store');
         inventoryStore.setMisc(data);
         return { success: true, message: 'Data routed to inventory store (misc)' };
       }
@@ -85,13 +77,11 @@ export class DataRouter {
 
         if (remaining.length) ordered.push(...remaining);
 
-        console.log('[DataRouter] Routing categories to navigation store', ordered);
         navigationStore.setTabSubTabs('inventory', ordered);
         return { success: true, message: 'Data routed to navigation store (inventory categories)' };
       }
 
       if (isQuestsData(data, subscriptionId)) {
-        console.log('[DataRouter] Routing quests data to quests store');
         useQuestStore().setQuests(data);
         return { success: true, message: 'Data routed to quests store' };
       }
@@ -102,19 +92,16 @@ export class DataRouter {
       }
 
       if (isGameStatusData(data, subscriptionId)) {
-        console.log('[DataRouter] Routing game status to game status store');
         useGameStatusStore().setStatus(data.status);
         return { success: true, message: 'Data routed to game status store' };
       }
 
       if (isMapHotspotsData(data, subscriptionId)) {
-        console.log('[DataRouter] Routing map hotspots to map store');
         useMapHotspotsStore().setHotspots(data);
         return { success: true, message: 'Data routed to map store (hotspots)' };
       }
 
       if (isMapQuestMarkersData(data, subscriptionId)) {
-        console.log('[DataRouter] Routing map quest markers to map store');
         useMapHotspotsStore().setQuestMarkers(data);
         return { success: true, message: 'Data routed to map store (quest markers)' };
       }

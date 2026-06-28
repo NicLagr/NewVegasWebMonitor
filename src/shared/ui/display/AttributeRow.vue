@@ -18,11 +18,11 @@ defineProps<{ label: string; value: string }>();
 }
 
 .attr-label {
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
   min-width: 120px;
 }
 
 .attr-value {
-  color: var(--skyrim-text-accent);
+  color: var(--pip-text-accent);
 }
 </style>

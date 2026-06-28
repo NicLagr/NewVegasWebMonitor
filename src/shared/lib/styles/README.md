@@ -1,13 +1,13 @@
-# SkyrimWebMonitor Design System
+# PipWebMonitor Design System
 
-A Bootstrap-like atomic design system with a Skyrim theme.
-The single entry point is `skyrim-theme.scss` (imported once from [src/main.js](../../../main.js)).
+A Bootstrap-like atomic design system with a Pip theme.
+The single entry point is `pip-theme.scss` (imported once from [src/main.js](../../../main.js)).
 
 ## Structure
 
 ```
 styles/
-├── skyrim-theme.scss      # entry — layer order
+├── pip-theme.scss      # entry — layer order
 ├── variables.scss         # design tokens (colors, spacing, typography, z-index, ...)
 ├── base.scss              # reset, body, scrollbars
 ├── animations.scss        # keyframes + .animate-* helpers
@@ -67,9 +67,9 @@ styles/
 - `--font-size-xs/sm/base/lg/xl`
 
 ### Colors
-- Background: `--skyrim-bg-dark/medium/light`
-- Text: `--skyrim-text-primary/secondary/accent/dim`
-- Accent: `--skyrim-accent-gold/-light/-dim`
+- Background: `--pip-bg-dark/medium/light`
+- Text: `--pip-text-primary/secondary/accent/dim`
+- Accent: `--pip-accent-gold/-light/-dim`
 - Semantic: `--color-success`, `--color-danger`, `--color-warning`
 - Translucent overlays: `--bg-accent-faint/-soft/-medium/-strong`
 
@@ -172,7 +172,7 @@ Also: `m-auto`, `mx-auto`, `my-auto`.
 
 ### Modal
 ```html
-<!-- SkyrimModal wraps content in .modal-backdrop / .modal-panel / .modal-body -->
+<!-- PipModal wraps content in .modal-backdrop / .modal-panel / .modal-body -->
 <div class="modal-content">
   <div class="modal-header">
     <h3 class="modal-title">Title</h3>
@@ -254,7 +254,7 @@ For older browsers, the PostCSS plugin `postcss-preset-env` (stage 3) downgrades
 
 ---
 
-# CSS Architecture - SkyrimWebMonitor
+# CSS Architecture - PipWebMonitor
 
 ## CSS Structure
 
@@ -268,7 +268,7 @@ The project uses a modular approach to CSS with CSS nesting support for better o
 4. **components.css** — component styles (tabs, panels, decorations)
 5. **animations.css** — animations
 
-The main file `skyrim-theme.css` imports all layers in the correct order.
+The main file `pip-theme.css` imports all layers in the correct order.
 
 ### Component-specific styles
 
@@ -281,7 +281,7 @@ Every Vue component contains its own `<style scoped>` blocks with CSS nesting fo
   gap: var(--spacing-md);
 
   &:hover {
-    color: var(--skyrim-accent-gold);
+    color: var(--pip-accent-gold);
   }
 
   & .child-element {
@@ -289,7 +289,7 @@ Every Vue component contains its own `<style scoped>` blocks with CSS nesting fo
   }
 
   &.modifier {
-    border-left: 3px solid var(--skyrim-accent-gold);
+    border-left: 3px solid var(--pip-accent-gold);
   }
 }
 </style>
@@ -330,20 +330,20 @@ Every Vue component contains its own `<style scoped>` blocks with CSS nesting fo
 
 ```css
 /* Main background colors */
---skyrim-bg-dark: #0d0d0d;
---skyrim-bg-medium: #1a1a1a;
---skyrim-bg-light: #252525;
+--pip-bg-dark: #0d0d0d;
+--pip-bg-medium: #1a1a1a;
+--pip-bg-light: #252525;
 
 /* Text colors */
---skyrim-text-primary: #d4c4a8;
---skyrim-text-secondary: #9a8b70;
---skyrim-text-accent: #f5e6c8;
---skyrim-text-dim: #5a5040;
+--pip-text-primary: #d4c4a8;
+--pip-text-secondary: #9a8b70;
+--pip-text-accent: #f5e6c8;
+--pip-text-dim: #5a5040;
 
 /* Accent colors */
---skyrim-accent-gold: #c9a227;
---skyrim-accent-gold-light: #e5c44d;
---skyrim-accent-gold-dim: #8b7220;
+--pip-accent-gold: #c9a227;
+--pip-accent-gold-light: #e5c44d;
+--pip-accent-gold-dim: #8b7220;
 ```
 
 ### Sizes and spacing
@@ -369,7 +369,7 @@ Every Vue component contains its own `<style scoped>` blocks with CSS nesting fo
 --transition-normal: 250ms ease;
 --transition-slow: 400ms ease;
 
---glow-accent: 0 0 20px var(--skyrim-border-glow);
+--glow-accent: 0 0 20px var(--pip-border-glow);
 ```
 
 ## Usage examples
@@ -387,11 +387,11 @@ Every Vue component contains its own `<style scoped>` blocks with CSS nesting fo
 
 ```vue
 <template>
-  <button class="skyrim-tab">Tab</button>
+  <button class="pip-tab">Tab</button>
 </template>
 
 <style scoped>
-.skyrim-tab {
+.pip-tab {
   padding: 0 var(--spacing-lg);
   color: var(--tab-text-inactive);
   transition: all var(--transition-normal);

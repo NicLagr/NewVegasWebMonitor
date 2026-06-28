@@ -136,7 +136,7 @@ function turnOff(): void {
 }
 
 .radio-label {
-  color: var(--skyrim-text-dim);
+  color: var(--pip-text-dim);
   font-family: var(--font-heading);
   font-size: var(--font-size-sm);
   letter-spacing: 0.12em;
@@ -144,12 +144,12 @@ function turnOff(): void {
 }
 
 .radio-now {
-  color: var(--skyrim-text-accent);
+  color: var(--pip-text-accent);
   font-family: var(--font-heading);
   font-size: var(--font-size-xl);
 
   &.is-off {
-    color: var(--skyrim-text-dim);
+    color: var(--pip-text-dim);
   }
 }
 
@@ -160,7 +160,7 @@ function turnOff(): void {
   list-style: none;
   margin: 0;
   padding: 0;
-  border-top: var(--border-thin) solid var(--skyrim-border-dark);
+  border-top: var(--border-thin) solid var(--pip-border-dark);
 
   &--hidden {
     flex: 0 1 auto;
@@ -174,22 +174,22 @@ function turnOff(): void {
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-xs);
-  border-bottom: var(--border-thin) solid var(--skyrim-border-dark);
-  color: var(--skyrim-text-primary);
+  border-bottom: var(--border-thin) solid var(--pip-border-dark);
+  color: var(--pip-text-primary);
   font-family: var(--font-heading);
   font-size: var(--font-size-lg);
   cursor: pointer;
 
   &:hover {
-    color: var(--skyrim-text-accent);
+    color: var(--pip-text-accent);
   }
 
   &.is-current {
-    color: var(--skyrim-text-accent);
+    color: var(--pip-text-accent);
 
     .radio-station__dot {
-      background-color: var(--skyrim-text-accent);
-      box-shadow: 0 0 6px var(--skyrim-text-accent);
+      background-color: var(--pip-text-accent);
+      box-shadow: 0 0 6px var(--pip-text-accent);
     }
   }
 
@@ -201,7 +201,7 @@ function turnOff(): void {
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 999px;
-    border: var(--border-thin) solid var(--skyrim-border-medium);
+    border: var(--border-thin) solid var(--pip-border-medium);
     flex: 0 0 auto;
   }
 
@@ -214,16 +214,16 @@ function turnOff(): void {
     width: 1.5rem;
     height: 1.5rem;
     padding: 0;
-    border: var(--border-thin) solid var(--skyrim-border-dark);
+    border: var(--border-thin) solid var(--pip-border-dark);
     border-radius: var(--radius-sm);
     background-color: transparent;
-    color: var(--skyrim-text-dim);
+    color: var(--pip-text-dim);
     font-size: var(--font-size-sm);
     cursor: pointer;
 
     &:hover {
-      border-color: var(--skyrim-border-accent);
-      color: var(--skyrim-text-accent);
+      border-color: var(--pip-border-accent);
+      color: var(--pip-text-accent);
     }
   }
 }
@@ -233,7 +233,7 @@ function turnOff(): void {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--skyrim-text-dim);
+  color: var(--pip-text-dim);
   font-family: var(--font-heading);
   font-size: var(--font-size-base);
 }
@@ -247,18 +247,18 @@ function turnOff(): void {
 
 .radio-text-btn {
   padding: var(--spacing-xs) var(--spacing-md);
-  border: var(--border-thin) solid var(--skyrim-border-medium);
+  border: var(--border-thin) solid var(--pip-border-medium);
   border-radius: var(--radius-sm);
-  background-color: var(--skyrim-bg-dark);
-  color: var(--skyrim-text-primary);
+  background-color: var(--pip-bg-dark);
+  color: var(--pip-text-primary);
   font-family: var(--font-heading);
   font-size: var(--font-size-sm);
   letter-spacing: 0.06em;
   cursor: pointer;
 
   &:hover:not(:disabled) {
-    border-color: var(--skyrim-border-accent);
-    color: var(--skyrim-text-accent);
+    border-color: var(--pip-border-accent);
+    color: var(--pip-text-accent);
   }
 
   &:disabled {

@@ -165,7 +165,7 @@ const specialList = computed(() => {
   flex: 0 0 auto;
   display: flex;
   align-items: stretch;
-  border: var(--border-thin) solid var(--skyrim-border-accent);
+  border: var(--border-thin) solid var(--pip-border-accent);
   border-radius: var(--radius-sm);
   background-color: rgb(var(--accent-rgb) / 6%);
   font-family: var(--font-heading);
@@ -176,11 +176,11 @@ const specialList = computed(() => {
   display: flex;
   align-items: center;
   padding: 0 var(--spacing-sm);
-  color: var(--skyrim-text-accent);
+  color: var(--pip-text-accent);
   font-size: clamp(var(--font-size-sm), 2vh, var(--font-size-lg));
   letter-spacing: 0.1em;
   background-color: rgb(var(--accent-rgb) / 10%);
-  border-right: var(--border-thin) solid var(--skyrim-border-accent);
+  border-right: var(--border-thin) solid var(--pip-border-accent);
 }
 
 .sh-cells {
@@ -200,18 +200,18 @@ const specialList = computed(() => {
   padding: clamp(2px, 0.8vh, var(--spacing-xs)) var(--spacing-xs);
 
   & + & {
-    border-left: var(--border-thin) solid var(--skyrim-border-medium);
+    border-left: var(--border-thin) solid var(--pip-border-medium);
   }
 }
 
 .sh-k {
-  color: var(--skyrim-text-dim);
+  color: var(--pip-text-dim);
   font-size: clamp(0.6rem, 1.4vh, var(--font-size-xs));
   letter-spacing: 0.08em;
 }
 
 .sh-v {
-  color: var(--skyrim-text-primary);
+  color: var(--pip-text-primary);
   font-size: clamp(0.75rem, 1.9vh, var(--font-size-base));
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -235,19 +235,19 @@ const specialList = computed(() => {
 .side-row {
   display: flex;
   flex-direction: column;
-  border: var(--border-thin) solid var(--skyrim-border-dark);
+  border: var(--border-thin) solid var(--pip-border-dark);
   border-radius: var(--radius-sm);
   padding: 2px var(--spacing-sm);
 }
 
 .side-k {
-  color: var(--skyrim-text-dim);
+  color: var(--pip-text-dim);
   font-size: var(--font-size-xs);
   letter-spacing: 0.08em;
 }
 
 .side-v {
-  color: var(--skyrim-text-primary);
+  color: var(--pip-text-primary);
   font-size: var(--font-size-sm);
   font-variant-numeric: tabular-nums;
 }
@@ -262,7 +262,7 @@ const specialList = computed(() => {
 .vaultboy {
   position: absolute;
   inset: 0;
-  background-color: var(--skyrim-text-accent);
+  background-color: var(--pip-text-accent);
   opacity: 0.92;
   -webkit-mask: var(--vb-src) center / contain no-repeat;
   mask: var(--vb-src) center / contain no-repeat;
@@ -273,8 +273,8 @@ const specialList = computed(() => {
   transform: translate(-50%, -50%);
   width: clamp(34px, 9vw, 58px);
   height: 8px;
-  border: var(--border-thin) solid var(--skyrim-border-medium);
-  background-color: var(--skyrim-bg-dark);
+  border: var(--border-thin) solid var(--pip-border-medium);
+  background-color: var(--pip-bg-dark);
   border-radius: 1px;
   overflow: hidden;
 
@@ -286,7 +286,7 @@ const specialList = computed(() => {
 .limb-fill {
   display: block;
   height: 100%;
-  background-color: var(--skyrim-accent-gold);
+  background-color: var(--pip-accent-gold);
   transition: width var(--transition-normal);
 
   .limb--low & {
@@ -297,7 +297,7 @@ const specialList = computed(() => {
 .stats-level {
   flex: 0 0 auto;
   text-align: center;
-  color: var(--skyrim-text-accent);
+  color: var(--pip-text-accent);
   font-family: var(--font-heading);
   font-size: clamp(var(--font-size-sm), 2vh, var(--font-size-lg));
   letter-spacing: 0.08em;
@@ -316,10 +316,10 @@ const specialList = computed(() => {
 
 .eff-chip {
   padding: 1px var(--spacing-sm);
-  border: var(--border-thin) solid var(--skyrim-border-medium);
+  border: var(--border-thin) solid var(--pip-border-medium);
   border-radius: var(--radius-sm);
   background-color: rgb(var(--accent-rgb) / 8%);
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
   font-family: var(--font-heading);
   font-size: var(--font-size-xs);
   white-space: nowrap;
@@ -329,7 +329,7 @@ const specialList = computed(() => {
 .eff-chip--hidden {
   border-style: dashed;
   background-color: transparent;
-  color: var(--skyrim-text-dim);
+  color: var(--pip-text-dim);
 }
 
 /* S.P.E.C.I.A.L. */
@@ -337,7 +337,7 @@ const specialList = computed(() => {
   flex: 0 0 auto;
   display: flex;
   gap: var(--spacing-xs);
-  border-top: var(--border-thin) solid var(--skyrim-border-dark);
+  border-top: var(--border-thin) solid var(--pip-border-dark);
   padding-top: var(--spacing-sm);
 }
 
@@ -350,13 +350,13 @@ const specialList = computed(() => {
 }
 
 .spec-k {
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
   font-size: var(--font-size-sm);
   letter-spacing: 0.05em;
 }
 
 .spec-v {
-  color: var(--skyrim-text-primary);
+  color: var(--pip-text-primary);
   font-size: clamp(var(--font-size-base), 2.4vh, var(--font-size-xl));
   font-variant-numeric: tabular-nums;
 }

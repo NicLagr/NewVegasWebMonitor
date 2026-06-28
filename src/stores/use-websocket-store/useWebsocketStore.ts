@@ -53,7 +53,6 @@ export const useWebSocketStore = defineStore('websocket', () => {
     const success = wsClient.subscribe(subscriptionId, fieldMapping, frequency, sendOnChange);
     if (success) {
       activeSubscriptions.value.set(subscriptionId, { id: subscriptionId, fieldMapping, frequency });
-      console.log(`Subscribed [${subscriptionId}]`, fieldMapping);
     } else {
       console.error(`Failed to subscribe [${subscriptionId}]`);
     }
@@ -67,7 +66,6 @@ export const useWebSocketStore = defineStore('websocket', () => {
     const success = wsClient.unsubscribe(subscriptionId);
     if (success) {
       activeSubscriptions.value.delete(subscriptionId);
-      console.log(`Unsubscribed [${subscriptionId}]`);
     }
   };
 
@@ -79,7 +77,6 @@ export const useWebSocketStore = defineStore('websocket', () => {
     const success = wsClient.unsubscribeAll();
     if (success) {
       activeSubscriptions.value.clear();
-      console.log('Unsubscribed from all subscriptions');
     }
   };
 
@@ -94,12 +91,10 @@ export const useWebSocketStore = defineStore('websocket', () => {
     }
     pendingQueries.set(queryId, callback);
     wsClient.query(queryId, fieldMapping);
-    console.log(`Query sent [${queryId}]`, fieldMapping);
   };
 
   const handleDataMessage = (message: DataMessage): void => {
     try {
-      console.log(`[WebSocket] Received data [${message.id}] at ${new Date(message.ts).toISOString()}:`, message.fields);
 
       const queryCallback = pendingQueries.get(message.id);
       if (queryCallback) {
@@ -200,7 +195,6 @@ export const useWebSocketStore = defineStore('websocket', () => {
       endpointUrl.value = wsClient.getUrl();
       reconnectAttempt.value = 0;
       reconnectFailed.value = false;
-      console.log('WebSocket connected, ready for subscriptions');
       sendQuery(SYSTEM_QUERY_ID, SYSTEM_QUERY_FIELDS, (fields) => useSystemStore().handleQueryResponse(fields));
     });
 

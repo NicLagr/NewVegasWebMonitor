@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import '@/shared/lib/styles/skyrim-theme.scss';
+import '@/shared/lib/styles/pip-theme.scss';
 import './style.css';
 import App from './app/App.vue';
 import i18n from './i18n';

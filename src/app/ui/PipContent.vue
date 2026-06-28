@@ -1,6 +1,6 @@
 <template>
   <div
-    class="skyrim-panel animate-slide-down"
+    class="pip-panel animate-slide-down"
     @touchstart.passive="onTouchStart"
     @touchend.passive="onTouchEnd"
     @touchcancel.passive="onTouchCancel"
@@ -86,9 +86,9 @@ const currentComponent = computed(() => {
 </script>
 
 <style scoped lang="scss">
-.skyrim-panel {
+.pip-panel {
   position: relative;
-  background-color: var(--skyrim-bg-medium);
+  background-color: var(--pip-bg-medium);
   padding: var(--spacing-sm);
   height: 100%;
   max-height: 100%;

@@ -72,33 +72,29 @@ export function useAppLoader() {
     // (see useWebSocketStore init). Don't open a socket — there's no backend,
     // and reconnect attempts would just spam errors.
     if (import.meta.env.VITE_USE_FIXTURES === 'true') {
-      console.log('[AppLoader] Fixture mode — skipping WebSocket connection');
       return;
     }
 
     try {
-      console.log('App mounted - initializing WebSocket connection...');
       await connect();
     } catch (err) {
       console.error('Failed to initialize websocket connection', err);
     }
   });
 
-  // The server starts as soon as Skyrim's main menu loads, NOT when the player
+  // The server starts as soon as the game's main menu loads, NOT when the player
   // actually enters the game world. We must therefore only re-arm GLOBAL
   // subscriptions on connect — `gameStatus` is the signal that tells us when
   // the player is ready (canAct === true). Gameplay subscriptions are gated
   // on `canAct` below.
   watch(isConnected, (connected, prev) => {
     if (connected && !prev) {
-      console.log('WebSocket connected, re-arming global subscriptions');
       startGlobalSubscriptions();
 
       // If we reconnected WHILE the player is still in-game, the server has
       // cleared its subscription table on disconnect. The canAct watcher only
       // fires on transitions, so we must re-arm gameplay subs explicitly here.
       if (canAct.value) {
-        console.log('Reconnected while in-game — re-arming gameplay subscriptions');
         loadInitialDataAndStartActiveSubs();
       }
     }
@@ -109,7 +105,6 @@ export function useAppLoader() {
   watch(canAct, () => {
     if (!isConnected.value) return;
 
-    console.log('Player is in-game (canAct=true) — loading initial data');
     loadInitialDataAndStartActiveSubs();
   }, { once: true});
 
@@ -124,7 +119,6 @@ export function useAppLoader() {
       [oldTab, oldSubTab]
     ) => {
       if (!isConnected.value) {
-        console.log('WebSocket not connected, skipping subscription update');
         return;
       }
 
@@ -140,17 +134,14 @@ export function useAppLoader() {
       // Stop subs from the previous page that the new page does not need.
       oldSubs.forEach((s) => {
         if (!newIds.has(s.id)) {
-          console.log(`Unsubscribing from old page sub: ${s.id}`);
           stopSubscription(s.id);
         }
       });
 
       if (!newSubTab) {
-        console.log('No sub-tab selected, skipping subscription update');
         return;
       }
 
-      console.log(`Subscription update: ${newTab} - ${newSubTab}`);
       newSubs.forEach((s) => {
         startSubscription(s.id, s.fields, s.settings?.frequency, s.settings?.sendOnChange);
       });

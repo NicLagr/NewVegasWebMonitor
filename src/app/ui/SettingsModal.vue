@@ -87,7 +87,7 @@ const emit = defineEmits<{ close: [] }>();
 }
 
 .settings-label {
-  color: var(--skyrim-text-dim);
+  color: var(--pip-text-dim);
   font-family: var(--font-heading);
   font-size: var(--font-size-sm);
   letter-spacing: 0.12em;
@@ -107,10 +107,10 @@ const emit = defineEmits<{ close: [] }>();
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-sm);
-  background-color: var(--skyrim-bg-dark);
-  border: var(--border-thin) solid var(--skyrim-border-dark);
+  background-color: var(--pip-bg-dark);
+  border: var(--border-thin) solid var(--pip-border-dark);
   border-radius: var(--radius-sm);
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
   font-family: var(--font-heading);
   cursor: pointer;
   transition:
@@ -118,12 +118,12 @@ const emit = defineEmits<{ close: [] }>();
     color var(--transition-fast);
 
   &:hover {
-    color: var(--skyrim-text-primary);
+    color: var(--pip-text-primary);
   }
 
   &.active {
-    border-color: var(--skyrim-border-accent);
-    color: var(--skyrim-text-accent);
+    border-color: var(--pip-border-accent);
+    color: var(--pip-text-accent);
   }
 }
 
@@ -132,7 +132,7 @@ const emit = defineEmits<{ close: [] }>();
   height: 1.75rem;
   border-radius: 999px;
   /* Resolves to this swatch's own palette accent via its data-theme. */
-  background-color: var(--skyrim-accent-gold);
+  background-color: var(--pip-accent-gold);
   box-shadow: 0 0 8px rgb(var(--accent-rgb) / 50%);
   border: var(--border-thin) solid rgb(0 0 0 / 30%);
 }
@@ -148,16 +148,16 @@ const emit = defineEmits<{ close: [] }>();
   width: 100%;
   gap: var(--spacing-md);
   padding: var(--spacing-sm);
-  background-color: var(--skyrim-bg-dark);
-  border: var(--border-thin) solid var(--skyrim-border-dark);
+  background-color: var(--pip-bg-dark);
+  border: var(--border-thin) solid var(--pip-border-dark);
   border-radius: var(--radius-sm);
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
   font-family: var(--font-heading);
   cursor: pointer;
 
   &.on {
-    color: var(--skyrim-text-accent);
-    border-color: var(--skyrim-border-accent);
+    color: var(--pip-text-accent);
+    border-color: var(--pip-border-accent);
   }
 }
 
@@ -170,12 +170,12 @@ const emit = defineEmits<{ close: [] }>();
   position: relative;
   width: 2.25rem;
   height: 1.1rem;
-  border: var(--border-thin) solid var(--skyrim-border-medium);
+  border: var(--border-thin) solid var(--pip-border-medium);
   border-radius: 999px;
   transition: border-color var(--transition-fast);
 
   .on & {
-    border-color: var(--skyrim-border-accent);
+    border-color: var(--pip-border-accent);
   }
 }
 
@@ -186,22 +186,22 @@ const emit = defineEmits<{ close: [] }>();
   width: calc(1.1rem - 4px);
   height: calc(1.1rem - 4px);
   border-radius: 999px;
-  background-color: var(--skyrim-text-dim);
+  background-color: var(--pip-text-dim);
   transition: transform var(--transition-fast), background-color var(--transition-fast);
 
   .on & {
-    background-color: var(--skyrim-accent-gold);
+    background-color: var(--pip-accent-gold);
     transform: translateX(1.15rem);
   }
 }
 
 .credit-line {
-  color: var(--skyrim-text-secondary);
+  color: var(--pip-text-secondary);
   font-size: var(--font-size-sm);
   line-height: 1.4;
 
   a {
-    color: var(--skyrim-text-accent);
+    color: var(--pip-text-accent);
     text-decoration: underline;
   }
 }
