@@ -35,6 +35,9 @@
         >Consistent Pip-Boy Icons</a>
         · ItsMeJesusHChrist
       </p>
+      <p class="credit-line">
+        {{ $t('settings.figureBy') }} fluffgar (DeviantArt)
+      </p>
     </div>
 
     <div class="modal-actions">

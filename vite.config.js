@@ -52,10 +52,15 @@ function pruneUnusedIcons(distDir) {
       const iconsDir = path.join(distDir, 'icons');
       if (!fs.existsSync(iconsDir)) return;
       const keep = new Set(USED_ICONS.map((p) => path.join(iconsDir, p)));
+      // The per-item Pip-Boy set (icons/pipboy/**) is referenced dynamically at
+      // runtime (by in-game icon path / Vault Boy figure), not as static
+      // 'author/name.svg' literals, so exempt it from pruning entirely.
+      const pipboyDir = path.join(iconsDir, 'pipboy');
       let removed = 0;
       const walk = (dir) => {
         for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
           const full = path.join(dir, entry.name);
+          if (full === pipboyDir) continue; // keep the whole pip-boy tree
           if (entry.isDirectory()) {
             walk(full);
             if (fs.readdirSync(full).length === 0) fs.rmdirSync(full);

@@ -5,96 +5,135 @@
       <span class="sh-title">{{ $t('pages.character.stats.tab') }}</span>
       <div class="sh-cells">
         <div class="sh-cell">
-          <span class="sh-k">LVL</span>
-          <span class="sh-v">{{ displayLevel }}</span>
+          <span class="sh-k">LVL</span><span class="sh-v">{{ displayLevel }}</span>
         </div>
         <div class="sh-cell">
-          <span class="sh-k">HP</span>
-          <span class="sh-v">{{ displayHealth }}</span>
+          <span class="sh-k">HP</span><span class="sh-v">{{ displayHealth }}</span>
         </div>
         <div class="sh-cell">
-          <span class="sh-k">AP</span>
-          <span class="sh-v">{{ displayAp }}</span>
+          <span class="sh-k">AP</span><span class="sh-v">{{ displayAp }}</span>
         </div>
         <div class="sh-cell">
-          <span class="sh-k">XP</span>
-          <span class="sh-v">{{ displayExperience }}</span>
+          <span class="sh-k">XP</span><span class="sh-v">{{ displayExperience }}</span>
         </div>
       </div>
     </div>
 
-    <!-- Attributes -->
-    <section class="stats-attrs">
-      <attribute-row
-        :label="$t('pages.character.stats.caps')"
-        :value="displayCaps"
-      />
-      <attribute-row
-        :label="$t('pages.character.stats.karma')"
-        :value="displayKarma"
-      />
-      <attribute-row
-        :label="$t('pages.character.stats.carryWeight')"
-        :value="displayCarryWeight"
-      />
-    </section>
+    <!-- CND / RAD column + Vault Boy with limb-condition bars. -->
+    <div class="stats-main">
+      <div class="stats-side">
+        <div class="side-row">
+          <span class="side-k">CND</span><span class="side-v">{{ cndPct }}%</span>
+        </div>
+        <div class="side-row">
+          <span class="side-k">RAD</span><span class="side-v">{{ Math.round(radsPercentage) }}%</span>
+        </div>
+      </div>
 
-    <!-- Vital bars, anchored at the bottom like the Pip-Boy. -->
-    <section class="stats-bars">
-      <stat-bar
-        :label="$t('pages.character.stats.hp')"
-        :value="healthPercentage"
-        :max="100"
-        color="hp"
-      />
-      <stat-bar
-        :label="$t('pages.character.stats.ap')"
-        :value="apPercentage"
-        :max="100"
-        color="ap"
-      />
-      <stat-bar
-        :label="$t('pages.character.stats.rads')"
-        :value="radsPercentage"
-        :max="100"
-        color="rads"
-      />
-    </section>
+      <div class="stats-figure">
+        <div
+          class="vaultboy"
+          :style="{ '--vb-src': `url('${vaultboySrc}')` }"
+        />
+        <div
+          v-for="l in limbBars"
+          :key="l.key"
+          class="limb"
+          :class="{ 'limb--low': l.pct < 35 }"
+          :style="l.pos"
+        >
+          <span
+            class="limb-fill"
+            :style="{ width: l.pct + '%' }"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-level">{{ $t('pages.character.stats.level') }} {{ displayLevel }}</div>
+
+    <!-- S.P.E.C.I.A.L. readout. -->
+    <div class="stats-special">
+      <div
+        v-for="s in specialList"
+        :key="s.k"
+        class="spec"
+      >
+        <span class="spec-k">{{ s.k }}</span>
+        <span class="spec-v">{{ s.v }}</span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { StatBar, AttributeRow } from '@/shared/ui';
+import { computed } from 'vue';
 import { useCharacterStatsDisplay } from './composables/useCharacterStatsDisplay';
 
 const {
   displayLevel,
   displayExperience,
-  displayCarryWeight,
-  displayCaps,
-  displayKarma,
   displayHealth,
   displayAp,
-  healthPercentage,
-  apPercentage,
   radsPercentage,
+  special,
+  limbs,
 } = useCharacterStatsDisplay();
+
+const vaultboySrc = `${import.meta.env.BASE_URL}icons/pipboy/ui/vaultboy.svg`;
+
+const clampPct = (v: number | undefined): number =>
+  v == null ? 100 : Math.max(0, Math.min(100, v));
+
+// Limb-condition bars positioned around the Vault Boy (vitruvian pose).
+const limbBars = computed(() => {
+  const L = limbs.value;
+  return [
+    { key: 'head', pct: clampPct(L.head), pos: 'top:4%;left:50%' },
+    { key: 'leftArm', pct: clampPct(L.leftArm), pos: 'top:33%;left:18%' },
+    { key: 'rightArm', pct: clampPct(L.rightArm), pos: 'top:33%;left:82%' },
+    { key: 'torso', pct: clampPct(L.torso), pos: 'top:40%;left:50%' },
+    { key: 'leftLeg', pct: clampPct(L.leftLeg), pos: 'top:74%;left:32%' },
+    { key: 'rightLeg', pct: clampPct(L.rightLeg), pos: 'top:74%;left:68%' },
+  ];
+});
+
+const cndPct = computed(() => {
+  const vals = Object.values(limbs.value).filter(
+    (v): v is number => typeof v === 'number'
+  );
+  if (!vals.length) return 100;
+  return Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
+});
+
+// S.P.E.C.I.A.L. — one letter + value each.
+const specialList = computed(() => {
+  const s = special.value;
+  return [
+    { k: 'S', v: s.strength ?? '-' },
+    { k: 'P', v: s.perception ?? '-' },
+    { k: 'E', v: s.endurance ?? '-' },
+    { k: 'C', v: s.charisma ?? '-' },
+    { k: 'I', v: s.intelligence ?? '-' },
+    { k: 'A', v: s.agility ?? '-' },
+    { k: 'L', v: s.luck ?? '-' },
+  ];
+});
 </script>
 
 <style scoped lang="scss">
-/* FNV-style STATUS screen: segmented header readout up top, attributes in the
-   middle, vital bars anchored at the bottom. clamp()-scaled so the whole screen
-   fits small displays (e.g. AYN Thor 1080×1240) without cropping. */
+/* FNV STATS screen: segmented header, CND/RAD column, Vault Boy with live
+   limb-condition bars, and a S.P.E.C.I.A.L. readout — theme-tinted and
+   clamp()-scaled to fit small displays (e.g. AYN Thor 1080×1240). */
 .stats-page {
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
-  padding: clamp(var(--spacing-sm), 2.5vh, var(--spacing-lg));
-  gap: clamp(var(--spacing-sm), 2.5vh, var(--spacing-lg));
+  padding: clamp(var(--spacing-sm), 2vh, var(--spacing-lg));
+  gap: clamp(var(--spacing-sm), 1.5vh, var(--spacing-md));
 }
 
-/* Segmented "STATS | LVL | HP | AP | XP" bar. */
 .stats-header {
   flex: 0 0 auto;
   display: flex;
@@ -151,28 +190,118 @@ const {
   white-space: nowrap;
 }
 
-.stats-attrs {
-  flex: 0 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: var(--spacing-lg);
-  row-gap: clamp(0.1rem, 1vh, var(--spacing-sm));
-  align-content: start;
-
-  :deep(.attribute-row) {
-    font-size: clamp(var(--font-size-sm), 2.2vh, var(--font-size-lg));
-  }
-
-  :deep(.attr-label) {
-    min-width: 0;
-  }
+.stats-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  gap: var(--spacing-sm);
 }
 
-.stats-bars {
+.stats-side {
   flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  gap: clamp(var(--spacing-xs), 2vh, var(--spacing-md));
-  margin-top: auto;
+  gap: var(--spacing-sm);
+  font-family: var(--font-heading);
+}
+
+.side-row {
+  display: flex;
+  flex-direction: column;
+  border: var(--border-thin) solid var(--skyrim-border-dark);
+  border-radius: var(--radius-sm);
+  padding: 2px var(--spacing-sm);
+}
+
+.side-k {
+  color: var(--skyrim-text-dim);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.08em;
+}
+
+.side-v {
+  color: var(--skyrim-text-primary);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Vault Boy + limb bars. */
+.stats-figure {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.vaultboy {
+  position: absolute;
+  inset: 0;
+  background-color: var(--skyrim-text-accent);
+  opacity: 0.92;
+  -webkit-mask: var(--vb-src) center / contain no-repeat;
+  mask: var(--vb-src) center / contain no-repeat;
+}
+
+.limb {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: clamp(34px, 9vw, 58px);
+  height: 8px;
+  border: var(--border-thin) solid var(--skyrim-border-medium);
+  background-color: var(--skyrim-bg-dark);
+  border-radius: 1px;
+  overflow: hidden;
+
+  &--low {
+    border-color: var(--color-danger);
+  }
+}
+
+.limb-fill {
+  display: block;
+  height: 100%;
+  background-color: var(--skyrim-accent-gold);
+  transition: width var(--transition-normal);
+
+  .limb--low & {
+    background-color: var(--color-danger);
+  }
+}
+
+.stats-level {
+  flex: 0 0 auto;
+  text-align: center;
+  color: var(--skyrim-text-accent);
+  font-family: var(--font-heading);
+  font-size: clamp(var(--font-size-sm), 2vh, var(--font-size-lg));
+  letter-spacing: 0.08em;
+}
+
+/* S.P.E.C.I.A.L. */
+.stats-special {
+  flex: 0 0 auto;
+  display: flex;
+  gap: var(--spacing-xs);
+  border-top: var(--border-thin) solid var(--skyrim-border-dark);
+  padding-top: var(--spacing-sm);
+}
+
+.spec {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--font-heading);
+}
+
+.spec-k {
+  color: var(--skyrim-text-secondary);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.05em;
+}
+
+.spec-v {
+  color: var(--skyrim-text-primary);
+  font-size: clamp(var(--font-size-base), 2.4vh, var(--font-size-xl));
+  font-variant-numeric: tabular-nums;
 }
 </style>

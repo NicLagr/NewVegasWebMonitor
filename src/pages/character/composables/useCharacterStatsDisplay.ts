@@ -97,6 +97,12 @@ export function useCharacterStatsDisplay(): CharacterStatsDisplay {
     return a != null && m != null ? `${Math.round(a)} / ${Math.round(m)}` : '-';
   });
 
+  /** S.P.E.C.I.A.L. attributes (empty until the plugin reports them). */
+  const special = computed(() => stats.value.special ?? {});
+
+  /** Limb condition percentages (empty until reported). */
+  const limbs = computed(() => stats.value.limbs ?? {});
+
   return {
     displayLevel,
     displayExperience,
@@ -108,5 +114,7 @@ export function useCharacterStatsDisplay(): CharacterStatsDisplay {
     healthPercentage,
     apPercentage,
     radsPercentage,
+    special,
+    limbs,
   };
 }

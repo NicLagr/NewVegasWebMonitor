@@ -114,6 +114,7 @@ Vue 3 (Composition API) + TypeScript · Vite · Pinia · vue-i18n · vite-plugin
   andreyvelsk (MIT) — original app + WebSocket protocol.
 - Generic UI icons from [game-icons.net](https://game-icons.net/) — [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/); per-author attribution preserved in `public/icons/` folder names.
 - Per-item Pip-Boy icons in `public/icons/pipboy/` are from **[Consistent Pip-Boy Icons](https://www.nexusmods.com/profile/ItsMeJesusHChrist)** by **ItsMeJesusHChrist**, used with permission (credit required, non-commercial). The original DDS textures were converted to WebP for web use; the raw source set is not redistributed.
+- The Vault Boy STATS figure (`public/icons/pipboy/ui/vaultboy.svg`) is extracted from **"Pip-Boy" by fluffgar** (DeviantArt), recolored white for theme-tinting and used non-commercially with attribution.
 - *Fallout: New Vegas* is © Bethesda Softworks / Obsidian Entertainment. This is an
   unofficial fan-made companion app, not affiliated with or endorsed by either. Game map
   imagery is property of its respective owners and used here for personal/non-commercial use.
