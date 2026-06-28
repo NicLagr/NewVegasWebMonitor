@@ -686,7 +686,16 @@ static void ReadGameState() {
                 const char* nm = mi ? mi->name.m_data : nullptr;
                 if (!nm || !*nm) continue;
                 if (!seen.insert(nm).second) continue;     // dedupe by name
-                const bool hidden = (ae->spellType == SpellItem::kType_Ability);
+                // Hidden = effects the in-game Pip-Boy EFF page omits: ability-type
+                // effects (traits like Four Eyes, perk passives) and permanent
+                // effects with no timer (crippled-limb effects e.g. Concussion).
+                // Temporary effects (chems/food) have duration > 0 and stay shown.
+                const bool hidden = (ae->spellType == SpellItem::kType_Ability)
+                                    || (ae->duration <= 0.0f);
+                static std::unordered_set<std::string> dbgEff;
+                if (dbgEff.insert(nm).second)
+                    logf("[dbg] EFF %s spellType=%d dur=%.1f hidden=%d",
+                         nm, ae->spellType, ae->duration, hidden ? 1 : 0);
                 eff += n ? ",{\"name\":\"" : "{\"name\":\"";
                 eff += jsonEscape(nm);
                 eff += "\",\"hidden\":";

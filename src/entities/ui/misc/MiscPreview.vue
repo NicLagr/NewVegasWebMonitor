@@ -6,11 +6,11 @@
     <template #icon>
       <pipboy-icon
         :icon-path="data?.iconPath"
-        :size="48"
+        :size="96"
       >
         <base-icon
           icon-path="lorc/swap-bag.svg"
-          :size="48"
+          :size="96"
         />
       </pipboy-icon>
     </template>

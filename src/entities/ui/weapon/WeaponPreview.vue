@@ -8,11 +8,11 @@
       <pipboy-icon
         v-if="data"
         :icon-path="data.iconPath"
-        :size="48"
+        :size="96"
       >
         <weapon-icon
           :weapon-type="data.weaponType"
-          :size="48"
+          :size="96"
         />
       </pipboy-icon>
     </template>

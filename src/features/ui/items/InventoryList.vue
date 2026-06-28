@@ -107,11 +107,11 @@
           <template #icon>
             <pipboy-icon
               :icon-path="previewItemIconPath"
-              :size="84"
+              :size="96"
             >
               <base-icon
                 :icon-path="previewIconPath"
-                :size="84"
+                :size="96"
               />
             </pipboy-icon>
           </template>
