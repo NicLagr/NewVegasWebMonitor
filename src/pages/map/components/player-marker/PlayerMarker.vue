@@ -1,30 +1,39 @@
 <template>
   <g :transform="`translate(${player.x} ${player.y}) rotate(${player.angleDeg})`">
-    <use
+    <!-- Inline arrowhead (pointing 'up'/north at 0°; the parent <g> applies the
+         player's facing rotation) so it can be tinted to the active theme. -->
+    <polygon
       class="player-marker"
-      :href="`#${iconSymbolId}`"
-      :x="-playerHalfSize"
-      :y="-playerHalfSize"
-      :width="playerSize"
-      :height="playerSize"
-      preserveAspectRatio="xMidYMid meet"
+      :points="arrowPoints"
+      :stroke-width="playerHalfSize * 0.16"
+      stroke-linejoin="round"
     />
   </g>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import type { PlayerOverlayPosition } from '../../types';
 
-defineProps<{
+const props = defineProps<{
   player: PlayerOverlayPosition;
   playerSize: number;
   playerHalfSize: number;
-  iconSymbolId: string;
+  // Kept for API compatibility with MapMarkers; the marker is now drawn inline.
+  iconSymbolId?: string;
 }>();
+
+const arrowPoints = computed(() => {
+  const s = props.playerHalfSize;
+  // tip, back-right, center notch, back-left
+  return `0,${-s} ${s * 0.72},${s * 0.82} 0,${s * 0.32} ${-s * 0.72},${s * 0.82}`;
+});
 </script>
 
 <style scoped lang="scss">
 .player-marker {
   pointer-events: none;
+  fill: var(--skyrim-accent-gold);
+  stroke: var(--skyrim-bg-dark);
 }
 </style>

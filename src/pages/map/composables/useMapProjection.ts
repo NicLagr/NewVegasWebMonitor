@@ -22,11 +22,11 @@ import { computed, type ComputedRef } from 'vue';
 // =============================================================
 
 /** Image px per world unit (uniform). */
-const MAP_SCALE = 0.0103;
+const MAP_SCALE = 0.0113;
 /** Image x for world x = 0. */
-const MAP_OFFSET_X = 1925;
+const MAP_OFFSET_X = 1934;
 /** Image y for world y = 0. */
-const MAP_OFFSET_Y = 1900;
+const MAP_OFFSET_Y = 2012;
 
 export interface Point {
   x: number;
