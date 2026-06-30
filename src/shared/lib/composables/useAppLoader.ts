@@ -10,6 +10,7 @@ import {
 } from '@/app/config/pageRegistry';
 import { GLOBAL_SUBSCRIPTIONS } from '@/app/config/globalSubscriptions';
 import { DataRouter } from '@/stores/adapters/dataRouter';
+import { useDemoStore, isDemoRequested } from '@/stores/demo/useDemoStore';
 
 export function useAppLoader() {
   const navigationStore = useNavigationStore();
@@ -21,6 +22,8 @@ export function useAppLoader() {
 
   const gameStatusStore = useGameStatusStore();
   const { canAct } = storeToRefs(gameStatusStore);
+
+  const demoStore = useDemoStore();
 
   const startCategorySubscription = (tabId: string): void => {
     const config = getTabCategorySubscription(tabId);
@@ -72,6 +75,13 @@ export function useAppLoader() {
     // (see useWebSocketStore init). Don't open a socket — there's no backend,
     // and reconnect attempts would just spam errors.
     if (import.meta.env.VITE_USE_FIXTURES === 'true') {
+      return;
+    }
+
+    // Demo mode: opened via `?demo` or a previously-set demo flag. Load mock
+    // data instead of connecting to a (nonexistent) game backend.
+    if (isDemoRequested()) {
+      demoStore.enter();
       return;
     }
 

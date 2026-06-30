@@ -72,7 +72,18 @@
         >
           {{ $t('shared.ui.connectionStatus.reconnect') }}
         </button>
+
+        <button
+          class="btn btn-lg btn-ghost"
+          @click="handleExploreDemo"
+        >
+          {{ $t('shared.ui.connectionStatus.exploreDemo') }}
+        </button>
       </div>
+
+      <p class="demo-hint">
+        {{ $t('shared.ui.connectionStatus.exploreDemoHint') }}
+      </p>
     </div>
 
     <div class="attribution">
@@ -97,6 +108,7 @@ import { useI18n } from 'vue-i18n';
 import { useWebSocketStore } from '@/stores/use-websocket-store/useWebsocketStore';
 import { CONNECTION_STATUS } from '@/shared/lib/constants/connection';
 import { normalizeWsUrl } from '@/shared/lib/config/websocket';
+import { useDemoStore } from '@/stores/demo/useDemoStore';
 import DisplayControls from './DisplayControls.vue';
 
 type StatusState =
@@ -108,6 +120,7 @@ type StatusState =
 
 const { t } = useI18n();
 const wsStore = useWebSocketStore();
+const demoStore = useDemoStore();
 const endpointDraft = ref(wsStore.endpointUrl);
 const endpointError = ref('');
 
@@ -171,6 +184,10 @@ function handleEndpointSubmit(): void {
 function handleReconnect(): void {
   endpointError.value = '';
   void wsStore.reconnect();
+}
+
+function handleExploreDemo(): void {
+  demoStore.enter();
 }
 </script>
 
@@ -302,7 +319,19 @@ function handleReconnect(): void {
 }
 
 .actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-sm);
   margin-top: var(--spacing-sm);
+}
+
+.demo-hint {
+  margin: var(--spacing-xs) 0 0;
+  max-width: min(100%, 28rem);
+  font-size: var(--font-size-xs);
+  color: var(--pip-text-dim);
+  text-align: center;
 }
 
 .attribution {

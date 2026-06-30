@@ -38,6 +38,14 @@
       </button>
     </div>
 
+    <div
+      v-if="isDemoActive"
+      class="settings-section"
+    >
+      <p class="settings-label">{{ $t('settings.demo.title') }}</p>
+      <demo-editor />
+    </div>
+
     <div class="settings-section">
       <p class="settings-label">{{ $t('settings.credits') }}</p>
       <p class="credit-line">
@@ -68,10 +76,16 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from '@/stores/settings/useSettingsStore';
+import { useDemoStore } from '@/stores/demo/useDemoStore';
+import DemoEditor from './DemoEditor.vue';
 
 const settings = useSettingsStore();
 const { theme, showHiddenEffects } = storeToRefs(settings);
 const themes = settings.themes;
+
+// Demo controls live here but only render while demo mode is active, so they
+// never appear during real, connected use.
+const { isActive: isDemoActive } = storeToRefs(useDemoStore());
 
 const emit = defineEmits<{ close: [] }>();
 </script>

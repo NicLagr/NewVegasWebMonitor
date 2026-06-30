@@ -1,6 +1,6 @@
 <template>
   <div class="handheld-device">
-    <template v-if="isConnected || useFixtures">
+    <template v-if="isConnected || useFixtures || isDemoActive">
       <pip-navigation
         :active-tab="activeTab"
         :active-sub-tab="activeSubTab"
@@ -35,6 +35,7 @@ import {
 import { useNavigationStore } from '@/stores/use-navigation-store/useNavigationStore';
 import { useWebSocketStore } from '@/stores/use-websocket-store/useWebsocketStore';
 import { useSettingsStore } from '@/stores/settings/useSettingsStore';
+import { useDemoStore } from '@/stores/demo/useDemoStore';
 import { useAppLoader } from '@/shared/lib/composables/useAppLoader';
 import { useBackGuard } from '@/shared/lib/composables/useBackGuard';
 
@@ -50,6 +51,10 @@ const { isConnected } = storeToRefs(websocketStore);
 // In fixture mode there is no backend to connect to; the stores are populated
 // from public/fixtures.json, so render the UI regardless of socket status.
 const useFixtures = import.meta.env.VITE_USE_FIXTURES === 'true';
+
+// Demo mode renders the full UI on mock data (no socket). Gated separately so
+// demo-only controls can key off it and never appear during real, connected use.
+const { isActive: isDemoActive } = storeToRefs(useDemoStore());
 
 useAppLoader();
 const { showToast } = useBackGuard();
