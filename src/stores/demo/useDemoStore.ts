@@ -5,14 +5,15 @@ import { DataRouter } from '@/stores/adapters/dataRouter';
 import { useSystemStore } from '@/stores/system/useSystemStore';
 import { buildDemoData } from './demoData';
 
-const STORAGE_KEY = 'nvwm-demo';
-
-/** True if the app was opened with a `?demo` query param or the demo flag is set. */
+/**
+ * True only if the app was opened with a `?demo` query param. Demo activation
+ * is intentionally NOT persisted to localStorage — the plain URL must always
+ * land on the live connection screen. `enter()` writes `?demo` into the URL so
+ * the choice survives reloads, and `exit()` strips it again.
+ */
 export function isDemoRequested(): boolean {
   try {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has('demo')) return true;
-    return localStorage.getItem(STORAGE_KEY) === '1';
+    return new URLSearchParams(window.location.search).has('demo');
   } catch {
     return false;
   }
@@ -56,18 +57,17 @@ export const useDemoStore = defineStore('demo', () => {
     for (const id of ids) routeKey(id);
   }
 
-  /** Enter demo mode: persist the flag, mark the URL shareable, and load mock data. */
+  /** Enter demo mode: mark the URL shareable (so reloads stay in demo) and load mock data. */
   function enter(): void {
     isActive.value = true;
     try {
-      localStorage.setItem(STORAGE_KEY, '1');
       const url = new URL(window.location.href);
       if (!url.searchParams.has('demo')) {
         url.searchParams.set('demo', '1');
         window.history.replaceState({}, '', url);
       }
     } catch {
-      /* storage / history unavailable — non-fatal */
+      /* history unavailable — non-fatal */
     }
     apply();
   }
@@ -75,7 +75,6 @@ export const useDemoStore = defineStore('demo', () => {
   /** Leave demo mode and return to the live connection flow (full reload for a clean slate). */
   function exit(): void {
     try {
-      localStorage.removeItem(STORAGE_KEY);
       const url = new URL(window.location.href);
       url.searchParams.delete('demo');
       window.location.href = url.toString();
